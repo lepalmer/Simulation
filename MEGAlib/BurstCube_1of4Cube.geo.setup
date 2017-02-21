@@ -13,53 +13,49 @@ WorldVolume.Shape BRIK 300. 300. 300.
 WorldVolume.Mother 0
 
 //This chunk builds the Al Frame
-//this assumes that the outter shell of the frame is 7.2 cm x 7.2 cm x 1.95 cm
+//this assumes that the outter shell of the frame is 10.8 cm x 10.8 cm x 1.95 cm
 Volume AluminiumFrame_Volume
 AluminiumFrame_Volume.Material Vacuum
 AluminiumFrame_Volume.Visibility 1
-AluminiumFrame_Volume.Shape BRIK 3.6 3.6 0.975
+AluminiumFrame_Volume.Shape BRIK 5.4 5.4 0.975
 AluminiumFrame_Volume.Mother WorldVolume
 
 // One big block from whish parts are cut away 
 Volume AluminiumFrame
 AluminiumFrame.Material Aluminium
-AluminiumFrame.Shape BRIK 3.6 3.6 0.975
+AluminiumFrame.Shape BRIK 5.4 5.4 0.975
 AluminiumFrame.Position 0 0 0
 AluminiumFrame.Color 2
 AluminiumFrame.Visibility 0
 AluminiumFrame.Mother AluminiumFrame_Volume
 
-// Cut out 4 holes in the block for the detectors 6.2 x 6.2 x 1.95 cm
+// Cut out 4 holes in the block for the detectors
 Volume AluminiumFrame_Hole
 AluminiumFrame_Hole.Material Vacuum
-AluminiumFrame_Hole.Shape BRIK  3.1 3.1 0.975
+AluminiumFrame_Hole.Shape BRIK  4.85 4.85 0.975
 AluminiumFrame_Hole.Color 3
 AluminiumFrame_Hole.Visibility 1
 AluminiumFrame_Hole.Mother AluminiumFrame
 
 //This chunk is the window
-//the tech specs say quartz the window is slightly modified to fit in the hole dim are 6.2 x 6.2 x 0.3 cm
+//the tech specs say quartz the window is slightly modified to fit in the hole dim are 9.4 x 9.4 x 0.3 cm
 Volume GlassWindow
 GlassWindow.Material Glass
-GlassWindow.Shape BRIK  3.1 3.1 0.15
+GlassWindow.Shape BRIK  4.85 4.85 0.15
 GlassWindow.Position 0 0 0.825
 GlassWindow.Color 4
 GlassWindow.Visibility 1
 GlassWindow.Mother AluminiumFrame_Hole
 
 //This chunk is the Aluminium back
-//the tech specs say AL back is slightly modified to fit in the hole dim are 6.2 x 6.2 x 0.05 cm
+//the tech specs say AL back is slightly modified to fit in the hole dim are 9.4 x 9.4 x 0.05 cm
 Volume AluminiumBack
 AluminiumBack.Material Aluminium
-AluminiumBack.Shape BRIK 3.1 3.1 0.025
+AluminiumBack.Shape BRIK  4.85 4.85 0.025
 AluminiumBack.Position 0 0 -0.95
 AluminiumBack.Color 4
 AluminiumBack.Visibility 1
 AluminiumBack.Mother AluminiumFrame_Hole
-
-//This is the CsI Detector
-Include CalorimeterCSIProperties.det
-Include CalorimeterCSI9Layer.geo
 
 CSICube.Copy CSIDet
 CSIDet.Position 0. 0. 0.
@@ -79,6 +75,9 @@ CSIDet.Mother AluminiumFrame_Hole
 //	Done
 //Done
 
+//This is the CsI Detector
+Include CalorimeterCSIProperties.det
+Include CalorimeterCSIDetector.geo
 
 //CSIDetector.Copy MainCalo
 //MainCalo.Position 0. 0. 2.0
