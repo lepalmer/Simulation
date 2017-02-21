@@ -169,7 +169,7 @@ def getAeff(directory, triggers, r_sphere):
 
     return energy, aeff, ang
 
-def plotAeff(files, WithGBM=False, save=False):
+def plotAeff(files, comparison=False, WithGBM=False, save=False):
 
     GBM_e=[]
     GBM_aeff=[]
@@ -177,7 +177,13 @@ def plotAeff(files, WithGBM=False, save=False):
     energy, aeff, ang=getAeff(files, 10000.,300.)
     plot.figure(figsize=(8,6))
     plot.scatter(energy, aeff, color='red')
-    plot.plot(energy, aeff, color='red', alpha=0.5, linestyle='--', lw=2)
+    plot.plot(energy, aeff, color='red', alpha=0.5, linestyle='--', lw=2, label='1 of 9')
+
+    if comparison: 
+	    energy2, aeff2, ang2=getAeff('sim/9.4x9.4cmCube/FarFieldPointSource_*Cos1.0*.sim', 10000.,300.)
+	    #plot.figure(figsize=(8,6))
+	    plot.scatter(energy2, aeff2, color='blue')
+	    plot.plot(energy2, aeff2, color='blue', alpha=0.5, linestyle='--', lw=2, label='1 of 4')
 
     plot.xscale('log')
     plot.xlabel('Energy (keV)', fontsize=16)
@@ -187,10 +193,12 @@ def plotAeff(files, WithGBM=False, save=False):
     plot.gca().set_ylim([1.,200.])
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
+    legend = plot.legend(loc='upper right')
+
     if WithGBM:
         print "with GBM!"
         GBM_e, GBM_aeff=getGBMData()
-        plot.plot(GBM_e, GBM_aeff, color='green', alpha=0.75, linestyle='-', lw=2)
+        plot.plot(GBM_e, GBM_aeff, color='green', alpha=0.75, linestyle='-', lw=2, label='GBM NaI')
         
     if save:
         plot.savefig('EffectiveArea_vs_E.png')
@@ -199,17 +207,28 @@ def plotAeff(files, WithGBM=False, save=False):
     plot.show()
 
 
-def plotAeffVsAngle(files, save=False):
+def plotAeffVsAngle(files, comparison=False, save=False):
     
     energy, aeff, ang=getAeff(files, 10000.,300.)
 
-    print ang
+    #print ang
     plot.figure(figsize=(8,6)) 
     angle=[]
     for i in range(len(ang)):
-        angle.append(round(numpy.degrees(numpy.arccos(ang[i]))))
-    plot.scatter(angle, aeff, color='black')
+	    angle.append(round(numpy.degrees(numpy.arccos(ang[i]))))
+    plot.scatter(angle, aeff, color='black',label='1 of 9')
     #plot.plot(angle, aeff, color='black', alpha=0.5, linestyle='--', lw=2)
+
+    if comparison:
+	    energy2, aeff2, ang2=getAeff('sim/9.4x9.4cmCube/FarFieldPointSource_100.000keV_Cos*.sim', 10000.,300.)
+
+	    angle2=[]
+	    for i in range(len(ang2)):
+		    angle2.append(round(numpy.degrees(numpy.arccos(ang2[i]))))
+
+	    plot.scatter(angle2, aeff2, color='blue', label='1 of 4')
+	    #plot.plot(angle, aeff2, color='blue', alpha=0.5, linestyle='--', lw=2)
+
     plot.gca().set_xlim([0.,90.])
     plot.xlabel('Incident Angle (deg)', fontsize=16)
 
@@ -217,9 +236,11 @@ def plotAeffVsAngle(files, save=False):
     plot.gca().set_ylim([1.,100.])
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
+    legend = plot.legend(loc='upper right')
+
     if save:
-        plot.savefig('EffectiveArea_vs_Ang.png')
-        plot.savefig('EffectiveArea_vs_Ang.pdf')
+	    plot.savefig('EffectiveArea_vs_Ang.png')
+	    plot.savefig('EffectiveArea_vs_Ang.pdf')
 
     plot.show()
     
