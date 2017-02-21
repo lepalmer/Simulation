@@ -1,0 +1,70 @@
+Name My_BurstCube
+Verision 0.0
+
+SurroundingSphere 300.0 0.0 0.0 0.0 300.0
+Include $MEGALIB/resource/examples/geomega/materials/Materials.geo
+
+// The Mother Volume of the Detector Configuration:
+Volume WorldVolume
+WorldVolume.Material Vacuum
+WorldVolume.Visibility 0
+WorldVolume.Color 0
+WorldVolume.Shape BRIK 500. 500. 500.
+WorldVolume.Mother 0
+
+//This chunk builds the Al Frame
+//this assumes that the outter shell of the frame is 21.6 cm x 20.4 cm x 10 cm
+Volume AluminiumFrame_Volume
+AluminiumFrame_Volume.Material Vacuum
+AluminiumFrame_Volume.Visibility 1
+AluminiumFrame_Volume.Shape BRIK 10.8 10.2 5.
+AluminiumFrame_Volume.Mother WorldVolume
+
+// One big block from whish parts are cut away 
+Volume AluminiumFrame
+AluminiumFrame.Material Aluminium
+AluminiumFrame.Shape BRIK 10.8 10.2 5.
+AluminiumFrame.Position 0 0 0
+AluminiumFrame.Color 2
+AluminiumFrame.Visibility 0
+AluminiumFrame.Mother AluminiumFrame_Volume
+
+// Cut out 4 holes in the block for the detectors
+//the CsI Cubes take up 19.3 cm x 19.3 cm x 1.27 cm with 0.5 spacing between the cubes
+Volume AluminiumFrame_Hole
+AluminiumFrame_Hole.Material Vacuum
+AluminiumFrame_Hole.Shape BRIK  4.85 4.85 5.
+AluminiumFrame_Hole.Color 3
+AluminiumFrame_Hole.Visibility 1
+
+CSICube.Copy CSIDet
+CSIDet.Position 0. 0. 2.0
+CSIDet.Rotation 7.0 -7.0 0.0
+CSIDet.Mother AluminiumFrame_Hole
+
+For I 2 -4.95 9.9
+	For J 2 -4.95 9.9
+		//Print %I $I
+		AluminiumFrame_Hole.Copy AluminiumFrame_Hole_%I_%J
+		AluminiumFrame_Hole_%I_%J Position $I $J 0.0
+		AluminiumFrame_Hole_1_1 Rotation 0. 0.0 0.0
+		AluminiumFrame_Hole_1_2 Rotation 0. 0.0 -90.0
+		AluminiumFrame_Hole_2_1 Rotation 0. 0.0 90.0
+		AluminiumFrame_Hole_2_2 Rotation 0. 0.0 180.0
+		AluminiumFrame_Hole_%I_%J.Mother AluminiumFrame
+	Done
+Done
+
+//This is the CsI Detector
+Include CalorimeterCSIProperties.det
+Include CalorimeterCSIDetector.geo
+
+//CSIDetector.Copy MainCalo
+//MainCalo.Position 0. 0. 2.0
+//MainCalo.Mother AluminiumFrame
+
+# Base Trigger
+Trigger MainTrigger
+MainTrigger.Veto false
+MainTrigger.TriggerByDetector true
+MainTrigger.Detector DCalCSI 1

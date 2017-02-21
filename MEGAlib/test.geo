@@ -1,0 +1,62 @@
+test.geo
+
+///// Uncomment these lines to run standalone 
+SurroundingSphere 300.0 0.0 0.0 0.0 300.0
+Include $MEGALIB/resource/examples/geomega/materials/Materials.geo
+/////
+
+Volume CSIDetector
+CSIDetector.Material Vacuum
+CSIDetector.Visibility 0
+CSIDetector.Shape BRIK 20 20 20
+// Include this to run stand-alone
+CSIDetector.Mother 0
+
+Volume CSITrap
+CSITrap.Material CsI
+CSITrap.Visibility 1
+CSITrap.Color 2
+#CSITrap.Shape TRD2 2. 10. 10. 2. 5.
+#From Geant4/Geomega manual
+#TRAP z theta phi height_trap_b bottom_length_trap_bottom top_length_trap_bottom alpha_b height_trap_t bottom_length_trap_t top_length_trap_t alpha_t
+#pDx1 = 30, pDx2 = 40, pDy1 = 40, pDx3 = 10, pDx4 = 14, pDy2 = 16, pDz = 60, pTheta = 20*Degree, pPhi = 5*Degree, pAlp1 = pAlp2 = 10*Degree
+#CSITrap.Shape TRAP 60. 20. 5. 40. 30. 40. 10. 16. 10. 14. 10.
+#CSITrap.Shape TRAP 15. 20. 5. 10. 7.5 10. 10. 4. 2.5 3.5 10.
+
+#CSITrap.Shape TRAP 10. 0. 0. 40. 30. 40. 0. 16. 10. 14. 0.
+#Box!
+#CSITrap.Shape TRAP 40. 0. 0. 40. 40. 40. 0. 40. 40. 40. 0.
+#Equal angles
+#CSITrap.Shape TRAP 4. 0. 0. 8. 4. 4. 0 5. 4. 4. 0.
+
+#This works! Angle in 1 plane... 
+#CSITrap.Shape TRAP 4. 0. 0. 4. 11. 5. 36.8698 4. 11. 5. 36.8698
+
+#Now for two planes --- This closes, but need to check angles. 
+#CSITrap.Shape TRAP 4.016 0. 0. 4.016 2.979 2.218 10.73 4.016 3.740 2.979 10.73
+CSITrap.Shape TRAP 4.016 0. -10.73 4.016 2.979 2.218 0. 4.016 3.740 2.979 0.
+
+CSITrap.Copy CSITrap_1
+CSITrap_1.Rotation 90. 0. 0.
+CSITrap_1.Position 0. 0. 0.
+CSITrap_1.Mother CSIDetector
+
+CSITrap.Copy CSITrap_2
+CSITrap_2.Rotation 0. 90. 270.
+CSITrap_2.Position 8.032 0. 0.
+#CSITrap_2.Mother CSIDetector
+
+CSITrap.Copy CSITrap_3
+CSITrap_3.Rotation 0. 0. 180.
+
+CSITrap.Copy CSITrap_4
+CSITrap_4.Rotation 0. 0. 270.
+
+#CSITrap_12.Shape Union CSITrap_1 CSITrap_2 
+#CSITrap_12.Visibility 1
+
+
+
+
+
+
