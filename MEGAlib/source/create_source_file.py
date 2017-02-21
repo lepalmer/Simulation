@@ -14,14 +14,14 @@ from numpy import *
 from math import *
 
 #here put your geometry file and source type
-geofile= '/Users/reginamcaputo/Desktop/BurstCube/Simulations/MEGAlib/BurstCube_1Cube.geo.setup'
+geofile= '$BURSTCUBEPATH/Simulation/MEGAlib/BurstCube_1Cube.geo.setup'
 OneBeam= 'FarFieldPointSource'
 
 #define your energies and angles 
-#Log_E=[1,1.2,1.5,1.7,2,2.2,2.5,2.7,3,3.2,3.5,3.7,4]
-#angles  =[0]
-Log_E=[2]
-angles  =[0,25.8,36.9,45.6,53.1,60]
+Log_E=[1,1.2,1.5,1.7,2,2.2,2.5,2.7,3,3.2,3.5,3.7,4]
+angles  =[0]
+#Log_E=[2]
+#angles  =[0,25.8,36.9,45.6,53.1,60]
 
 #gives the cosTheta array
 def ang2cos(allAng):
