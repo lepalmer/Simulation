@@ -177,13 +177,18 @@ def plotAeff(files, comparison=False, WithGBM=False, save=False):
     energy, aeff, ang=getAeff(files, 10000.,300.)
     plot.figure(figsize=(8,6))
     plot.scatter(energy, aeff, color='red')
-    plot.plot(energy, aeff, color='red', alpha=0.5, linestyle='--', lw=2, label='1 of 9')
+    plot.plot(energy, aeff, color='red', alpha=0.5, linestyle='--', lw=2, label='1 of 9 thin')
 
     if comparison: 
 	    energy2, aeff2, ang2=getAeff('sim/9.4x9.4cmCube/FarFieldPointSource_*Cos1.0*.sim', 10000.,300.)
 	    #plot.figure(figsize=(8,6))
 	    plot.scatter(energy2, aeff2, color='blue')
 	    plot.plot(energy2, aeff2, color='blue', alpha=0.5, linestyle='--', lw=2, label='1 of 4')
+
+	    energy3, aeff3, ang3=getAeff('sim/5.8x5.8cmCube/FarFieldPointSource_*Cos1.0*.sim', 10000.,300.)
+	    #plot.figure(figsize=(8,6))
+	    plot.scatter(energy3, aeff3, color='purple')
+	    plot.plot(energy3, aeff3, color='purple', alpha=0.5, linestyle='--', lw=2, label='1 of 9 thick')
 
     plot.xscale('log')
     plot.xlabel('Energy (keV)', fontsize=16)
@@ -216,18 +221,23 @@ def plotAeffVsAngle(files, comparison=False, save=False):
     angle=[]
     for i in range(len(ang)):
 	    angle.append(round(numpy.degrees(numpy.arccos(ang[i]))))
-    plot.scatter(angle, aeff, color='black',label='1 of 9')
+    plot.scatter(angle, aeff, color='black',label='1 of 9 thin')
     #plot.plot(angle, aeff, color='black', alpha=0.5, linestyle='--', lw=2)
 
     if comparison:
 	    energy2, aeff2, ang2=getAeff('sim/9.4x9.4cmCube/FarFieldPointSource_100.000keV_Cos*.sim', 10000.,300.)
-
 	    angle2=[]
 	    for i in range(len(ang2)):
 		    angle2.append(round(numpy.degrees(numpy.arccos(ang2[i]))))
-
 	    plot.scatter(angle2, aeff2, color='blue', label='1 of 4')
-	    #plot.plot(angle, aeff2, color='blue', alpha=0.5, linestyle='--', lw=2)
+	    
+	    energy3, aeff3, ang3=getAeff('sim/5.8x5.8cmCube/FarFieldPointSource_100.000keV_Cos*.sim', 10000.,300.)
+	    angle3=[]
+	    for i in range(len(ang3)):
+		    angle3.append(round(numpy.degrees(numpy.arccos(ang2[i]))))
+
+	    plot.scatter(angle3, aeff3, color='red', label='1 of 9 thick')
+
 
     plot.gca().set_xlim([0.,90.])
     plot.xlabel('Incident Angle (deg)', fontsize=16)

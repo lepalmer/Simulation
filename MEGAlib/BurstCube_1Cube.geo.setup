@@ -62,7 +62,10 @@ Include CalorimeterCSIProperties.det
 Include CalorimeterCSI9Layer.geo
 
 CSICube.Copy CSIDet
-CSIDet.Position 0. 0. 0.
+//Use this for 1.27 cm thickness
+//CSIDet.Position 0. 0. 0.
+//Use this for 0.78 cm thickness
+CSIDet.Position 0. 0. 0.245
 //CSIDet.Rotation 7.0 -7.0 0.0
 CSIDet.Mother AluminiumFrame_Hole
 
