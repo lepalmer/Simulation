@@ -75,22 +75,72 @@ def parse(filename, sourceTheta=None):
     output = os.popen(command).read()
     totalNumberOfLines = int(output.split()[0])
 
-    print totalNumberOfLines
-
-    #for line in fileinput.input([filename]):
-    line = filename.readline(totalNumberOfLines-1)
-    print line
-        
-    if 'TS' in line:
-        
-        # Split the line
-        lineContents = line.split()
-        print "Total generated particles: ", lineContents[1]
-        return float(lineContents[1])
+    lineNumber=0
     
-    else:
-        print filename, 'no total number of generated particles'
-        return None
+    # initialize everything
+    energy_deposited = []
+    energy_escaped = []
+    energy_nonsensitive = []
+    
+
+    with open(filename) as f:
+	    for line in f:
+
+		    try:
+			    sys.stdout.write("Progress: %d%%   \r" % (lineNumber/totalNumberOfLines * 100) )
+			    sys.stdout.flush()
+		    except:
+			    pass
+	    
+		    if 'TS' in line:
+			    
+			    # Split the line
+			    lineContents = line.split()
+			    print "Total generated particles: ", lineContents[1]
+			    
+		    if 'ED' in line:
+			    lineContents = line.split()
+			    energy_deposited.append(lineContents[1])
+
+		    if 'EC' in line:
+			    lineContents = line.split()
+			    energy_escaped.append(lineContents[1])
+
+		    if 'NS' in line:
+			    lineContents = line.split()
+			    energy_nonsensitive.append(lineContents[1])
+		    
+
+		    lineNumber = lineNumber + 1
+
+    #print len(energy_deposited)
+
+    return energy_deposited, energy_escaped, energy_nonsensitive
+
+
+def passEres(filename, eres=0.1):
+	
+	ed,es,ns=parse(filename)
+	good=0.0
+	frac=1.0
+
+	for i in range(len(ed)):
+		tot = float(ed[i])+float(es[i])+float(ns[i])
+		tot_hi= tot+tot*eres
+		tot_low = tot-tot*eres
+
+		#print tot, tot_low, tot_hi, ed[i], es[i], ns[i]
+
+		if float(ed[i])> tot_low:
+			if float(ed[i])<tot_hi:
+				good=good+1.0
+
+	frac=float(good)/float(len(ed))
+
+	print filename, "has this fraction of events that pass Eres cut: ", frac
+
+	return frac
+
 
 def getGBMData():
 
@@ -107,7 +157,6 @@ def getGBMData():
             energy.append(float(data[0]))
             aeff.append(float(data[1]))
     
-    #print energy, aeff
     return energy, aeff
     
 
@@ -142,17 +191,19 @@ def getAeff(directory, triggers, r_sphere):
     #lists
     energy = []
     aeff = []
+    aeff_eres = []
     ang = []
     
     for fn in filenames:
         
-        if '10.000keV' in fn:
-            continue
-        elif '15.000keV' in fn:
-            continue
+        #if '10.000keV' in fn:
+        #    continue
+        #elif '15.000keV' in fn:
+        #    continue
 
         details = getDetailsFromFilename(fn)
         details['Aeff'] = CalculateAeff(fn,triggers,r_sphere)
+	frac=passEres(fn,eres=0.1) #assumes energy resolution of 10%
 
         #print fn
 
@@ -162,22 +213,28 @@ def getAeff(directory, triggers, r_sphere):
                 energy.append(value)
             elif key is 'Aeff':
                 aeff.append(value)
+		aeff_eres.append(float(value)*float(frac))
             elif key is 'Cos':
                 ang.append(float(value))
             else:
                 print "key not found" 
 
-    return energy, aeff, ang
+    #print aeff[4], aeff_eres[4]
+
+    return energy, aeff, ang, aeff_eres
 
 def plotAeff(files, comparison=False, WithGBM=False, save=False):
 
     GBM_e=[]
     GBM_aeff=[]
 
-    energy, aeff, ang=getAeff(files, 10000.,300.)
+    energy, aeff, ang, aeff_eres=getAeff(files, 10000.,300.)
     plot.figure(figsize=(8,6))
-    plot.scatter(energy, aeff, color='red')
-    plot.plot(energy, aeff, color='red', alpha=0.5, linestyle='--', lw=2, label='1 of 9 thin')
+    plot.scatter(energy, aeff, color='black')
+    plot.plot(energy, aeff, color='black', alpha=0.5, linestyle='--', lw=2, label='1 of 4')
+
+    plot.scatter(energy, aeff_eres, color='blue')
+    plot.plot(energy, aeff_eres, color='blue', alpha=0.5, linestyle='--', lw=2, label='1 of 4 with E$_{res}$')
 
     if comparison: 
 	    energy2, aeff2, ang2=getAeff('sim/9.4x9.4cmCube/FarFieldPointSource_*Cos1.0*.sim', 10000.,300.)
