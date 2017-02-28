@@ -12,80 +12,91 @@ WorldVolume.Color 0
 WorldVolume.Shape BRIK 300. 300. 300.
 WorldVolume.Mother 0
 
+//This is the CsI Detector
+Include CalorimeterCSIProperties.det
+Include CalorimeterCSIDetector.geo
+
 //This chunk builds the Al Frame
-//this assumes that the outter shell of the frame is 7.2 cm x 7.2 cm x 1.95 cm
+//this assumes that the outter shell of the frame is 10.6 cm x 10.6 cm x 4 cm
 Volume AluminiumFrame_Volume
 AluminiumFrame_Volume.Material Vacuum
 AluminiumFrame_Volume.Visibility 1
-AluminiumFrame_Volume.Shape BRIK 3.6 3.6 0.975
+AluminiumFrame_Volume.Shape BRIK 5.3 5.3 2.
 AluminiumFrame_Volume.Mother WorldVolume
 
 // One big block from whish parts are cut away 
 Volume AluminiumFrame
 AluminiumFrame.Material Aluminium
-AluminiumFrame.Shape BRIK 3.6 3.6 0.975
+AluminiumFrame.Shape BRIK 5.3 5.3 2.
 AluminiumFrame.Position 0 0 0
 AluminiumFrame.Color 2
 AluminiumFrame.Visibility 0
 AluminiumFrame.Mother AluminiumFrame_Volume
 
-// Cut out 4 holes in the block for the detectors 6.2 x 6.2 x 1.95 cm
+// Cut out 4 holes in the block for the detectors
 Volume AluminiumFrame_Hole
 AluminiumFrame_Hole.Material Vacuum
-AluminiumFrame_Hole.Shape BRIK  3.1 3.1 0.975
+AluminiumFrame_Hole.Shape BRIK  4.7 4.7 2.
 AluminiumFrame_Hole.Color 3
 AluminiumFrame_Hole.Visibility 1
 AluminiumFrame_Hole.Mother AluminiumFrame
 
-//This chunk is the window
-//the tech specs say quartz the window is slightly modified to fit in the hole dim are 6.2 x 6.2 x 0.3 cm
+//This is the Al window on top
+//the tech specs say Al top in the hole dim are 9.4 x 9.4 x 0.6 cm
+Volume AlWindow
+AlWindow.Material Aluminium 
+AlWindow.Shape BRIK  4.7 4.7 0.3
+AlWindow.Position 0 0 1.7
+//AlWindow.Color 4
+AlWindow.Visibility 1
+AlWindow.Mother AluminiumFrame_Hole
+
+//This is the Al window on bottom
+//the tech specs say Al bottom in the hole dim are 9.4 x 9.4 x 0.6 cm
+Volume AlBottom
+AlBottom.Material Aluminium 
+AlBottom.Shape BRIK  4.7 4.7 0.3
+AlBottom.Position 0. 0. -1.7
+//AlBottom.Color 4
+AlBottom.Visibility 1
+AlBottom.Mother AluminiumFrame_Hole
+
+//This is the CsI detector
+CSICube.Copy CSIDet
+CSIDet.Position 0. 0. 0.765 
+CSIDet.Mother AluminiumFrame_Hole
+
+//This chunk is the window on bottom
+//the tech specs say quartz the window is slightly modified to fit in the hole dim are 9.4 x 9.4 x 0.635 cm
 Volume GlassWindow
 GlassWindow.Material Glass
-GlassWindow.Shape BRIK  3.1 3.1 0.15
-GlassWindow.Position 0 0 0.825
+GlassWindow.Shape BRIK  4.7 4.7 0.3175
+GlassWindow.Position 0 0 -0.1875
 GlassWindow.Color 4
 GlassWindow.Visibility 1
 GlassWindow.Mother AluminiumFrame_Hole
 
-//This chunk is the Aluminium back
-//the tech specs say AL back is slightly modified to fit in the hole dim are 6.2 x 6.2 x 0.05 cm
-Volume AluminiumBack
-AluminiumBack.Material Aluminium
-AluminiumBack.Shape BRIK 3.1 3.1 0.025
-AluminiumBack.Position 0 0 -0.95
-AluminiumBack.Color 4
-AluminiumBack.Visibility 1
-AluminiumBack.Mother AluminiumFrame_Hole
+//This chunk is the Si plane below the glass
+//the tech specs say Si in the Al Frame/hole dim are 9.4 x 9.4 x 0.020 cm
+Volume SiPlane
+SiPlane.Material Silicon
+SiPlane.Shape BRIK  4.7 4.7 0.01
+SiPlane.Position 0 0 -0.515
+SiPlane.Color 5
+SiPlane.Visibility 1
+SiPlane.Mother AluminiumFrame_Hole
 
-//This is the CsI Detector
-Include CalorimeterCSIProperties.det
-Include CalorimeterCSI9Layer.geo
-
-CSICube.Copy CSIDet
-//Use this for 1.27 cm thickness
-//CSIDet.Position 0. 0. 0.
-//Use this for 0.78 cm thickness
-CSIDet.Position 0. 0. 0.245
-//CSIDet.Rotation 7.0 -7.0 0.0
-CSIDet.Mother AluminiumFrame_Hole
-
-//For I 2 -4.95 9.9
-//	For J 2 -4.95 9.9
-//		//Print %I $I
-//		AluminiumFrame_Hole.Copy AluminiumFrame_Hole_%I_%J
-//		AluminiumFrame_Hole_%I_%J Position $I $J 0.0
-//		AluminiumFrame_Hole_1_1 Rotation 0. 0.0 0.0
-//		AluminiumFrame_Hole_1_2 Rotation 0. 0.0 -90.0
-//		AluminiumFrame_Hole_2_1 Rotation 0. 0.0 90.0
-//		AluminiumFrame_Hole_2_2 Rotation 0. 0.0 180.0
-//		AluminiumFrame_Hole_%I_%J.Mother AluminiumFrame
-//	Done
-//Done
+//This chunk is the G10 below the Si
+//the tech specs say dim are 9.4 x 9.4 x 0.6
+Volume G10Plane
+G10Plane.Material CircuitBoard
+G10Plane.Shape BRIK  4.7 4.7 0.3
+G10Plane.Position 0 0 -0.825
+G10Plane.Color 6
+G10Plane.Visibility 1
+G10Plane.Mother AluminiumFrame_Hole
 
 
-//CSIDetector.Copy MainCalo
-//MainCalo.Position 0. 0. 2.0
-//MainCalo.Mother AluminiumFrame
 
 # Base Trigger
 Trigger MainTrigger
