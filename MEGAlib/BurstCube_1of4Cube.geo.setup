@@ -42,11 +42,11 @@ AluminiumFrame_Hole.Visibility 1
 AluminiumFrame_Hole.Mother AluminiumFrame
 
 //This is the Al window on top
-//the tech specs say Al top in the hole dim are 9.4 x 9.4 x 0.6 cm
+//the tech specs say Al top in the hole dim are 9.4 x 9.4 x 0.05 cm
 Volume AlWindow
 AlWindow.Material Aluminium 
-AlWindow.Shape BRIK  4.7 4.7 0.3
-AlWindow.Position 0 0 1.7
+AlWindow.Shape BRIK  4.7 4.7 0.025
+AlWindow.Position 0 0 1.975
 //AlWindow.Color 4
 AlWindow.Visibility 1
 AlWindow.Mother AluminiumFrame_Hole
@@ -63,7 +63,7 @@ AlBottom.Mother AluminiumFrame_Hole
 
 //This is the CsI detector
 CSICube.Copy CSIDet
-CSIDet.Position 0. 0. 0.765 
+CSIDet.Position 0. 0. 1.315 
 CSIDet.Mother AluminiumFrame_Hole
 
 //This chunk is the window on bottom
@@ -71,7 +71,7 @@ CSIDet.Mother AluminiumFrame_Hole
 Volume GlassWindow
 GlassWindow.Material Glass
 GlassWindow.Shape BRIK  4.7 4.7 0.3175
-GlassWindow.Position 0 0 -0.1875
+GlassWindow.Position 0 0 0.3625
 GlassWindow.Color 4
 GlassWindow.Visibility 1
 GlassWindow.Mother AluminiumFrame_Hole
@@ -81,7 +81,7 @@ GlassWindow.Mother AluminiumFrame_Hole
 Volume SiPlane
 SiPlane.Material Silicon
 SiPlane.Shape BRIK  4.7 4.7 0.01
-SiPlane.Position 0 0 -0.515
+SiPlane.Position 0 0 0.035
 SiPlane.Color 5
 SiPlane.Visibility 1
 SiPlane.Mother AluminiumFrame_Hole
@@ -91,7 +91,7 @@ SiPlane.Mother AluminiumFrame_Hole
 Volume G10Plane
 G10Plane.Material CircuitBoard
 G10Plane.Shape BRIK  4.7 4.7 0.3
-G10Plane.Position 0 0 -0.825
+G10Plane.Position 0 0 -0.275
 G10Plane.Color 6
 G10Plane.Visibility 1
 G10Plane.Mother AluminiumFrame_Hole
