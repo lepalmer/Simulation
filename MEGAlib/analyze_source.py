@@ -122,7 +122,9 @@ def passEres(filename, eres=0.1):
 	
 	ed,es,ns=parse(filename)
 	good=0.0
+	mod = 0.0
 	frac=1.0
+	mod_frac=1.0
 
 	for i in range(len(ed)):
 		tot = float(ed[i])+float(es[i])+float(ns[i])
@@ -134,12 +136,18 @@ def passEres(filename, eres=0.1):
 		if float(ed[i])> tot_low:
 			if float(ed[i])<tot_hi:
 				good=good+1.0
+		else:
+			mode=float(ed[i])+30.0
+			if mode > tot_low:
+				if mode < tot_hi:
+					mod=mod+1.0
 
 	frac=float(good)/float(len(ed))
+	mod_frac=(float(good)+float(mod))/float(len(ed))
 
-	print filename, "has this fraction of events that pass Eres cut: ", frac
+	print filename, "has this fraction of events that pass Eres cut: ", frac, mod_frac
 
-	return frac
+	return frac, mod_frac
 
 
 def getGBMData():
@@ -192,18 +200,19 @@ def getAeff(directory, triggers, r_sphere):
     energy = []
     aeff = []
     aeff_eres = []
+    aeff_eres_modfrac = []
     ang = []
     
     for fn in filenames:
         
-        #if '10.000keV' in fn:
-        #    continue
+        if '10.000keV' in fn:
+            continue
         #elif '15.000keV' in fn:
         #    continue
 
         details = getDetailsFromFilename(fn)
         details['Aeff'] = CalculateAeff(fn,triggers,r_sphere)
-	frac=passEres(fn,eres=0.1) #assumes energy resolution of 10%
+	frac, mod_frac=passEres(fn,eres=0.1) #assumes energy resolution of 10%
 
         #print fn
 
@@ -214,6 +223,7 @@ def getAeff(directory, triggers, r_sphere):
             elif key is 'Aeff':
                 aeff.append(value)
 		aeff_eres.append(float(value)*float(frac))
+		aeff_eres_modfrac.append(float(value)*float(mod_frac))
             elif key is 'Cos':
                 ang.append(float(value))
             else:
@@ -221,20 +231,23 @@ def getAeff(directory, triggers, r_sphere):
 
     #print aeff[4], aeff_eres[4]
 
-    return energy, aeff, ang, aeff_eres
+    return energy, aeff, ang, aeff_eres, aeff_eres_modfrac
 
 def plotAeff(files, comparison=False, WithGBM=False, save=False):
 
     GBM_e=[]
     GBM_aeff=[]
 
-    energy, aeff, ang, aeff_eres=getAeff(files, 10000.,300.)
+    energy, aeff, ang, aeff_eres, aeff_eres_modfrac=getAeff(files, 10000.,300.)
     plot.figure(figsize=(8,6))
     plot.scatter(energy, aeff, color='black')
-    plot.plot(energy, aeff, color='black', alpha=0.5, linestyle='--', lw=2, label='1 of 4')
+    plot.plot(energy, aeff, color='black', alpha=0.5, linestyle='--', lw=2, label='BurstCube')
 
     plot.scatter(energy, aeff_eres, color='blue')
-    plot.plot(energy, aeff_eres, color='blue', alpha=0.5, linestyle='--', lw=2, label='1 of 4 with E$_{res}$')
+    plot.plot(energy, aeff_eres, color='blue', alpha=0.5, linestyle='--', lw=2, label='BurstCube with E$_{\mathrm{res}}$')
+
+    plot.scatter(energy, aeff_eres_modfrac, color='red')
+    plot.plot(energy, aeff_eres_modfrac, color='red', alpha=0.5, linestyle='--', lw=2, label='BurstCube with E$_{\mathrm{res}}$ + escape')
 
     if comparison: 
 	    energy2, aeff2, ang2=getAeff('sim/9.4x9.4cmCube/FarFieldPointSource_*Cos1.0*.sim', 10000.,300.)
@@ -255,7 +268,7 @@ def plotAeff(files, comparison=False, WithGBM=False, save=False):
     plot.gca().set_ylim([1.,200.])
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
-    legend = plot.legend(loc='upper right')
+    legend = plot.legend(loc='lower left')
 
     if WithGBM:
         print "with GBM!"
