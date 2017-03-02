@@ -2,7 +2,7 @@
 """
 ------------------------------------------------------------------------
 Script to parse values from .sim files and make effective area plots:
-Author: Regina Caputo (regina.caputo@nasa.gov
+Author: Regina Caputo (regina.caputo@nasa.gov)
 Date: February 17, 2017
 Usage Examples:
 import analyze_source
@@ -42,6 +42,12 @@ try:
 except:
 	print "\n**** Warning: matplotlib not found. Do not try to make plots or bad things will happen! ****"
 
+try:
+	import iminuit 
+	import probfit
+except:
+	print  "\n**** Warning: iminuit not found. Do not try to fit plots or bad things will happen! ****"
+
 
 def getDetailsFromFilename(filename):
 
@@ -57,17 +63,28 @@ def getDetailsFromFilename(filename):
     
     return details
 
+def getAngle(filename):
+    file_text_name = os.path.splitext(os.path.basename(filename))  
+    file_last_num = os.path.basename(file_text_name[0]).split('_') 
+    deet=file_last_num[2].split('.')
+    num = "{}.{}".format(deet[0][3:], deet[1])
+    result = float(num)	    
+    return result
+
+
 def getKey(filename):
     file_text_name = os.path.splitext(os.path.basename(filename))  
-    file_last_num = os.path.basename(file_text_name[0]).split('_')  
+    file_last_num = os.path.basename(file_text_name[0]).split('_') 
     num=file_last_num[1].split('.')
-    return int(num[0])
+    result = int(num[0])
+    return result
 
+def cosFun(x, a, b):
+	#takes input angle in degrees
+	return a*math.cos(math.radians(x))**b
 
 def parse(filename, sourceTheta=None):
 
-    #THIS DOES NOT WORK....
-    
     print '\nParsing: %s' % filename
 
     #read all the lines in the file
@@ -118,32 +135,31 @@ def parse(filename, sourceTheta=None):
     return energy_deposited, energy_escaped, energy_nonsensitive
 
 
-def passEres(filename, eres=0.1):
+def passEres(filename, alpha=2.57): #2.57 from 10% at 662 keV scaling at 1/sqrt(E)
 	
 	ed,es,ns=parse(filename)
 	good=0.0
 	mod = 0.0
 	frac=1.0
 	mod_frac=1.0
+	escape = 30.0 #escape photon energy in keV for CsI
 
 	for i in range(len(ed)):
 		tot = float(ed[i])+float(es[i])+float(ns[i])
-		tot_hi= tot+tot*eres
-		tot_low = tot-tot*eres
-
-		#print tot, tot_low, tot_hi, ed[i], es[i], ns[i]
-
-		if float(ed[i])> tot_low:
-			if float(ed[i])<tot_hi:
-				good=good+1.0
-		else:
-			mode=float(ed[i])+30.0
-			if mode > tot_low:
-				if mode < tot_hi:
-					mod=mod+1.0
-
+		sigma = 0.0
+		ediff = tot-float(ed[i])
+		ediff2=ediff-escape
+		if ed[i] != 0:
+			#Note: sigma = FWHM(or eres)/2.35
+			sigma = float(ed[i])*alpha/math.sqrt(float(ed[i]))/2.35
+		
+		if math.fabs(ediff) < sigma:
+			good=good+1.0
+		if math.fabs(ediff2) < sigma:
+			mod=mod+1.0
+		
 	frac=float(good)/float(len(ed))
-	mod_frac=(float(good)+float(mod))/float(len(ed))
+	mod_frac=(float(mod)+float(good))/float(len(ed))
 
 	print filename, "has this fraction of events that pass Eres cut: ", frac, mod_frac
 
@@ -190,48 +206,49 @@ def CalculateAeff(filename, triggers, r_sphere):
     return Aeff
     
 
-def getAeff(directory, triggers, r_sphere):
+def getAeff(directory, triggers, r_sphere, sortAngle=False):
 
-    filenames = sorted(glob.glob(directory),key=getKey)
-    #print filenames
-
-    full_details={}
-    #lists
-    energy = []
-    aeff = []
-    aeff_eres = []
-    aeff_eres_modfrac = []
-    ang = []
+	if sortAngle:
+		filenames = sorted(glob.glob(directory),key=getAngle)
+	else:
+		filenames = sorted(glob.glob(directory),key=getKey)
+		
+	full_details={}
+        #lists
+	energy = []
+	aeff = []
+	aeff_eres = []
+	aeff_eres_modfrac = []
+	ang = []
     
-    for fn in filenames:
-        
-        if '10.000keV' in fn:
-            continue
-        #elif '15.000keV' in fn:
-        #    continue
+	for fn in filenames:
+          
+                #if '10.000keV' in fn:
+		#    continue
+                #elif '15.000keV' in fn:
+		#    continue
 
-        details = getDetailsFromFilename(fn)
-        details['Aeff'] = CalculateAeff(fn,triggers,r_sphere)
-	frac, mod_frac=passEres(fn,eres=0.1) #assumes energy resolution of 10%
+		details = getDetailsFromFilename(fn)
+		details['Aeff'] = CalculateAeff(fn,triggers,r_sphere)
+		frac, mod_frac=passEres(fn,alpha=2.57) #assumes energy resolution of 10% at 662 keV
+		
+		
+		for key, value in details.iteritems():
+                        #print key, value
+			if key is 'keV':
+				energy.append(value)
+			elif key is 'Aeff':
+				aeff.append(value)
+				aeff_eres.append(float(value)*float(frac))
+				aeff_eres_modfrac.append(float(value)*float(mod_frac))
+			elif key is 'Cos':
+				ang.append(float(value))
+			else:
+				print "key not found" 
+				
+        #print aeff[4], aeff_eres[4]
 
-        #print fn
-
-        for key, value in details.iteritems():
-            #print key, value
-            if key is 'keV':
-                energy.append(value)
-            elif key is 'Aeff':
-                aeff.append(value)
-		aeff_eres.append(float(value)*float(frac))
-		aeff_eres_modfrac.append(float(value)*float(mod_frac))
-            elif key is 'Cos':
-                ang.append(float(value))
-            else:
-                print "key not found" 
-
-    #print aeff[4], aeff_eres[4]
-
-    return energy, aeff, ang, aeff_eres, aeff_eres_modfrac
+	return energy, aeff, ang, aeff_eres, aeff_eres_modfrac
 
 def plotAeff(files, comparison=False, WithGBM=False, save=False):
 
@@ -268,7 +285,7 @@ def plotAeff(files, comparison=False, WithGBM=False, save=False):
     plot.gca().set_ylim([1.,200.])
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
-    legend = plot.legend(loc='lower left')
+    legend = plot.legend(loc='lower center',prop={'size':12})
 
     if WithGBM:
         print "with GBM!"
@@ -282,16 +299,17 @@ def plotAeff(files, comparison=False, WithGBM=False, save=False):
     plot.show()
 
 
-def plotAeffVsAngle(files, comparison=False, save=False):
+def plotAeffVsAngle(files, comparison=False, save=False, doFit= False):
     
-    energy, aeff, ang=getAeff(files, 10000.,300.)
+    energy, aeff, ang, aeff_eres, aeff_eres_modfrac=getAeff(files, 10000.,300.,sortAngle=True)
 
     #print ang
     plot.figure(figsize=(8,6)) 
     angle=[]
     for i in range(len(ang)):
 	    angle.append(round(numpy.degrees(numpy.arccos(ang[i]))))
-    plot.scatter(angle, aeff, color='black',label='1 of 9 thin')
+    aeff_err=[x * 0.01 for x in aeff]
+    plot.errorbar(angle, aeff, yerr=aeff_err, color='black',fmt='o',label='BurstCube')
     #plot.plot(angle, aeff, color='black', alpha=0.5, linestyle='--', lw=2)
 
     if comparison:
@@ -308,6 +326,16 @@ def plotAeffVsAngle(files, comparison=False, save=False):
 
 	    plot.scatter(angle3, aeff3, color='red', label='1 of 9 thick')
 
+    if doFit:
+	    #print iminuit.describe(cosFun)
+	    #print angle
+	    chi2 = probfit.Chi2Regression(cosFun, numpy.asarray(angle), numpy.asarray(aeff), numpy.asarray(aeff_err))
+	    #print iminuit.describe(chi2)
+	    minuit = iminuit.Minuit(chi2, a=80., b=1., error_a=1, error_b=0.01, limit_a=(60.,100.), limit_b=(0.2,1.0))
+	    minuit.migrad()
+	    print(minuit.values)
+	    print(minuit.errors)
+
 
     plot.gca().set_xlim([0.,90.])
     plot.xlabel('Incident Angle (deg)', fontsize=16)
@@ -316,7 +344,10 @@ def plotAeffVsAngle(files, comparison=False, save=False):
     plot.gca().set_ylim([1.,100.])
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
-    legend = plot.legend(loc='upper right')
+    if doFit:
+    	    chi2.draw(minuit)
+
+    legend = plot.legend(loc='lower center')
 
     if save:
 	    plot.savefig('EffectiveArea_vs_Ang.png')
