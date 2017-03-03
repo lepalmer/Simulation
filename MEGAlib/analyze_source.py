@@ -285,7 +285,7 @@ def plotAeff(files, comparison=False, WithGBM=False, save=False):
     plot.gca().set_ylim([1.,200.])
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
-    legend = plot.legend(loc='lower center',prop={'size':12})
+    legend = plot.legend(loc='lower center',prop={'size':12},numpoints=1)
 
     if WithGBM:
         print "with GBM!"
@@ -304,12 +304,26 @@ def plotAeffVsAngle(files, comparison=False, save=False, doFit= False):
     energy, aeff, ang, aeff_eres, aeff_eres_modfrac=getAeff(files, 10000.,300.,sortAngle=True)
 
     #print ang
-    plot.figure(figsize=(8,6)) 
     angle=[]
     for i in range(len(ang)):
 	    angle.append(round(numpy.degrees(numpy.arccos(ang[i]))))
     aeff_err=[x * 0.01 for x in aeff]
-    plot.errorbar(angle, aeff, yerr=aeff_err, color='black',fmt='o',label='BurstCube')
+
+    if doFit:
+	    #print iminuit.describe(cosFun)
+	    #print angle
+	    chi2 = probfit.Chi2Regression(cosFun, numpy.asarray(angle), numpy.asarray(aeff), numpy.asarray(aeff_err))
+	    #print iminuit.describe(chi2)
+	    minuit = iminuit.Minuit(chi2, a=80., b=1., error_a=1, error_b=0.01, limit_a=(60.,100.), limit_b=(0.2,1.0))
+	    minuit.migrad()
+	    print(minuit.values)
+	    print(minuit.errors)
+	    ((data_edges, datay), err, (total_pdf_x, total_pdf_y), parts) = chi2.draw(minuit);
+
+
+    plot.figure(figsize=(8,6)) 
+    #plot.errorbar(angle, aeff, yerr=aeff_err, color='black',fmt='o',label='BurstCube')
+    plot.scatter(angle, aeff, color='black', label='BurstCube')
     #plot.plot(angle, aeff, color='black', alpha=0.5, linestyle='--', lw=2)
 
     if comparison:
@@ -326,16 +340,6 @@ def plotAeffVsAngle(files, comparison=False, save=False, doFit= False):
 
 	    plot.scatter(angle3, aeff3, color='red', label='1 of 9 thick')
 
-    if doFit:
-	    #print iminuit.describe(cosFun)
-	    #print angle
-	    chi2 = probfit.Chi2Regression(cosFun, numpy.asarray(angle), numpy.asarray(aeff), numpy.asarray(aeff_err))
-	    #print iminuit.describe(chi2)
-	    minuit = iminuit.Minuit(chi2, a=80., b=1., error_a=1, error_b=0.01, limit_a=(60.,100.), limit_b=(0.2,1.0))
-	    minuit.migrad()
-	    print(minuit.values)
-	    print(minuit.errors)
-
 
     plot.gca().set_xlim([0.,90.])
     plot.xlabel('Incident Angle (deg)', fontsize=16)
@@ -345,9 +349,13 @@ def plotAeffVsAngle(files, comparison=False, save=False, doFit= False):
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
     if doFit:
-    	    chi2.draw(minuit)
+    	    #chi2.draw(minuit)
+	    #a=chi2.draw(minuit)
+	    #print a
+	    function = r"Function: %.1f * cos($\theta$)$^{%.2f}$" % (minuit.values['a'],minuit.values['b'])
+	    plot.plot(total_pdf_x, total_pdf_y, color='blue', lw=2, label= function)
 
-    legend = plot.legend(loc='lower center')
+    legend = plot.legend(loc='lower center',scatterpoints=1)
 
     if save:
 	    plot.savefig('EffectiveArea_vs_Ang.png')
