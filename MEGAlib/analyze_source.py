@@ -83,6 +83,10 @@ def cosFun(x, a, b):
 	#takes input angle in degrees
 	return a*math.cos(math.radians(x))**b
 
+def cosNorm(x, a):
+	#takes input angle in degrees
+	return a*math.cos(math.radians(x))
+
 def parse(filename, sourceTheta=None):
 
     print '\nParsing: %s' % filename
@@ -279,13 +283,13 @@ def plotAeff(files, comparison=False, WithGBM=False, save=False):
 
     plot.xscale('log')
     plot.xlabel('Energy (keV)', fontsize=16)
-    plot.gca().set_xlim([1.,10000.])
+    plot.gca().set_xlim([5.,10000.])
 
     plot.yscale('log')
     plot.gca().set_ylim([1.,200.])
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
-    legend = plot.legend(loc='lower center',prop={'size':12},numpoints=1)
+    legend = plot.legend(loc='lower center',prop={'size':16},numpoints=1,frameon=False)
 
     if WithGBM:
         print "with GBM!"
@@ -320,6 +324,14 @@ def plotAeffVsAngle(files, comparison=False, save=False, doFit= False):
 	    print(minuit.errors)
 	    ((data_edges, datay), err, (total_pdf_x, total_pdf_y), parts) = chi2.draw(minuit);
 
+    if not doFit:
+	    chi2Cos = probfit.Chi2Regression(cosNorm, numpy.asarray(angle), numpy.asarray(aeff), numpy.asarray(aeff_err))
+	    minuitCos = iminuit.Minuit(chi2Cos, a=80., error_a=1, limit_a=(60.,100.))
+	    minuitCos.migrad()
+	    print(minuitCos.values)
+	    print(minuitCos.errors)
+	    ((data_edges_cos, datay_cos), err_cos, (total_pdf_x_cos, total_pdf_y_cos), parts_cos) = chi2Cos.draw(minuitCos);
+	    
 
     plot.figure(figsize=(8,6)) 
     #plot.errorbar(angle, aeff, yerr=aeff_err, color='black',fmt='o',label='BurstCube')
@@ -341,11 +353,11 @@ def plotAeffVsAngle(files, comparison=False, save=False, doFit= False):
 	    plot.scatter(angle3, aeff3, color='red', label='1 of 9 thick')
 
 
-    plot.gca().set_xlim([0.,90.])
+    plot.gca().set_xlim([0.,80.])
     plot.xlabel('Incident Angle (deg)', fontsize=16)
 
     #plot.yscale('log')
-    plot.gca().set_ylim([1.,100.])
+    plot.gca().set_ylim([20.,100.])
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
     if doFit:
@@ -355,7 +367,7 @@ def plotAeffVsAngle(files, comparison=False, save=False, doFit= False):
 	    function = r"Function: %.1f * cos($\theta$)$^{%.2f}$" % (minuit.values['a'],minuit.values['b'])
 	    plot.plot(total_pdf_x, total_pdf_y, color='blue', lw=2, label= function)
 
-    legend = plot.legend(loc='lower center',scatterpoints=1)
+    legend = plot.legend(loc='lower center',scatterpoints=1,prop={'size':18},frameon=False)
 
     if save:
 	    plot.savefig('EffectiveArea_vs_Ang.png')
