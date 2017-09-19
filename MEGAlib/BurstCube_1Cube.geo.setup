@@ -1,7 +1,7 @@
 Name My_1Cube_BurstCube
 Verision 0.0
 
-SurroundingSphere 300.0 0.0 0.0 0.0 300.0
+SurroundingSphere 50.0 0.0 0.0 0.0 50.0
 Include $MEGALIB/resource/examples/geomega/materials/Materials.geo
 
 // The Mother Volume of the Detector Configuration:
@@ -9,7 +9,7 @@ Volume WorldVolume
 WorldVolume.Material Vacuum
 WorldVolume.Visibility 0
 WorldVolume.Color 0
-WorldVolume.Shape BRIK 300. 300. 300.
+WorldVolume.Shape BRIK 50. 50. 50.
 WorldVolume.Mother 0
 
 //This is the CsI Detector
@@ -33,7 +33,7 @@ AluminiumFrame.Color 2
 AluminiumFrame.Visibility 0
 AluminiumFrame.Mother AluminiumFrame_Volume
 
-// Cut out 4 holes in the block for the detectors
+// Cut out 4 holes in the block for the detectors (green)
 Volume AluminiumFrame_Hole
 AluminiumFrame_Hole.Material Vacuum
 AluminiumFrame_Hole.Shape BRIK  4.7 4.7 2.
@@ -55,23 +55,36 @@ AlWindow.Mother AluminiumFrame_Hole
 //the tech specs say Al bottom in the hole dim are 9.4 x 9.4 x 0.6 cm
 Volume AlBottom
 AlBottom.Material Aluminium 
+//For thin and nominal geometry
 AlBottom.Shape BRIK  4.7 4.7 0.3
 AlBottom.Position 0. 0. -1.7
-//AlBottom.Color 4
+AlBottom.Color 4
 AlBottom.Visibility 1
 AlBottom.Mother AluminiumFrame_Hole
 
 //This is the CsI detector
 CSICube.Copy CSIDet
-CSIDet.Position 0. 0. 1.315 
+//For the nominal thickness
+//CSIDet.Position 0. 0. 1.315 
+//For the thin thickness
+//CSIDet.Position 0. 0. 1.6325
+//For the thick thickness
+CSIDet.Position 0. 0. 0.68
 CSIDet.Mother AluminiumFrame_Hole
 
 //This chunk is the window on bottom
 //the tech specs say quartz the window is slightly modified to fit in the hole dim are 9.4 x 9.4 x 0.635 cm
 Volume GlassWindow
 GlassWindow.Material Glass
-GlassWindow.Shape BRIK  4.7 4.7 0.3175
-GlassWindow.Position 0 0 0.3625
+//For the nominal thickness
+//GlassWindow.Shape BRIK  4.7 4.7 0.3175
+//GlassWindow.Position 0 0 0.3625
+//For the thin thickness
+//GlassWindow.Shape BRIK  4.7 4.7 0.3175
+//GlassWindow.Position 0 0 0.9975
+//For the thick thickness
+GlassWindow.Shape BRIK  4.7 4.7 0.2
+GlassWindow.Position 0 0 -0.875
 GlassWindow.Color 4
 GlassWindow.Visibility 1
 GlassWindow.Mother AluminiumFrame_Hole
@@ -81,20 +94,30 @@ GlassWindow.Mother AluminiumFrame_Hole
 Volume SiPlane
 SiPlane.Material Silicon
 SiPlane.Shape BRIK  4.7 4.7 0.01
-SiPlane.Position 0 0 0.035
+//For the nominal thickness
+//SiPlane.Position 0 0 0.035
+//For the thin thickness
+//SiPlane.Position 0 0 0.67
+//For the thick thickness
+SiPlane.Position 0 0 -1.235
 SiPlane.Color 5
 SiPlane.Visibility 1
 SiPlane.Mother AluminiumFrame_Hole
 
+//***NOTE: No G10 Plane for thick geometry
+
 //This chunk is the G10 below the Si
 //the tech specs say dim are 9.4 x 9.4 x 0.6
-Volume G10Plane
-G10Plane.Material CircuitBoard
-G10Plane.Shape BRIK  4.7 4.7 0.3
-G10Plane.Position 0 0 -0.275
-G10Plane.Color 6
-G10Plane.Visibility 1
-G10Plane.Mother AluminiumFrame_Hole
+//Volume G10Plane
+//G10Plane.Material CircuitBoard
+//G10Plane.Shape BRIK  4.7 4.7 0.3
+//For the nominal thickness
+//G10Plane.Position 0 0 -0.275
+////For the thin thickness
+////G10Plane.Position 0 0 0.36
+//G10Plane.Color 6
+//G10Plane.Visibility 1
+//G10Plane.Mother AluminiumFrame_Hole
 
 
 
