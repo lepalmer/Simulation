@@ -254,12 +254,12 @@ def getAeff(directory, triggers, r_sphere, sortAngle=False):
 
 	return energy, aeff, ang, aeff_eres, aeff_eres_modfrac
 
-def plotAeff(files, comparison=False, WithGBM=False, save=False):
+def plotAeff(files, comparison=False, WithGBM=False, save=False, rcirc=None):
 
     GBM_e=[]
     GBM_aeff=[]
 
-    energy, aeff, ang, aeff_eres, aeff_eres_modfrac=getAeff(files, 10000.,300.)
+    energy, aeff, ang, aeff_eres, aeff_eres_modfrac=getAeff(files, 10000.,rcirc)
     plot.figure(figsize=(8,6))
     plot.scatter(energy, aeff, color='black')
     plot.plot(energy, aeff, color='black', alpha=0.5, linestyle='--', lw=2, label='BurstCube')
@@ -271,12 +271,12 @@ def plotAeff(files, comparison=False, WithGBM=False, save=False):
     plot.plot(energy, aeff_eres_modfrac, color='red', alpha=0.5, linestyle='--', lw=2, label='BurstCube with E$_{\mathrm{res}}$ + escape')
 
     if comparison: 
-	    energy2, aeff2, ang2=getAeff('sim/9.4x9.4cmCube/FarFieldPointSource_*Cos1.0*.sim', 10000.,300.)
+	    energy2, aeff2, ang2=getAeff('sim/9.4x9.4cmCube/FarFieldPointSource_*Cos1.0*.sim', 10000.,rcirc)
 	    #plot.figure(figsize=(8,6))
 	    plot.scatter(energy2, aeff2, color='blue')
 	    plot.plot(energy2, aeff2, color='blue', alpha=0.5, linestyle='--', lw=2, label='1 of 4')
 
-	    energy3, aeff3, ang3=getAeff('sim/5.8x5.8cmCube/FarFieldPointSource_*Cos1.0*.sim', 10000.,300.)
+	    energy3, aeff3, ang3=getAeff('sim/5.8x5.8cmCube/FarFieldPointSource_*Cos1.0*.sim', 10000.,rcirc)
 	    #plot.figure(figsize=(8,6))
 	    plot.scatter(energy3, aeff3, color='purple')
 	    plot.plot(energy3, aeff3, color='purple', alpha=0.5, linestyle='--', lw=2, label='1 of 9 thick')
@@ -303,9 +303,9 @@ def plotAeff(files, comparison=False, WithGBM=False, save=False):
     plot.show()
 
 
-def plotAeffVsAngle(files, comparison=False, save=False, doFit= False):
+def plotAeffVsAngle(files, comparison=False, save=False, doFit= False, rcir=None):
     
-    energy, aeff, ang, aeff_eres, aeff_eres_modfrac=getAeff(files, 10000.,300.,sortAngle=True)
+    energy, aeff, ang, aeff_eres, aeff_eres_modfrac=getAeff(files, 10000.,rcir,sortAngle=True)
 
     #print ang
     angle=[]
@@ -335,39 +335,75 @@ def plotAeffVsAngle(files, comparison=False, save=False, doFit= False):
 
     plot.figure(figsize=(8,6)) 
     #plot.errorbar(angle, aeff, yerr=aeff_err, color='black',fmt='o',label='BurstCube')
-    plot.scatter(angle, aeff, color='black', label='BurstCube')
-    #plot.plot(angle, aeff, color='black', alpha=0.5, linestyle='--', lw=2)
+    plot.errorbar(angle, aeff, yerr=aeff_err, color='black',fmt='o')
 
     if comparison:
-	    energy2, aeff2, ang2=getAeff('sim/9.4x9.4cmCube/FarFieldPointSource_100.000keV_Cos*.sim', 10000.,300.)
+	    energy2, aeff2, ang2, aeff_eres2, aeff_eres_modfrac2=getAeff('sim/thin/FarFieldPointSource_100.000keV_Cos*.sim', 10000.,rcir)
 	    angle2=[]
 	    for i in range(len(ang2)):
 		    angle2.append(round(numpy.degrees(numpy.arccos(ang2[i]))))
-	    plot.scatter(angle2, aeff2, color='blue', label='1 of 4')
+	    aeff_err2=[x * 0.01 for x in aeff2]
+
+	    #plot.scatter(angle2, aeff2, color='blue', label='thin')
+	    #plot.errorbar(angle2, aeff2, yerr=aeff_err2, color='blue',fmt='o',label='thin')
+	    plot.errorbar(angle2, aeff2, yerr=aeff_err2, color='blue',fmt='o')
+
+	    if doFit:
+	    	    chi2_thin = probfit.Chi2Regression(cosFun, numpy.asarray(angle2), numpy.asarray(aeff2), numpy.asarray(aeff_err2))
+		    minuit_thin = iminuit.Minuit(chi2_thin, a=80., b=1., error_a=1, error_b=0.01, limit_a=(60.,100.), limit_b=(0.2,1.0))
+		    minuit_thin.migrad()
+		    print(minuit_thin.values)
+		    print(minuit_thin.errors)
+		    ((data_edges_thin, datay_thin), err_thin, (total_pdf_x_thin, total_pdf_y_thin), parts_thin) = chi2.draw(minuit_thin);
+
 	    
-	    energy3, aeff3, ang3=getAeff('sim/5.8x5.8cmCube/FarFieldPointSource_100.000keV_Cos*.sim', 10000.,300.)
+	    energy3, aeff3, ang3, aeff_eres3, aeff_eres_modfrac3=getAeff('sim/thick/FarFieldPointSource_100.000keV_Cos*.sim', 10000.,rcir)
 	    angle3=[]
 	    for i in range(len(ang3)):
 		    angle3.append(round(numpy.degrees(numpy.arccos(ang2[i]))))
+	    aeff_err3=[x * 0.01 for x in aeff3]
 
-	    plot.scatter(angle3, aeff3, color='red', label='1 of 9 thick')
+	    #plot.scatter(angle3, aeff3, color='red', label='thick')
+	    #plot.errorbar(angle3, aeff3, yerr=aeff_err3, color='red',fmt='o',label='thick')
+	    plot.errorbar(angle3, aeff3, yerr=aeff_err3, color='red',fmt='o')
+
+	    if doFit:
+	    	    chi2_thick = probfit.Chi2Regression(cosFun, numpy.asarray(angle3), numpy.asarray(aeff3), numpy.asarray(aeff_err3))
+		    minuit_thick = iminuit.Minuit(chi2_thick, a=80., b=1., error_a=1, error_b=0.01, limit_a=(60.,100.), limit_b=(0.2,1.0))
+		    minuit_thick.migrad()
+		    print(minuit_thick.values)
+		    print(minuit_thick.errors)
+		    ((data_edges_thick, datay_thick), err_thick, (total_pdf_x_thick, total_pdf_y_thick), parts_thick) = chi2.draw(minuit_thick);
+
+
+    if doFit:
+	    
+	    plot.figure(figsize=(8,6)) 
+	    
+	    plot.errorbar(angle, aeff, yerr=aeff_err, color='black',fmt='o')
+
+	    function = r"Nominal fit: %.1f * cos($\theta$)$^{%.2f}$" % (minuit.values['a'],minuit.values['b'])
+	    plot.plot(total_pdf_x, total_pdf_y, color='black', lw=2, label= function)
+	    
+	    if comparison: 
+		    plot.errorbar(angle2, aeff2, yerr=aeff_err2, color='blue',fmt='o')
+		    function2 = r"Thin fit: %.1f * cos($\theta$)$^{%.2f}$" % (minuit_thin.values['a'],minuit_thin.values['b'])
+		    plot.plot(total_pdf_x_thin, total_pdf_y_thin, color='blue', lw=2, label= function2)
+
+		    plot.errorbar(angle3, aeff3, yerr=aeff_err3, color='red',fmt='o')
+		    function3 = r"Thick fit: %.1f * cos($\theta$)$^{%.2f}$" % (minuit_thick.values['a'],minuit_thick.values['b'])
+		    plot.plot(total_pdf_x_thick, total_pdf_y_thick, color='red', lw=2, label= function3)
 
 
     plot.gca().set_xlim([0.,80.])
     plot.xlabel('Incident Angle (deg)', fontsize=16)
 
-    #plot.yscale('log')
     plot.gca().set_ylim([20.,100.])
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
-    if doFit:
-    	    #chi2.draw(minuit)
-	    #a=chi2.draw(minuit)
-	    #print a
-	    function = r"Function: %.1f * cos($\theta$)$^{%.2f}$" % (minuit.values['a'],minuit.values['b'])
-	    plot.plot(total_pdf_x, total_pdf_y, color='blue', lw=2, label= function)
+    legend = plot.legend(loc='lower center',scatterpoints=1,prop={'size':16},frameon=False)
 
-    legend = plot.legend(loc='lower center',scatterpoints=1,prop={'size':18},frameon=False)
+    plot.grid(True)
 
     if save:
 	    plot.savefig('EffectiveArea_vs_Ang.png')
