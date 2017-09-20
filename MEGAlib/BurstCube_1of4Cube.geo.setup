@@ -1,7 +1,7 @@
 Name My_1Cube_BurstCube
 Verision 0.0
 
-SurroundingSphere 300.0 0.0 0.0 0.0 300.0
+SurroundingSphere 50.0 0.0 0.0 0.0 50.0
 Include $MEGALIB/resource/examples/geomega/materials/Materials.geo
 
 // The Mother Volume of the Detector Configuration:
@@ -9,7 +9,7 @@ Volume WorldVolume
 WorldVolume.Material Vacuum
 WorldVolume.Visibility 0
 WorldVolume.Color 0
-WorldVolume.Shape BRIK 300. 300. 300.
+WorldVolume.Shape BRIK 50. 50. 50.
 WorldVolume.Mother 0
 
 //This is the CsI Detector
@@ -33,7 +33,7 @@ AluminiumFrame.Color 2
 AluminiumFrame.Visibility 0
 AluminiumFrame.Mother AluminiumFrame_Volume
 
-// Cut out 4 holes in the block for the detectors
+// Cut out 4 holes in the block for the detectors (green)
 Volume AluminiumFrame_Hole
 AluminiumFrame_Hole.Material Vacuum
 AluminiumFrame_Hole.Shape BRIK  4.7 4.7 2.
