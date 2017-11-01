@@ -23,3 +23,11 @@ CSICube.Material CsI
 CSICube.Visibility 1
 CSICube.Color 2
 CSICube.Shape BOX 4.7 4.7 1.27
+
+// Single cylinder
+//thick
+Volume CSICylinder
+CSICylinder.Material CsI
+CSICylinder.Visibility 1
+CSICylinder.Color 2
+CSICylinder.Shape TUBE 0. 5. 1.27  0. 360. 

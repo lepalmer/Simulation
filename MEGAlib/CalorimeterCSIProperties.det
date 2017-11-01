@@ -1,8 +1,8 @@
 //Define Calorimeter and Mother Volume
-MDCalorimeter   DCalCSI
+Scintillator   DCalCSI
 
-DCalCSI.SensitiveVolume CSICube
-DCalCSI.DetectorVolume CSICube
+DCalCSI.SensitiveVolume CSICylinder
+DCalCSI.DetectorVolume CSICylinder
 
 DCalCSI.StructuralPitch 0. 0. 0.
 DCalCSI.StructuralOffset 0. 0. 0.
