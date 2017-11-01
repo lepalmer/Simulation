@@ -18,7 +18,7 @@ Volume AluminiumFrame_Volume
 AluminiumFrame_Volume.Material Vacuum
 AluminiumFrame_Volume.Visibility 1
 AluminiumFrame_Volume.Shape BRIK 10. 10. 4.5
-AluminiumFrame_Volume.Mother WorldVolume
+//AluminiumFrame_Volume.Mother WorldVolume
 
 
 //This is the CsI Detector
@@ -30,10 +30,10 @@ Volume DetectorVolume
 DetectorVolume.Material Vacuum 
 DetectorVolume.Shape TUBS  0. 5.1 1.15  0. 360. 
 DetectorVolume.Rotation 25.0 -25.0 0.0
-DetectorVolume.Position 0 0 0
+DetectorVolume.Position -5.2 -5.2 0
 DetectorVolume.Color 1
 DetectorVolume.Visibility 1
-DetectorVolume.Mother AluminiumFrame_Volume
+DetectorVolume.Mother WorldVolume
 
 
 // Build the housing around the CsI Cylinder dim are R=5.0, h=2.3 cm
@@ -106,19 +106,21 @@ G10Plane.Color 7
 G10Plane.Visibility 1
 G10Plane.Mother DetectorVolume
 
-//For I 2 -4.95 9.9
-//	For J 2 -4.95 9.9
-//		//Print %I $I
-//		DetectorVolume.Copy DetectorVolume_%I_%J
-		DetectorVolume_%I_%J.Rotation 25.0 -25.0 0.0
-//		DetectorVolume_%I_%J Position $I $J 0.0
-//		DetectorVolume_1_1 Rotation 0. 0.0 0.0
-//		DetectorVolume_1_2 Rotation 0. 0.0 -90.0
-//		DetectorVolume_2_1 Rotation 0. 0.0 90.0
-//		DetectorVolume_2_2 Rotation 0. 0.0 180.0
-//		DetectorVolume_%I_%J.Mother AluminiumFrame_Volume
-//	Done
-//Done
+DetectorVolume.Copy DetectorVolume_1
+DetectorVolume_1 Position 5.2 5.2 0.
+DetectorVolume_1.Rotation -25.0 25.0 0.0
+DetectorVolume_1.Mother WorldVolume
+
+DetectorVolume.Copy DetectorVolume_2
+DetectorVolume_2 Position -5.2 5.2 0.
+DetectorVolume_2.Rotation -25.0 -25.0 0.0
+DetectorVolume_2.Mother WorldVolume
+
+DetectorVolume.Copy DetectorVolume_3
+DetectorVolume_3 Position 5.2 -5.2 0.
+DetectorVolume_3.Rotation 25.0 25.0 0.0
+DetectorVolume_3.Mother WorldVolume
+
 
 
 # Base Trigger
