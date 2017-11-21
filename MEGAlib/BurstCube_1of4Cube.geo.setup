@@ -14,7 +14,7 @@ WorldVolume.Mother 0
 
 //This is the CsI Detector
 Include CalorimeterCSIProperties.det
-Include CalorimeterCSIDetector.geo
+Include CalorimeterCSILayer.geo
 
 //This chunk builds the Al Frame
 //this assumes that the outter shell of the frame is 10.6 cm x 10.6 cm x 4 cm

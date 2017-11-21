@@ -57,7 +57,7 @@ Done
 
 //This is the CsI Detector
 Include CalorimeterCSIProperties.det
-Include CalorimeterCSIDetector.geo
+Include CalorimeterCSILayer.geo
 
 //CSIDetector.Copy MainCalo
 //MainCalo.Position 0. 0. 2.0
