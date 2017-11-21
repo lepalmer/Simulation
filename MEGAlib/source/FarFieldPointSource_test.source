@@ -2,7 +2,7 @@
 # This was created with the python wrapper --> create_source_file.py <--
 
 Version          1 
-Geometry         BurstCubeCylinder.geo.setup // Update this to your path 
+Geometry         BurstCube_1Cylinder.geo.setup // Update this to your path 
 CheckForOverlaps 1000 0.01 
 PhysicsListEM    Livermore 
 
@@ -18,6 +18,6 @@ FFPS.NTriggers             1000
 
 FFPS.Source One 
 One.ParticleType        1 
-One.Beam                FarFieldPointSource  0.0 0 
+One.Beam                FarFieldPointSource  30. 0 
 One.Spectrum            Mono  200
 One.Flux                1000.0 
