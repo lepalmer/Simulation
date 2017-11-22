@@ -25,14 +25,14 @@ WorldVolume.Mother 0
 Include CalorimeterCSIProperties.det
 
 // Build the volume to put everything in dim are R=5.3, h=2.7 cm
-Volume DetectorVolume
-DetectorVolume.Material Vacuum 
-DetectorVolume.Shape TUBS  0. 5.3 1.35  0. 360. 
-//DetectorVolume.Rotation 0.0 0.0 0.0
-DetectorVolume.Position 0. 0.0 0
-DetectorVolume.Color 1
-DetectorVolume.Visibility 1
-DetectorVolume.Mother WorldVolume
+#Volume DetectorVolume
+#DetectorVolume.Material Vacuum 
+#DetectorVolume.Shape TUBS  0. 5.3 1.35  0. 360. 
+#//DetectorVolume.Rotation 0.0 0.0 0.0
+#DetectorVolume.Position 0. 0.0 0
+#DetectorVolume.Color 1
+#DetectorVolume.Visibility 1
+#DetectorVolume.Mother WorldVolume
 
 
 // Build the housing around the CsI Cylinder dim are R=5.3, h=2.7 cm
@@ -42,7 +42,7 @@ AluminiumFrame.Shape TUBS  5.1 5.3 1.35  0. 360.
 AluminiumFrame.Position 0 0 0
 AluminiumFrame.Color 1
 AluminiumFrame.Visibility 1
-AluminiumFrame.Mother DetectorVolume
+AluminiumFrame.Mother WorldVolume
 
 //This is the Al window on top
 //the tech specs say Al top in the hole dim are R=5.1, h=0.2 cm
@@ -52,7 +52,7 @@ AlWindow.Shape TUBS  0. 5.1 0.1  0. 360.
 AlWindow.Position 0 0 1.25
 AlWindow.Color 4
 AlWindow.Visibility 1
-AlWindow.Mother DetectorVolume
+AlWindow.Mother WorldVolume
 
 
 // Single cylinder of Scintillator CsI 
@@ -63,7 +63,7 @@ CSICylinder.Visibility 1
 CSICylinder.Color 2
 CSICylinder.Shape TUBS 0. 5. 1.1  0. 360. 
 CSICylinder.Position 0. 0. 0.05
-CSICylinder.Mother DetectorVolume
+CSICylinder.Mother WorldVolume
 
 //This chunk is the window on bottom
 //the tech specs say quartz the window is modified to fit in the hole dim are R=5.1, h=0.3 cm
@@ -73,7 +73,7 @@ GlassWindow.Shape TUBS  0. 5.1 0.15 0. 360.
 GlassWindow.Position 0 0 -1.2
 GlassWindow.Color 6
 GlassWindow.Visibility 1
-GlassWindow.Mother DetectorVolume
+GlassWindow.Mother WorldVolume
 
 // Build the volume to put the readouts in dim are R=4.5, h=0.22 cm
 Volume ReadOutDetectorVolume
@@ -107,36 +107,6 @@ G10Plane.Position 0. 0. -0.01
 G10Plane.Color 7
 G10Plane.Visibility 1
 G10Plane.Mother ReadOutDetectorVolume
-
-//DetectorVolume.Copy DetectorVolume_1
-//DetectorVolume_1 Position 5.5 5.5 0.
-//DetectorVolume_1.Rotation -25.0 25.0 0.0
-//DetectorVolume_1.Mother WorldVolume
-
-//ReadOutDetectorVolume.Copy ReadOutDetectorVolume_1
-//ReadOutDetectorVolume_1 Position 5. 5. -1.4
-//ReadOutDetectorVolume_1.Rotation -25.0 25.0 0.0
-//ReadOutDetectorVolume_1.Mother WorldVolume
-
-//DetectorVolume.Copy DetectorVolume_2
-//DetectorVolume_2 Position -5.5 5.5 0.
-//DetectorVolume_2.Rotation -25.0 -25.0 0.0
-//DetectorVolume_2.Mother WorldVolume
-
-//ReadOutDetectorVolume.Copy ReadOutDetectorVolume_2
-//ReadOutDetectorVolume_2 Position -5. 5. -1.4
-//ReadOutDetectorVolume_2.Rotation -25.0 -25.0 0.0
-//ReadOutDetectorVolume_2.Mother WorldVolume
-
-//DetectorVolume.Copy DetectorVolume_3
-//DetectorVolume_3 Position 5.5 -5.5 0.
-//DetectorVolume_3.Rotation 25.0 25.0 0.0
-//DetectorVolume_3.Mother WorldVolume
-
-//ReadOutDetectorVolume.Copy ReadOutDetectorVolume_3
-//ReadOutDetectorVolume_3 Position 5. -5. -1.4
-//ReadOutDetectorVolume_3.Rotation 25.0 25.0 0.0
-//ReadOutDetectorVolume_3.Mother WorldVolume
 
 
 # Base Trigger
