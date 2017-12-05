@@ -84,6 +84,20 @@ def getSphere(filename):
             print("Radius of Sphere: ", lineContents[1])
             return float(lineContents[1])
 
+def getGeo(filename):
+
+	'''Get geometry file from source file'''
+
+	f=open(filename,'r')
+	lines=f.readlines()
+
+	for line in lines:
+		if 'Geometry' in line:
+			lineContents = line.split()
+			print("Geometry File: ", lineContents[1])
+			return os.path.expandvars(lineContents[1])
+
+
 def getKey(filename):
     file_text_name = os.path.splitext(os.path.basename(filename))  
     file_last_num = os.path.basename(file_text_name[0]).split('_') 
@@ -213,9 +227,13 @@ def getGenPart(filename):
     return int(gen[0])
     
         
-def CalculateAeff(filename, triggers, r_sphere):
+def CalculateAeff(filename, triggers, r_sphere=None):
 
     generated_particles = getGenPart(filename)
+    if not r_sphere:
+        geo_file = getGeo(filename)
+        r_sphere = getSphere(geo_file)
+
     Aeff = r_sphere**2*math.pi*float(triggers)/generated_particles
 
     #print filename, ", Aeff: ", Aeff
