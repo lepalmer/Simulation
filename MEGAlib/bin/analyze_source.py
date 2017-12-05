@@ -71,6 +71,18 @@ def getAngle(filename):
     result = float(num)	    
     return result
 
+def getSphere(filename):
+
+    '''Function to get the radius of the surrounding sphere from a geometery file'''
+    
+    f=open(filename,'r')
+    lines=f.readlines()
+
+    for line in lines:
+        if 'SurroundingSphere' in line:
+            lineContents = line.split()
+            print("Radius of Sphere: ", lineContents[1])
+            return float(lineContents[1])
 
 def getKey(filename):
     file_text_name = os.path.splitext(os.path.basename(filename))  
