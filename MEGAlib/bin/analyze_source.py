@@ -40,13 +40,13 @@ try:
 	titleFormat = {'fontsize': 12, 'fontweight' : plot.rcParams['axes.titleweight'], 'verticalalignment': 'baseline', 'horizontalalignment': 'center'}
 
 except:
-	print "\n**** Warning: matplotlib not found. Do not try to make plots or bad things will happen! ****"
+	print("\n**** Warning: matplotlib not found. Do not try to make plots or bad things will happen! ****")
 
 try:
 	import iminuit 
 	import probfit
 except:
-	print  "\n**** Warning: iminuit not found. Do not try to fit plots or bad things will happen! ****"
+	print("\n**** Warning: iminuit not found. Do not try to fit plots or bad things will happen! ****")
 
 
 def getDetailsFromFilename(filename):
@@ -89,7 +89,7 @@ def cosNorm(x, a):
 
 def parse(filename, sourceTheta=None):
 
-    print '\nParsing: %s' % filename
+    print('\nParsing: %s' % filename)
 
     #read all the lines in the file
     command = 'wc %s' % filename
@@ -117,7 +117,7 @@ def parse(filename, sourceTheta=None):
 			    
 			    # Split the line
 			    lineContents = line.split()
-			    print "Total generated particles: ", lineContents[1]
+			    print("Total generated particles: ", lineContents[1])
 			    
 		    if 'ED' in line:
 			    lineContents = line.split()
@@ -165,7 +165,7 @@ def passEres(filename, alpha=2.57): #2.57 from 10% at 662 keV scaling at 1/sqrt(
 	frac=float(good)/float(len(ed))
 	mod_frac=(float(mod)+float(good))/float(len(ed))
 
-	print filename, "has this fraction of events that pass Eres cut: ", frac, mod_frac
+	print(filename, "has this fraction of events that pass Eres cut: ", frac, mod_frac)
 
 	return frac, mod_frac
 
@@ -248,7 +248,7 @@ def getAeff(directory, triggers, r_sphere, sortAngle=False):
 			elif key is 'Cos':
 				ang.append(float(value))
 			else:
-				print "key not found" 
+				print("key not found")
 				
         #print aeff[4], aeff_eres[4]
 
@@ -292,7 +292,7 @@ def plotAeff(files, comparison=False, WithGBM=False, save=False, rcirc=None):
     legend = plot.legend(loc='lower center',prop={'size':16},numpoints=1,frameon=False)
 
     if WithGBM:
-        print "with GBM!"
+        print("with GBM!")
         GBM_e, GBM_aeff=getGBMData()
         plot.plot(GBM_e, GBM_aeff, color='green', alpha=0.75, linestyle='-', lw=2, label='GBM NaI')
         
@@ -349,7 +349,7 @@ def plotAeffVsAngle(files, comparison=False, save=False, doFit= False, rcir=None
 	    plot.errorbar(angle2, aeff2, yerr=aeff_err2, color='blue',fmt='o')
 
 	    if doFit:
-	    	    chi2_thin = probfit.Chi2Regression(cosFun, numpy.asarray(angle2), numpy.asarray(aeff2), numpy.asarray(aeff_err2))
+		    chi2_thin = probfit.Chi2Regression(cosFun, numpy.asarray(angle2), numpy.asarray(aeff2), numpy.asarray(aeff_err2))
 		    minuit_thin = iminuit.Minuit(chi2_thin, a=80., b=1., error_a=1, error_b=0.01, limit_a=(60.,100.), limit_b=(0.2,1.0))
 		    minuit_thin.migrad()
 		    print(minuit_thin.values)
@@ -368,7 +368,7 @@ def plotAeffVsAngle(files, comparison=False, save=False, doFit= False, rcir=None
 	    plot.errorbar(angle3, aeff3, yerr=aeff_err3, color='red',fmt='o')
 
 	    if doFit:
-	    	    chi2_thick = probfit.Chi2Regression(cosFun, numpy.asarray(angle3), numpy.asarray(aeff3), numpy.asarray(aeff_err3))
+		    chi2_thick = probfit.Chi2Regression(cosFun, numpy.asarray(angle3), numpy.asarray(aeff3), numpy.asarray(aeff_err3))
 		    minuit_thick = iminuit.Minuit(chi2_thick, a=80., b=1., error_a=1, error_b=0.01, limit_a=(60.,100.), limit_b=(0.2,1.0))
 		    minuit_thick.migrad()
 		    print(minuit_thick.values)
