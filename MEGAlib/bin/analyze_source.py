@@ -84,19 +84,17 @@ def getSphere(filename):
             print("Radius of Sphere: ", lineContents[1])
             return float(lineContents[1])
 
-def getGeo(filename):
+def sourceToDict(filename):
 
-	'''Get geometry file from source file'''
+	'''Turn source file into a dictionary'''
 
-	f=open(filename,'r')
-	lines=f.readlines()
-
-	for line in lines:
-		if 'Geometry' in line:
+	geo = {}
+	with open(filename) as f:
+		for line in f:
 			lineContents = line.split()
-			print("Geometry File: ", lineContents[1])
-			return os.path.expandvars(lineContents[1])
-
+			if len(lineContents) > 1:
+				geo[lineContents[0]] = lineContents[1:]
+	return geo
 
 def getKey(filename):
     file_text_name = os.path.splitext(os.path.basename(filename))  
@@ -233,6 +231,8 @@ def CalculateAeff(filename, triggers, r_sphere=None):
     if not r_sphere:
         geo_file = getGeo(filename)
         r_sphere = getSphere(geo_file)
+
+    
 
     Aeff = r_sphere**2*math.pi*float(triggers)/generated_particles
 
