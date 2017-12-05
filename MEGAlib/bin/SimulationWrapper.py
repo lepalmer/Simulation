@@ -15,15 +15,15 @@ SimulatonWrapper.run(filename='simulation_file.source')
 """
 
 import glob
-import numpy
+#import numpy
 import os
 
 
 def run(filename=None, directory=None, revanConfigFile=None, seed=None):
 
 	if filename == None and directory == None:
-		print "*** No filename or directory provide ***"
-		print "Please provide a  filename, a list of filenames, or a directory name"
+		print("*** No filename or directory provide ***")
+		print("Please provide a  filename, a list of filenames, or a directory name")
 		return
 
 
@@ -51,7 +51,7 @@ def run(filename=None, directory=None, revanConfigFile=None, seed=None):
 		command_cosima = "cosima %s" % (sourcefile)
 
 		# Issued the cosima command
-		print command_cosima
+		print(command_cosima)
 		output = os.system(command_cosima)
 
 
