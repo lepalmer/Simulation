@@ -38,4 +38,3 @@ class bcSim:
         generated_particles = int(self.simDict['TS'][0])
 
         return r_sphere**2*pi*triggers/generated_particles
-    
