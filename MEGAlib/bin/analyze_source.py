@@ -225,7 +225,7 @@ def getGenPart(filename):
     return int(gen[0])
     
         
-def CalculateAeff(filename, triggers=None, r_sphere=None):
+def CalculateAeff(filename, triggers, r_sphere=None):
 
     generated_particles = getGenPart(filename)
     sourceDict = sourceToDict(filename)
@@ -234,9 +234,6 @@ def CalculateAeff(filename, triggers=None, r_sphere=None):
         geo_file = sourceDict['Geometry'][0]
         r_sphere = getSphere(geo_file)
 
-    if not triggers:
-	    triggers = int(sourceDict['FFPS.NTriggers'][0])
-    
 
     Aeff = r_sphere**2*math.pi*float(triggers)/generated_particles
 
