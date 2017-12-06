@@ -222,6 +222,7 @@ def getGenPart(filename):
     hold=last.split(' ')
     gen=hold[1].split('\n')
     #print "The last line is: ",last
+    print(int(gen[0]))
     return int(gen[0])
     
         

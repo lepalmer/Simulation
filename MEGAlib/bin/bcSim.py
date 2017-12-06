@@ -6,7 +6,7 @@ class bcSim:
 
         '''Stuff'''
 
-        self.simDict = self.fileToDict(simFile,'#','TB')
+        self.simDict = self.fileToDict(simFile,'#',None)
         self.srcDict = self.fileToDict(sourceFile,'#',None)
         self.geoDict = self.fileToDict(self.simDict['Geometry'][0],'//',None)
 
@@ -29,5 +29,13 @@ class bcSim:
                             return megaDict
         return megaDict
 
+    def calculateAeff(self):
+        
+        from math import pi
 
+        r_sphere = float(self.geoDict['SurroundingSphere'][0])
+        triggers = int(self.srcDict['FFPS.NTriggers'][0])
+        generated_particles = int(self.simDict['TS'][0])
 
+        return r_sphere**2*pi*triggers/generated_particles
+    
