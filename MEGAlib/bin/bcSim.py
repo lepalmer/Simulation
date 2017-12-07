@@ -11,7 +11,7 @@ class bcSim:
 
         self.simDict = self.fileToDict(simFile,'#',None)
         self.srcDict = self.fileToDict(sourceFile,'#',None)
-        self.geoDict = self.fileToDict(self.simDict['Geometry'][0],'//',None)
+        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0],'//',None)
 
     def fileToDict(self, filename, commentString = '#', termString = None):
 
@@ -35,7 +35,7 @@ class bcSim:
         
         print('Sim File: ' + self.simFile)
         print('Source File: ' + self.srcFile)
-        print('Geometry File: ' + self.simDict['Geometry'][0])
+        print('Geometry File: ' + self.srcDict['Geometry'][0])
         print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0])
         print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
         print('Generated Particles: ' + self.simDict['TS'][0])
