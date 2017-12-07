@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import numpy as np
 from astropy.tests.helper import pytest
 
 try:
@@ -21,4 +22,9 @@ def test_bcSim_setup(create_burstcube_analysis):
     bcs = create_burstcube_analysis
     bcs.printDetails()
 
+def test_calculateAeff(create_burstcube_analysis):
 
+    bcs = create_burstcube_analysis
+    aeff = bcs.calculateAeff()
+
+    assert (np.abs(aeff - 69.47044919706765) < 1e-7)
