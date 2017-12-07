@@ -6,10 +6,12 @@ class bcSim:
 
         '''Stuff'''
 
+        self.simFile = simFile
+        self.srcFile = sourceFile
+
         self.simDict = self.fileToDict(simFile,'#',None)
         self.srcDict = self.fileToDict(sourceFile,'#',None)
         self.geoDict = self.fileToDict(self.simDict['Geometry'][0],'//',None)
-
 
     def fileToDict(self, filename, commentString = '#', termString = None):
 
@@ -28,6 +30,15 @@ class bcSim:
                         if termString in line:
                             return megaDict
         return megaDict
+
+    def printDetails(self):
+        
+        print('Sim File: ' + self.simFile)
+        print('Source File: ' + self.srcFile)
+        print('Geometry File: ' + self.simDict['Geometry'][0])
+        print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0])
+        print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
+        print('Generated Particles: ' + self.simDict['TS'][0])
 
     def calculateAeff(self):
         
