@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
+from numpy.testing import assert_allclose
 from astropy.tests.helper import pytest
 
 try:
@@ -28,3 +29,11 @@ def test_calculateAeff(create_burstcube_analysis):
     aeff = bcs.calculateAeff()
 
     assert (np.abs(aeff - 69.47044919706765) < 1e-7)
+
+def test_passEres(create_burstcube_analysis):
+
+    bcs = create_burstcube_analysis
+    fractions = bcs.passEres()
+
+    assert_allclose(fractions, (0.897,0.936), 1e-3)
+
