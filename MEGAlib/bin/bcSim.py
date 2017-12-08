@@ -62,12 +62,26 @@ class bcSim:
 
         return r_sphere**2*pi*triggers/generated_particles
 
-    def passEres(self, alpha):
+    def passEres(self, alpha = 2.57, escape = 30.0):
 
-        ed = np.array(self.simDict['ED']).astyp(np.float)
-        ec = np.array(self.simDict['EC']).astyp(np.float)
-        ns = np.array(self.simDict['NS']).astyp(np.float)
+        '''Calculates the fraction of events that are good (fully absorbed)
+        and those that escape.  The default escape photon energy is
+        for CsI (30.0 keV).  An alpha of 2.57 is based on 10% energy
+        resolution at 662 keV with 1/sqrt(E) scaling.'''
+
+        ed = np.array(self.simDict['ED']).astype(np.float)
+        ec = np.array(self.simDict['EC']).astype(np.float)
+        ns = np.array(self.simDict['NS']).astype(np.float)
         
         tot = ed + ec + ns
+        ediff = tot - ed
+        ediff2 = ediff - escape
+        # Sigma = FWHM (or eres)/2.35.  Returns 0 if ed is 0
+        sigma = np.where(ed !=0, ed*alpha/np.sqrt(ed)/2.35, 0)
+        good = np.sum(np.fabs(ediff) < sigma)
+        mod = np.sum(np.fabs(ediff2) < sigma)
 
-        return tot
+        frac = float(good)/float(len(ed))
+        mod_frac = (float(mod)+float(good))/float(len(ed))
+
+        return frac,mod_frac
