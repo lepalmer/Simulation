@@ -2,7 +2,7 @@
 # This was created with the python wrapper --> create_source_file.py <--
 
 Version          1 
-Geometry         $BURSTCUBEPATH/Simulation/MEGAlib/BurstCube_1Cube.geo.setup // Update this to your path 
+Geometry         $BURSTCUBE/Simulation/MEGAlib/geo/BurstCube_1Cube.geo.setup // Update this to your path 
 CheckForOverlaps 1000 0.01 
 PhysicsListEM    Livermore 
 

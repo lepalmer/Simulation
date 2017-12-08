@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 ------------------------------------------------------------------------
-A script that runs the ComPair analysis chain on a multicore system.
+A script that runs an analysis chain on a multicore system.
 
 Probably not useful in other cases...
 
@@ -125,7 +125,13 @@ def notDone(sims, tras):
 def cli():
 
     from multiprocessing import Pool
-    from itertools import izip, repeat
+
+    try:
+        # Python 2
+        from itertools import izip
+    except ImportError:
+        # Python 3
+        izip = zip
     
     helpString = "Submits cosima or revan jobs to multiple cores."
 
@@ -136,14 +142,14 @@ def cli():
     parser.add_argument("--runCosima", type=bool, default=False, help="Run cosima (default is false)")
     parser.add_argument("--runRevan", type=bool, default=False, help="Run revan (default is false)")
     parser.add_argument("--BURSTCUBE",help="Path to compair files.  You can set this via an environment variable")
-    parser.add_argument("--sourcePath",help="Where the source files live.  If not given, will get from COMPAIRPATH.")
+    parser.add_argument("--sourcePath",help="Where the source files live.  If not given, will get from BURSTCUBE.")
     parser.add_argument("--simPath", help="Where the sim files live (from cosima).")
     parser.add_argument("--revanCfg", help="Revan config file (need full path).")
     parser.add_argument("--reRun", type=bool, default=False, help="Re run/re write")
     
     args = parser.parse_args()
 
-    if setPath(args.COMPAIRPATH):
+    if setPath(args.BURSTCUBE):
         exit()
     else:
         print("BURSTCUBE set to " + os.environ['BURSTCUBE'])
