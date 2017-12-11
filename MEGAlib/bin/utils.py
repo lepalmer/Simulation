@@ -2,6 +2,7 @@
 
 import os
 
+
 def setPath(desiredPath = "", desiredPathName = 'BURSTCUBE'):
 
     '''Checks for desiredPathName path.  Returns 0 if ok, 1 if bad.'''
@@ -19,11 +20,15 @@ def setPath(desiredPath = "", desiredPathName = 'BURSTCUBE'):
     else:
         return 0
 
+
 def getFilenameFromDetails(details):
-    
-    filename =  "{}_{:.3f}keV_Cos{:.3f}".format(details['base'],
-                                                details['keV'],
-                                                details['Cos'])
+
+    '''Takes a dictionary of details and makes a machine readible filename
+    out of it.'''
+
+    filename = "{}_{:.3f}keV_Cos{:.3f}".format(details['base'],
+                                               details['keV'],
+                                               details['Cos'])
 
     return filename
 
@@ -35,6 +40,9 @@ def getDetailsFromFilename(filename):
 
     details = {}
     info = filename.split('_')
+
+    details['base'] = info[0]
+
     details['keV'] = float(info[1][:-3])
 
     angle = info[2].split('.')
