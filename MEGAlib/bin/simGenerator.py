@@ -76,7 +76,7 @@ class configurator():
                            np.log10(self.config['run']['emax']),
                            self.config['run']['enumbins'])
 
-    def createSourceFiles(self, dir='./'):
+    def createSourceFiles(self, dir='.'):
 
         from utils import getFilenameFromDetails
 
@@ -90,6 +90,6 @@ class configurator():
                                             'keV': energy,
                                             'Cos': angle})
 
-            f = open(dir + fname + '.source', 'w')
+            f = open(dir + '/' + fname + '.source', 'w')
             f.write(srcstr)
             f.close()
