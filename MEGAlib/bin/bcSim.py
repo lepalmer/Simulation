@@ -4,7 +4,8 @@ import numpy as np
 
 from utils import setPath
 
-class bcSim:
+
+class simFile:
 
     def __init__(self, simFile, sourceFile):
 
@@ -17,11 +18,11 @@ class bcSim:
             exit()
 
         print("Loading " + self.simFile)
-        self.simDict = self.fileToDict(simFile,'#',None)
-        self.srcDict = self.fileToDict(sourceFile,'#',None)
-        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0],'//',None)
+        self.simDict = self.fileToDict(simFile, '#', None)
+        self.srcDict = self.fileToDict(sourceFile, '#', None)
+        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0], '//', None)
 
-    def fileToDict(self, filename, commentString = '#', termString = None):
+    def fileToDict(self, filename, commentString='#', termString=None):
 
         from os import path
 
@@ -38,9 +39,11 @@ class bcSim:
                         if len(lineContents) > 1:
                             if lineContents[0] in megaDict:
                                 if ';' in line:
-                                    megaDict[lineContents[0]].append(lineContents[1:])
+                                    megaDict[lineContents[0]].append(
+                                        lineContents[1:])
                                 else:
-                                    megaDict[lineContents[0]].append(lineContents[1])
+                                    megaDict[lineContents[0]].append(
+                                        lineContents[1])
                             else:
                                 megaDict[lineContents[0]] = lineContents[1:]
                     if termString is not None:
@@ -67,7 +70,7 @@ class bcSim:
 
         return r_sphere**2*pi*triggers/generated_particles
 
-    def passEres(self, alpha = 2.57, escape = 30.0):
+    def passEres(self, alpha=2.57, escape=30.0):
 
         '''Calculates the fraction of events that are good (fully absorbed)
         and those that escape.  The default escape photon energy is

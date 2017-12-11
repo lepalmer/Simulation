@@ -62,5 +62,5 @@ def test_createSourceFiles(create_configurator, tmpdir_factory):
     conf = create_configurator
     conf.createSourceFiles(dir=path)
 
-    # for now just testing the first one
-    assert(isfile(path + files[0]))
+    for file in files:
+        assert(isfile(path + file))
