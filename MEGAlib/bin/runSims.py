@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 ------------------------------------------------------------------------
-A script that runs the ComPair analysis chain on a multicore system.
+A script that runs an analysis chain on a multicore system.
 
 Probably not useful in other cases...
 
@@ -12,29 +12,14 @@ Author: Jeremy Perkins (jeremy.s.perkins@nasa.gov)
 
 import os
 
-def setPath(comPath = ""):
-
-    '''Checks for COMPAIRPATH.  Returns 0 if ok, 1 if bad.'''
-    
-    if comPath:
-        if '~' in comPath:
-            os.environ['COMPAIRPATH'] = os.path.expanduser(comPath)
-            return 0
-        else:
-            os.environ['COMPAIRPATH'] = comPath
-            return 0
-    elif not ('COMPAIRPATH' in os.environ):
-        print 'Set or provide COMPAIRPATH'
-        return 1
-    else:
-        return 0
+from utils import setPath
 
 def runCosima(srcFile):
 
     import subprocess
     import gzip
 
-    print "Running cosima on " + srcFile
+    print("Running cosima on " + srcFile)
     
     p = subprocess.Popen(['cosima',srcFile],
                          stdout=subprocess.PIPE,
@@ -44,27 +29,27 @@ def runCosima(srcFile):
 
     base = os.path.splitext(os.path.basename(srcFile))
 
-    print "Writing Log for " + srcFile
+    print("Writing Log for " + srcFile)
     with gzip.open(base[0]+'.stdout.gz', 'wb') as f:
         try:
             f.write(out)
         except OverflowError:
-            print "Log (stdout) too big.  Didn't write"
+            print("Log (stdout) too big.  Didn't write")
 
     if (len(err) > 0):
-        print "Errors exist, might want to check " + srcFile
+        print("Errors exist, might want to check " + srcFile)
         with gzip.open(base[0]+'.stderr.gz', 'wb') as f:
             try:
                f.write(err)
             except OverflowError:
-                print "Log (stderr) too big.  Didn't write"
+                print("Log (stderr) too big.  Didn't write")
 
 def runRevan(simFile, cfgFile):
 
     import subprocess
     import gzip
 
-    print "Running revan on " + simFile
+    print("Running revan on " + simFile)
 
     p = subprocess.Popen(['revan', '-f', simFile, '-c', cfgFile, '-n', '-a'],
                          stdout=subprocess.PIPE,
@@ -74,21 +59,21 @@ def runRevan(simFile, cfgFile):
 
     base = os.path.splitext(os.path.basename(simFile))
 
-    print "Writing Log for " + simFile
+    print("Writing Log for " + simFile)
     with gzip.open(base[0]+'.revan.stdout.gz', 'wb') as f:
         try:
             f.write(err)
         except OverflowError:
-            print "Log (stdout) too big.  Didn't write"
+            print("Log (stdout) too big.  Didn't write")
 
 
     if (len(err) > 0):
-        print "Errors exist, might want to check " + simFile
+        print("Errors exist, might want to check " + simFile)
         with gzip.open(base[0]+'.revan.stderr.gz', 'wb') as f:
             try:
                 f.write(err)
             except OverflowError:
-                print "Log (stderr) too big.  Didn't write"
+                print("Log (stderr) too big.  Didn't write")
             
 
 def runRevan_star(files):
@@ -100,14 +85,14 @@ def getFiles(searchDir = '', extension = 'source'):
 
     from glob import glob    
 
-    if not ('COMPAIRPATH' in os.environ):
-        print 'Set or provide COMPAIRPATH'
+    if not ('BURSTCUBE' in os.environ):
+        print('Set or provide BURSTCUBE')
         return ""
 
     if searchDir:
         return glob(searchDir+'/*.'+extension)
     else:
-        return glob(os.environ['COMPAIRPATH']+'/Simulations/PerformancePlotSourceFiles/*.'+extension)
+        return glob(os.environ['BURSTCUBE']+'/Simulations/PerformancePlotSourceFiles/*.'+extension)
 
 def makeLinks(files, folderName='SimFiles'):
 
@@ -140,7 +125,13 @@ def notDone(sims, tras):
 def cli():
 
     from multiprocessing import Pool
-    from itertools import izip, repeat
+
+    try:
+        # Python 2
+        from itertools import izip
+    except ImportError:
+        # Python 3
+        izip = zip
     
     helpString = "Submits cosima or revan jobs to multiple cores."
 
@@ -150,27 +141,27 @@ def cli():
     parser.add_argument("jobs", type=int, help="The number of jobs you wish to spawn (usually the number of cores on your machine).")
     parser.add_argument("--runCosima", type=bool, default=False, help="Run cosima (default is false)")
     parser.add_argument("--runRevan", type=bool, default=False, help="Run revan (default is false)")
-    parser.add_argument("--COMPAIRPATH",help="Path to compair files.  You can set this via an environment variable")
-    parser.add_argument("--sourcePath",help="Where the source files live.  If not given, will get from COMPAIRPATH.")
+    parser.add_argument("--BURSTCUBE",help="Path to compair files.  You can set this via an environment variable")
+    parser.add_argument("--sourcePath",help="Where the source files live.  If not given, will get from BURSTCUBE.")
     parser.add_argument("--simPath", help="Where the sim files live (from cosima).")
     parser.add_argument("--revanCfg", help="Revan config file (need full path).")
     parser.add_argument("--reRun", type=bool, default=False, help="Re run/re write")
     
     args = parser.parse_args()
 
-    if setPath(args.COMPAIRPATH):
+    if setPath(args.BURSTCUBE):
         exit()
     else:
-        print "COMPAIRPATH set to " + os.environ['COMPAIRPATH']
+        print("BURSTCUBE set to " + os.environ['BURSTCUBE'])
 
     if args.runCosima:
         srcFiles = getFiles(args.sourcePath,'source')
         if not srcFiles:
-            print "No source files found"
+            print("No source files found")
             exit()
         else:
-            print "Got this many source files: " + str(len(srcFiles))
-            print "Spawing jobs"
+            print("Got this many source files: " + str(len(srcFiles)))
+            print("Spawing jobs")
             pool = Pool(processes=args.jobs)
             pool.map(runCosima,srcFiles)
 
@@ -180,14 +171,14 @@ def cli():
         if not args.reRun:
             simFiles = notDone(simFiles,traFiles)
         if not args.revanCfg:
-            print "Need to specify the config file for revan (--revanCfg)"
+            print("Need to specify the config file for revan (--revanCfg)")
             exit()
         elif not simFiles:
-            print "No sim files found"
+            print("No sim files found")
             exit() 
         else:
-            print "Got this many sim files: " + str(len(simFiles))
-            print "Spawning jobs"
+            print("Got this many sim files: " + str(len(simFiles)))
+            print("Spawning jobs")
             pool = Pool(processes=args.jobs)
             pool.map(runRevan_star,
                      izip(simFiles,repeat(args.revanCfg)))

@@ -2,6 +2,8 @@
 
 import numpy as np
 
+from utils import setPath
+
 class bcSim:
 
     def __init__(self, simFile, sourceFile):
@@ -10,6 +12,9 @@ class bcSim:
 
         self.simFile = simFile
         self.srcFile = sourceFile
+
+        if setPath():
+            exit()
 
         print("Loading " + self.simFile)
         self.simDict = self.fileToDict(simFile,'#',None)
@@ -67,7 +72,8 @@ class bcSim:
         '''Calculates the fraction of events that are good (fully absorbed)
         and those that escape.  The default escape photon energy is
         for CsI (30.0 keV).  An alpha of 2.57 is based on 10% energy
-        resolution at 662 keV with 1/sqrt(E) scaling.'''
+        resolution at 662 keV with 1/sqrt(E) scaling.  Sigma is
+        calculated as the FWHM or eres diveded by 2.35.'''
 
         ed = np.array(self.simDict['ED']).astype(np.float)
         ec = np.array(self.simDict['EC']).astype(np.float)
@@ -76,7 +82,6 @@ class bcSim:
         tot = ed + ec + ns
         ediff = tot - ed
         ediff2 = ediff - escape
-        # Sigma = FWHM (or eres)/2.35.  Returns 0 if ed is 0
         sigma = np.where(ed !=0, ed*alpha/np.sqrt(ed)/2.35, 0)
         good = np.sum(np.fabs(ediff) < sigma)
         mod = np.sum(np.fabs(ediff2) < sigma)

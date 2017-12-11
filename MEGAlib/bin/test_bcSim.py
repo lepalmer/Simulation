@@ -16,13 +16,21 @@ def create_burstcube_analysis(request, tmpdir_factory):
     from os import path
 
     testdir = path.expandvars('$BURSTCUBE/Simulation/MEGAlib/test/')
-    bcs = bcSim(testdir+'test.inc1.id1.sim',testdir+'FarFieldPointSource_test.source')
+    bcs = bcSim(testdir+'test.inc1.id1.sim',
+                testdir+'FarFieldPointSource_test.source')
     return bcs
+
 
 def test_bcSim_setup(create_burstcube_analysis):
     bcs = create_burstcube_analysis
     bcs.printDetails()
 
+    
+def test_setPath():
+    from utils import setPath
+    assert(not setPath())
+
+    
 def test_calculateAeff(create_burstcube_analysis):
 
     bcs = create_burstcube_analysis
@@ -30,10 +38,10 @@ def test_calculateAeff(create_burstcube_analysis):
 
     assert (np.abs(aeff - 69.47044919706765) < 1e-7)
 
+    
 def test_passEres(create_burstcube_analysis):
 
     bcs = create_burstcube_analysis
     fractions = bcs.passEres()
 
-    assert_allclose(fractions, (0.897,0.936), 1e-3)
-
+    assert_allclose(fractions, (0.897, 0.936), 1e-3)
