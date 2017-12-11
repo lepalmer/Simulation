@@ -34,7 +34,7 @@ def createSourceString(config, energy, angle):
     srcstr += 'One.ParticleType ' + str(config['source']['ParticleType'])
     srcstr += '\n'
     srcstr += 'One.Beam ' + config['source']['Beam'] + ' '
-    srcstr += str(np.rad2deg(angle)) + ' 0'
+    srcstr += str(np.round(np.rad2deg(angle), decimals=2)) + ' 0'
     srcstr += '\n'
     srcstr += 'One.Spectrum Mono '
     srcstr += str(energy)
@@ -66,6 +66,10 @@ class configurator():
                            self.config['run']['costhetamax'],
                            self.config['run']['costhetanumbins'])
 
+    @property
+    def thetabins(self):
+        return np.round(np.rad2deg(self.costhetabins), decimals=2)
+    
     @property
     def ebins(self):
         return np.logspace(np.log10(self.config['run']['emin']),

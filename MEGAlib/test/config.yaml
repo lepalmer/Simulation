@@ -18,9 +18,9 @@ source:
 run:
   basename : test
   outdir : $BURSTCUBE/Simulation/MEGAlib/geo/sim/
-  emin : 10.000
-  emax : 10000.000
-  enumbins : 12
+  emin : 100.000
+  emax : 200.000
+  enumbins : 2
   costhetamin : 0.5
   costhetamax : 1.0 
   costhetanumbins : 2
