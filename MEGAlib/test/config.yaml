@@ -17,7 +17,8 @@ source:
   
 run:
   basename : test
-  outdir : $BURSTCUBE/Simulation/MEGAlib/geo/sim/
+  srcdir : $BURSTCUBE/Simulation/MEGAlib/source/
+  simdir : $BURSTCUBE/Simulation/MEGAlib/sim/
   emin : 100.000
   emax : 200.000
   enumbins : 2

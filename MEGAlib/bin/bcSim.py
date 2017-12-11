@@ -1,15 +1,46 @@
 #!/usr/bin/env python
 
 import numpy as np
-
 from utils import setPath
+
+
+class simFiles:
+
+    def __init__(self, conf):
+
+        '''Object for a multiple simulations over energy and angle.'''
+
+        if setPath():
+            exit()
+
+        self.conf = conf
+
+    def loadFiles(self):
+
+        from utils import getFilenameFromDetails
+
+        basename = self.conf.config['run']['basename']
+
+        sfs = {}
+
+        for angle, energy in [(angle, energy)
+                              for angle in self.conf.costhetabins
+                              for energy in self.conf.ebins]:
+            fname = getFilenameFromDetails({'base': basename,
+                                            'keV': energy,
+                                            'Cos': angle})
+            sf = simFile(self.conf.config['run']['simdir']+'/'+fname+'.sim',
+                         self.conf.config['run']['srcdir']+'/'+fname+'.source')
+            sfs[fname] = sf
+
+        return sfs
 
 
 class simFile:
 
     def __init__(self, simFile, sourceFile):
 
-        '''Stuff'''
+        '''Object for a single simulation.'''
 
         self.simFile = simFile
         self.srcFile = sourceFile

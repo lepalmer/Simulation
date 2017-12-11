@@ -1,6 +1,7 @@
 #/usr/bin/env python
 
 import numpy as np
+from os import path
 
 
 def createSourceString(config, energy, angle):
@@ -24,7 +25,7 @@ def createSourceString(config, energy, angle):
     srcstr += 'Run ' + config['source']['name']
     srcstr += '\n'
     srcstr += config['source']['name']+'.Filename '
-    srcstr += fname
+    srcstr += config['run']['simdir'] + fname
     srcstr += '\n'
     srcstr += config['source']['name']+'.NTriggers '
     srcstr += str(config['source']['NTriggers'])
@@ -76,10 +77,10 @@ class configurator():
                            np.log10(self.config['run']['emax']),
                            self.config['run']['enumbins'])
 
-    def createSourceFiles(self, dir='.'):
+    def createSourceFiles(self, dir=''):
 
         from utils import getFilenameFromDetails
-
+        
         for angle, energy in [(angle, energy)
                               for angle in self.costhetabins
                               for energy in self.ebins]:
@@ -89,7 +90,11 @@ class configurator():
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
                                             'Cos': angle})
-
-            f = open(dir + '/' + fname + '.source', 'w')
+            if dir:
+                fname = dir + '/' + fname + '.source'
+            else:
+                fname = self.config['run']['srcdir'] + '/' + fname + '.source'
+            
+            f = open(path.expandvars(fname), 'w')
             f.write(srcstr)
             f.close()
