@@ -42,13 +42,17 @@ class simFiles:
     def calculateAeff(self):
 
         aeffs = np.zeros(len(self.sims),
-                         dtype={'names': ['theta', 'keV', 'aeff'],
-                                'formats': ['float32', 'float32', 'float32']})
+                         dtype={'names': ['theta', 'keV', 'aeff',
+                                          'aeff_eres', 'aeff_eres_modfrac'],
+                                'formats': ['float32', 'float32',
+                                            'float32', 'float32', 'float32']})
 
         for i, sf in enumerate(self.sims):
+            frac, mod_frac = sf.passEres()
+            aeff = sf.calculateAeff()
             aeffs[i] = (sf.srcDict['One.Beam'][1],
                         sf.srcDict['One.Spectrum'][1],
-                        sf.calculateAeff())
+                        aeff, aeff*frac, aeff*mod_frac)
 
         return aeffs
 
@@ -135,11 +139,11 @@ class simFile:
         tot = ed + ec + ns
         ediff = tot - ed
         ediff2 = ediff - escape
-        sigma = np.where(ed !=0, ed*alpha/np.sqrt(ed)/2.35, 0)
+        sigma = np.where(ed != 0, ed*alpha/np.sqrt(ed)/2.35, 0)
         good = np.sum(np.fabs(ediff) < sigma)
         mod = np.sum(np.fabs(ediff2) < sigma)
 
         frac = float(good)/float(len(ed))
         mod_frac = (float(mod)+float(good))/float(len(ed))
 
-        return frac,mod_frac
+        return frac, mod_frac
