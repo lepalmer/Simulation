@@ -3,9 +3,15 @@
 import numpy as np
 from numpy.testing import assert_allclose
 from astropy.tests.helper import pytest
+from os import path
 
 try:
     from bcSim import simFile
+except ImportError:
+    pass
+
+try:
+    from bcSim import simFiles
 except ImportError:
     pass
 
@@ -13,13 +19,18 @@ except ImportError:
 @pytest.fixture(scope='module')
 def create_simfile(request, tmpdir_factory):
 
-    from os import path
-
     testdir = path.expandvars('$BURSTCUBE/Simulation/MEGAlib/test/')
     sf = simFile(testdir+'test.inc1.id1.sim',
                  testdir+'FarFieldPointSource_test.source')
     return sf
 
+@pytest.fixture(scope='module')
+def create_simfiles(request, tmpdir_factory):
+
+    testdir = path.expandvars('$BURSTCUBE/Simulation/MEGAlib/test/')
+    sfs = simFiles(testdir+'config.yaml')
+
+    return sfs
 
 def test_bcSim_setup(create_simfile):
     sf = create_simfile
@@ -45,3 +56,10 @@ def test_passEres(create_simfile):
     fractions = sf.passEres()
 
     assert_allclose(fractions, (0.897, 0.936), 1e-3)
+
+def test_calculateAeffs(create_simfiles):
+
+    sfs = create_simfiles
+    aeffs = sfs.calculateAeff()
+
+    

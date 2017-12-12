@@ -38,7 +38,7 @@ def test_createSourceString(create_configurator):
     refstr += 'CheckForOverlaps 1000 0.01\nPhysicsListEM Livermore\n'
     refstr += 'StoreCalibrate True\nStoreSimulationInfo True\n'
     refstr += 'StoreOnlyEventsWithEnergyLoss True\nDiscretizeHits True\n\n'
-    refstr += 'Run FFPS\nFFPS.Filename $BURSTCUBE/Simulation/MEGAlib/sim/'
+    refstr += 'Run FFPS\nFFPS.Filename $BURSTCUBE/Simulation/MEGAlib/test/'
     refstr += 'test_100.000keV_Cos0.100\n'
     refstr += 'FFPS.NTriggers 1000\nFFPS.Source One\nOne.ParticleType 1\n'
     refstr += 'One.Beam FarfieldPointSource 5.73 0\n'
