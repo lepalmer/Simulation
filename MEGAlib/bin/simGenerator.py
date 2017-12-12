@@ -1,6 +1,7 @@
 #/usr/bin/env python
 
 import numpy as np
+from os import path
 
 
 def createSourceString(config, energy, angle):
@@ -24,7 +25,7 @@ def createSourceString(config, energy, angle):
     srcstr += 'Run ' + config['source']['name']
     srcstr += '\n'
     srcstr += config['source']['name']+'.Filename '
-    srcstr += fname
+    srcstr += config['run']['simdir'] + fname
     srcstr += '\n'
     srcstr += config['source']['name']+'.NTriggers '
     srcstr += str(config['source']['NTriggers'])
@@ -34,7 +35,7 @@ def createSourceString(config, energy, angle):
     srcstr += 'One.ParticleType ' + str(config['source']['ParticleType'])
     srcstr += '\n'
     srcstr += 'One.Beam ' + config['source']['Beam'] + ' '
-    srcstr += str(np.rad2deg(angle)) + ' 0'
+    srcstr += str(np.round(np.rad2deg(angle), decimals=2)) + ' 0'
     srcstr += '\n'
     srcstr += 'One.Spectrum Mono '
     srcstr += str(energy)
@@ -67,12 +68,16 @@ class configurator():
                            self.config['run']['costhetanumbins'])
 
     @property
+    def thetabins(self):
+        return np.round(np.rad2deg(self.costhetabins), decimals=2)
+    
+    @property
     def ebins(self):
         return np.logspace(np.log10(self.config['run']['emin']),
                            np.log10(self.config['run']['emax']),
                            self.config['run']['enumbins'])
 
-    def createSourceFiles(self):
+    def createSourceFiles(self, dir=''):
 
         from utils import getFilenameFromDetails
         
@@ -85,7 +90,11 @@ class configurator():
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
                                             'Cos': angle})
-
-            f = open(fname + '.source', 'w')
+            if dir:
+                fname = dir + '/' + fname + '.source'
+            else:
+                fname = self.config['run']['srcdir'] + '/' + fname + '.source'
+            
+            f = open(path.expandvars(fname), 'w')
             f.write(srcstr)
             f.close()
