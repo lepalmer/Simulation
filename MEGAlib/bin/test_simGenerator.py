@@ -56,9 +56,14 @@ def test_createSourceFiles(create_configurator, tmpdir_factory):
 
     path = tmpdir_factory.mktemp('source')
     files = ('test_100.000keV_Cos0.500.source',
-             'test_200.000keV_Cos0.500.source',
+             'test_100.000keV_Cos0.750.source',
              'test_100.000keV_Cos1.000.source',
-             'test_200.000keV_Cos1.000.source')
+             'test_173.205keV_Cos0.500.source',
+             'test_173.205keV_Cos0.750.source',
+             'test_173.205keV_Cos1.000.source',
+             'test_300.000keV_Cos0.500.source',
+             'test_300.000keV_Cos0.750.source',
+             'test_300.000keV_Cos1.000.source')
 
     conf = create_configurator
     conf.createSourceFiles(dir=path)
