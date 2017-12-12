@@ -62,4 +62,9 @@ def test_calculateAeffs(create_simfiles):
     sfs = create_simfiles
     aeffs = sfs.calculateAeff()
 
+    x = np.array([(71.73699951),
+                  (68.58593750),
+                  (56.56450653),
+                  (54.40552521)])
     
+    assert_allclose(aeffs['aeff'], x, 1e-6)
