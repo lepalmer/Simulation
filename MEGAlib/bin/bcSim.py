@@ -2,18 +2,20 @@
 
 import numpy as np
 from utils import setPath
+from simGenerator import configurator
 
 
 class simFiles:
 
-    def __init__(self, conf):
+    def __init__(self, config_file):
 
         '''Object for a multiple simulations over energy and angle.'''
 
         if setPath():
             exit()
 
-        self.conf = conf
+        self.conf = configurator(config_file)
+        self.sims = self.loadFiles()
 
     def loadFiles(self):
 
@@ -21,7 +23,7 @@ class simFiles:
 
         basename = self.conf.config['run']['basename']
 
-        sfs = {}
+        sfs = []
 
         for angle, energy in [(angle, energy)
                               for angle in self.conf.costhetabins
@@ -29,11 +31,26 @@ class simFiles:
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
                                             'Cos': angle})
-            sf = simFile(self.conf.config['run']['simdir']+'/'+fname+'.sim',
-                         self.conf.config['run']['srcdir']+'/'+fname+'.source')
-            sfs[fname] = sf
+            sf = simFile(self.conf.config['run']['simdir']
+                         + '/'+fname+'.inc1.id1.sim',
+                         self.conf.config['run']['srcdir']
+                         + '/'+fname+'.source')
+            sfs.append(sf)
 
         return sfs
+
+    def calculateAeff(self):
+
+        aeffs = np.zeros(len(self.sims),
+                         dtype={'names': ['theta', 'keV', 'aeff'],
+                                'formats': ['float32', 'float32', 'float32']})
+
+        for i, sf in enumerate(self.sims):
+            aeffs[i] = (sf.srcDict['One.Beam'][1],
+                        sf.srcDict['One.Spectrum'][1],
+                        sf.calculateAeff())
+
+        return aeffs
 
 
 class simFile:
@@ -90,6 +107,8 @@ class simFile:
         print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0])
         print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
         print('Generated Particles: ' + self.simDict['TS'][0])
+        print('Angle: ' + self.srcDict['One.Beam'][1])
+        print('Energy: ' + self.srcDict['One.Spectrum'][1])
 
     def calculateAeff(self):
         
