@@ -29,7 +29,7 @@ def test_configurator_setup(create_configurator):
     conf = create_configurator
     print(conf.config['run']['basename'])
 
-    
+
 def test_createSourceString(create_configurator):
 
     refstr = 'Version 1\nGeometry '
@@ -43,13 +43,13 @@ def test_createSourceString(create_configurator):
     refstr += 'FFPS.NTriggers 1000\nFFPS.Source One\nOne.ParticleType 1\n'
     refstr += 'One.Beam FarfieldPointSource 5.73 0\n'
     refstr += 'One.Spectrum Mono 100.0\nOne.Flux 1000.0\n'
-    
+
     conf = create_configurator
     sourcestr = createSourceString(conf.config, 100., 0.1)
 
     assert(sourcestr == refstr)
 
-    
+
 def test_createSourceFiles(create_configurator, tmpdir_factory):
 
     from os.path import isfile

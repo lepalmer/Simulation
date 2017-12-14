@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 
 import numpy as np
 from os import path
@@ -94,7 +94,8 @@ class configurator():
                 fname = dir + '/' + fname + '.source'
             else:
                 fname = self.config['run']['srcdir'] + '/' + fname + '.source'
-            
-            f = open(path.expandvars(fname), 'w')
+
+            fname = path.expandvars(fname)
+            f = open(fname, 'w')
             f.write(srcstr)
             f.close()
