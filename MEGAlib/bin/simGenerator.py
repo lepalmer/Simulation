@@ -15,12 +15,24 @@ def createSourceString(config, energy, angle):
                                     'keV': energy,
                                     'Cos': angle})
 
-    srcstr = ''
-
-    for key in config['general']:
-        srcstr += str(key) + ' ' + str(config['general'][key])
-        srcstr += '\n'
-
+    srcstr = 'Version ' + str(config['general']['Version'])
+    srcstr += '\n'
+    srcstr += 'Geometry ' + str(config['general']['Geometry'])
+    srcstr += '\n'
+    srcstr += 'CheckForOverlaps ' + str(config['general']['CheckForOverlaps'])
+    srcstr += '\n'
+    srcstr += 'PhysicsListEM ' + str(config['general']['PhysicsListEM'])
+    srcstr += '\n'
+    srcstr += 'StoreCalibrate ' + str(config['general']['StoreCalibrate'])
+    srcstr += '\n'
+    srcstr += 'StoreSimulationInfo '
+    srcstr += str(config['general']['StoreSimulationInfo'])
+    srcstr += '\n'
+    srcstr += 'StoreOnlyEventsWithEnergyLoss '
+    srcstr += str(config['general']['StoreOnlyEventsWithEnergyLoss'])
+    srcstr += '\n'
+    srcstr += 'DiscretizeHits ' + str(config['general']['DiscretizeHits'])
+    srcstr += '\n'
     srcstr += '\n'
     srcstr += 'Run ' + config['source']['name']
     srcstr += '\n'
@@ -95,7 +107,6 @@ class configurator():
             else:
                 fname = self.config['run']['srcdir'] + '/' + fname + '.source'
 
-            fname = path.expandvars(fname)
-            f = open(fname, 'w')
+            f = open(path.expandvars(fname), 'w')
             f.write(srcstr)
             f.close()
