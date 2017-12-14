@@ -54,7 +54,7 @@ def test_createSourceFiles(create_configurator, tmpdir_factory):
 
     from os.path import isfile
 
-    path = tmpdir_factory.mktemp('source')
+    srcdir = tmpdir_factory.mktemp('source')
     files = ('test_100.000keV_Cos0.500.source',
              'test_100.000keV_Cos0.750.source',
              'test_100.000keV_Cos1.000.source',
@@ -66,7 +66,7 @@ def test_createSourceFiles(create_configurator, tmpdir_factory):
              'test_300.000keV_Cos1.000.source')
 
     conf = create_configurator
-    conf.createSourceFiles(dir=path)
+    conf.createSourceFiles(dir=srcdir)
 
     for file in files:
-        assert(isfile(path + file))
+        assert(isfile(srcdir + file))
