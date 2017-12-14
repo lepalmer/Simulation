@@ -66,7 +66,8 @@ def test_createSourceFiles(create_configurator, tmpdir_factory):
              'test_300.000keV_Cos1.000.source')
 
     conf = create_configurator
-    conf.createSourceFiles(dir=srcdir)
+    conf.createSourceFiles(dir=srcdir.__str__())
 
-    for file in files:
-        assert(isfile(srcdir + file))
+    for f in files:
+        srcfile = srcdir.__str__() + '/' + f
+        assert(isfile(srcfile))
