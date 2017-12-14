@@ -107,6 +107,6 @@ class configurator():
             else:
                 fname = self.config['run']['srcdir'] + '/' + fname + '.source'
 
-            f = open(path.expandvars(fname), 'w')
+            f = open(str(path.expandvars(fname)), 'w')
             f.write(srcstr)
             f.close()
