@@ -1,3 +1,16 @@
+/////////
+// 
+// This is the setup file which contains the geometry file for the BurstCube CubeSat (website: )
+// All the simulations use the MEGAlib toolkit (http://megalibtoolkit.com) 
+//
+// Author: Regina Caputo (regina.caputo@nasa.gov)
+// Date: December 21, 2017
+//
+// Usage: geomega -g BurstCube.geo.setup
+//
+/////////
+
+
 Name My_BurstCube
 Verision 0.0
 
