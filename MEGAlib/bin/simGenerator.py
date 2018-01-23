@@ -71,6 +71,11 @@ class configurator():
         with open(path, 'r') as f:
             config = yaml.load(f)
 
+        if config['run']['simdir'][-1] != '/':
+            config['run']['simdir'] += '/'
+        if config['run']['srcdir'][-1] != '/':
+            config['run']['srcdir'] += '/'
+
         return config
 
     @property
