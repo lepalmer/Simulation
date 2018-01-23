@@ -1,0 +1,13 @@
+language: python
+python:
+ - "3.6"
+
+install:
+ - pip install astropy numpy matplotlib PyYAML
+
+script:
+ - pytest
+
+env:
+    global:
+      - BURSTCUBE=$HOME/build/BurstCube
