@@ -7,3 +7,7 @@ install:
 
 script:
  - pytest
+
+env:
+    global:
+      - BURSTCUBE=$HOME/build/BurstCube
