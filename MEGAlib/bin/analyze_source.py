@@ -196,7 +196,7 @@ def passEres(filename, alpha=2.57): #2.57 from 10% at 662 keV scaling at 1/sqrt(
 
 def getGBMData():
 
-    filename='/data/slag2/BurstCube/BurstCube/Simulations/GEANT3/gbm_effective_area.dat'
+    filename='/data/slag2/rcaputo/BurstCube/Simulation/GEANT3/gbm_effective_area.dat'
 
     f=open(filename,'r')
     lines=f.readlines()
@@ -318,16 +318,18 @@ def plotAeff(files, comparison=False, WithGBM=False, save=False, rcirc=None):
     plot.gca().set_xlim([5.,10000.])
 
     plot.yscale('log')
-    plot.gca().set_ylim([1.,200.])
+    plot.gca().set_ylim([1.,500.])
     plot.ylabel('Effective Area (cm$^2$)', fontsize=16)
 
-    legend = plot.legend(loc='lower center',prop={'size':16},numpoints=1,frameon=False)
 
     if WithGBM:
         print("with GBM!")
         GBM_e, GBM_aeff=getGBMData()
         plot.plot(GBM_e, GBM_aeff, color='green', alpha=0.75, linestyle='-', lw=2, label='GBM NaI')
         
+
+    legend = plot.legend(loc='lower center',prop={'size':16},numpoints=1,frameon=False)
+
     if save:
         plot.savefig('EffectiveArea_vs_E.png')
         plot.savefig('EffectiveArea_vs_E.pdf')
