@@ -78,6 +78,13 @@ class configurator():
 
         return config
 
+    def saveConfig(self, path):
+
+        import yaml
+
+        with open(path, 'w') as f:
+            yaml.dump(self.config, f, default_flow_style=False)
+
     @property
     def costhetabins(self):
         return np.linspace(self.config['run']['costhetamin'],
@@ -115,3 +122,4 @@ class configurator():
             f = open(path.expandvars(fname), 'w')
             f.write(srcstr)
             f.close()
+
