@@ -3,5 +3,5 @@ BurstCube
 
 BurstCube Python Analysis 
 
-* Documentation: 
-* Installation: 
+* Documentation: link to readthe docs
+* Installation: (soon)
