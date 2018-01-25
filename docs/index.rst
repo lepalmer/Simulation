@@ -14,6 +14,6 @@ Contents:
 
    tutorial
    project
-   code1
+   code
 
 
