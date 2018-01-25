@@ -10,5 +10,3 @@ Code
    :members:
 .. automodule:: plotSim
    :members:
-.. automodule:: analyze_source
-   :members:

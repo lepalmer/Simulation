@@ -4,14 +4,15 @@
    contain the root `toctree` directive.
 
 Welcome to BurstCube's documentation!
-===================================
+=====================================
 
 ##################################
 Introduction
 ##################################
 
 This is the BurstCube's documentation page.  More stuff will go here soon but this is mostly fluff to look nice. Here's a link to the website, I hope it works!
-<https://asd.gsfc.nasa.gov/burstcube/>`_. 
+`BurstCube Website
+<https://asd.gsfc.nasa.gov/burstcube/>`_.
 
 BurstCube is built with a series of different functions and modules, but since I don't know all of them well enough, here's what FermiPy does to confirm this format works:
 
@@ -31,29 +32,30 @@ analysis parameters (data selection, IRFs, and ROI model) are defined
 in a YAML configuration file.  Analysis is executed through a python
 script.
 
-For instructions on installing Fermipy see the :ref:`install` page.
-For a short introduction to using Fermipy see the :ref:`quickstart`.
 
 Getting Help
 ------------
 
 If you have questions about using this please open a `GitHub Issue
-<https://github.com/BurstCube/Simulation/issues>`_ or email me at 
- <mailto:nkasmanoff@gmail.com>`_.
+<https://github.com/BurstCube/Simulation/issues>`_ or email me at `Noah <mailto:nkasmanoff@gmaila.com>`_.
+
 
 Acknowledging BurstCube
----------------------
+-------------------------
 
 I'm assuming I won't need this section but just in case here it is!
 
 
 
 Documentation Contents
-----------------------
+-----------------------
 
 .. toctree::
    :includehidden:
    :maxdepth: 3
+
+   tutorial 
+   code
 
 
 Indices and tables
