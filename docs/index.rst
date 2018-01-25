@@ -37,7 +37,7 @@ Getting Help
 ------------
 
 If you have questions about using this please open a `GitHub Issue
-<https://github.com/BurstCube/Simulation/issues>`_ or email me at `Noah <mailto:nkasmanoff@gmaila.com>`_.
+<https://github.com/BurstCube/Simulation/issues>`_ or email me at `this <mailto:nkasmanoff@gmaila.com>`_.
 
 
 Acknowledging BurstCube
@@ -55,7 +55,8 @@ Documentation Contents
    :maxdepth: 3
 
    tutorial 
-   code
+   create
+   run
 
 
 Indices and tables
