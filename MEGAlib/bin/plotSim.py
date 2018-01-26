@@ -42,6 +42,9 @@ def getGBMdata(gbmfile='$BURSTCUBE/Simulation/GEANT3/gbm_effective_area.dat'):
 def plotAeffvsEnergy(energy, aeff, aeff_eres, aeff_eres_modfrac, theta=0,
                      plotGBM=False):
 
+    
+    ''' Plots the effective area vs. energy of the GRB and detector.'''
+    
     plt.figure(figsize=(8, 6))
     plt.title(r'Effective Area vs. Energy ($\theta$ = {:,.0f}$^\circ$)'
               .format(theta))
@@ -69,7 +72,8 @@ def plotAeffvsEnergy(energy, aeff, aeff_eres, aeff_eres_modfrac, theta=0,
 
     
 def plotAeffvsTheta(theta, aeff, aeff_eres, aeff_eres_modfrac, energy=100.):
-
+    ''' Generates plot of effective area vs location of the sky of a burst of given energies. 
+    '''
     plt.figure(figsize=(8, 6))
     plt.title(r'Effective Area vs. Angle (E = {:,.0f} keV)'
               .format(energy))
@@ -92,6 +96,10 @@ def plotAeffvsTheta(theta, aeff, aeff_eres, aeff_eres_modfrac, energy=100.):
     
 def plotAeff(simFiles, plotGBM=False):
 
+
+    '''
+    plots effective area
+    '''
     aeffs = simFiles.calculateAeff()
 
     for angle in set(aeffs['theta']):

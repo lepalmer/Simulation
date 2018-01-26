@@ -2,12 +2,12 @@
 
 import numpy as np
 from utils import setPath
-from simGenerator import configurator
+from simGenerator import configurator  #requires simGenerator
 
 
 class simFiles:
 
-    def __init__(self, config_file):
+    def __init__(self, config_file):  #name of the function that python uses to construct 
 
         '''Object for a multiple simulations over energy and angle.'''
 
@@ -15,10 +15,13 @@ class simFiles:
             exit()
 
         self.conf = configurator(config_file)
-        self.sims = self.loadFiles()
+        self.sims = self.loadFiles()  #this is defined later down? 
 
     def loadFiles(self):
+        '''
 
+
+        '''
         from utils import getFilenameFromDetails
 
         basename = self.conf.config['run']['basename']
@@ -40,7 +43,11 @@ class simFiles:
         return sfs
 
     def calculateAeff(self):
+        '''
 
+        calculates effective area from sim files
+
+        '''
         aeffs = np.zeros(len(self.sims),
                          dtype={'names': ['theta', 'keV', 'aeff',
                                           'aeff_eres', 'aeff_eres_modfrac'],
