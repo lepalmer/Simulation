@@ -59,6 +59,20 @@ Documentation Contents
    run
    bcsim
    plotsim
+   createstring
+
+
+
+
+
+
+All possible codes
+-------------------
+
+in here I want to put a link to every single code... that shoudnlt be too bad! 
+
+
+
 
 Indices and tables
 ==================
