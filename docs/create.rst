@@ -7,3 +7,5 @@ Described below are the functions included in the simGenerator.py package, which
 
 .. automodule:: simGenerator
    :members:
+   :undoc-members:
+   :show-inheritance:

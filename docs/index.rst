@@ -57,7 +57,8 @@ Documentation Contents
    tutorial 
    create
    run
-
+   bcsim
+   plotsim
 
 Indices and tables
 ==================
