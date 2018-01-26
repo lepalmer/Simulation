@@ -42,6 +42,7 @@ def getGBMdata(gbmfile='$BURSTCUBE/Simulation/GEANT3/gbm_effective_area.dat'):
 def plotAeffvsEnergy(energy, aeff, aeff_eres, aeff_eres_modfrac, theta=0,
                      plotGBM=False):
 
+
     
     ''' Plots the effective area vs. energy of the GRB and detector.'''
     
