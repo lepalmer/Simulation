@@ -13,7 +13,7 @@ def createSourceString(config, energy, angle):
 
     fname = getFilenameFromDetails({'base': config['run']['basename'],
                                     'keV': energy,
-                                    'Cos': angle})
+                                    'theta': angle})
 
     srcstr = 'Version ' + str(config['general']['Version'])
     srcstr += '\n'
@@ -113,7 +113,7 @@ class configurator():
             basename = self.config['run']['basename']
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
-                                            'Cos': angle})
+                                            'theta': angle})
             if dir:
                 fname = dir + '/' + fname + '.source'
             else:
