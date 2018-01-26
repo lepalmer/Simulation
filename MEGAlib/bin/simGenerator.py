@@ -93,8 +93,8 @@ class configurator():
 
     @property
     def thetabins(self):
-        return np.round(np.rad2deg(self.costhetabins), decimals=2)
-    
+        return np.round(np.rad2deg(np.arccos(self.costhetabins)), decimals=2)
+
     @property
     def ebins(self):
         return np.logspace(np.log10(self.config['run']['emin']),
