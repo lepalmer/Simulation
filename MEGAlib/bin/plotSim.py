@@ -16,6 +16,18 @@ except ImportError:
 
     
 def getGBMdata(gbmfile='$BURSTCUBE/Simulation/GEANT3/gbm_effective_area.dat'):
+    """Reads the GBM NaI effective area file and returns a numpy array
+    with two columns ``energy`` and ``aeff``.
+
+    Parameters
+    ----------
+    gbmfile : string
+       Name of file that contains the GBM data.
+
+    Returns
+    ----------
+    gbmdata : numpy array with two columns ``energy`` and ``aeff``
+    """
 
     from numpy import genfromtxt
     from os import path
