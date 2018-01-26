@@ -15,7 +15,20 @@ except ImportError:
     exit()
 
     
-def plotAeffvsEnergy(energy, aeff, aeff_eres, aeff_eres_modfrac, theta=0):
+def getGBMdata(gbmfile='$BURSTCUBE/Simulation/GEANT3/gbm_effective_area.dat'):
+
+    from numpy import genfromtxt
+    from os import path
+
+    gbmfile = path.expandvars(gbmfile)
+    
+    return genfromtxt(gbmfile,
+                      skip_header=2,
+                      names=('energy', 'aeff'))
+
+    
+def plotAeffvsEnergy(energy, aeff, aeff_eres, aeff_eres_modfrac, theta=0,
+                     plotGBM=False):
 
     plt.figure(figsize=(8, 6))
     plt.title(r'Effective Area vs. Energy ($\theta$ = {:,.0f}$^\circ$)'
@@ -29,6 +42,11 @@ def plotAeffvsEnergy(energy, aeff, aeff_eres, aeff_eres_modfrac, theta=0):
     plt.scatter(energy, aeff_eres_modfrac, color='red')
     plt.plot(energy, aeff_eres_modfrac, color='red', alpha=0.5, linestyle='--',
              lw=2, label='BurstCube with E$_{\mathrm{res}}$ + escape')
+
+    if plotGBM:
+        gbmdata = getGBMdata()
+        plt.plot(gbmdata['energy'], gbmdata['aeff'], color='green', alpha=0.75,
+                 linestyle='-', lw=2, label='GBM NaI')
 
     plt.xscale('log')
     plt.xlabel('Energy (keV)', fontsize=16)
@@ -60,7 +78,7 @@ def plotAeffvsTheta(theta, aeff, aeff_eres, aeff_eres_modfrac, energy=100.):
     plt.grid(True)
 
     
-def plotAeff(simFiles):
+def plotAeff(simFiles, plotGBM=False):
 
     aeffs = simFiles.calculateAeff()
 
@@ -70,7 +88,7 @@ def plotAeff(simFiles):
                          aeffs['aeff'][mask],
                          aeffs['aeff_eres'][mask],
                          aeffs['aeff_eres_modfrac'][mask],
-                         angle)
+                         angle, plotGBM=plotGBM)
     plt.show()
 
     for energy in set(aeffs['keV']):
