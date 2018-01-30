@@ -52,14 +52,10 @@ Documentation Contents
 
 .. toctree::
    :includehidden:
-   :maxdepth: 3
+   :maxdepth: 2
 
    tutorial 
-   create
-   run
-   bcsim
-   plotsim
-   createstring
+   code
 
 
 

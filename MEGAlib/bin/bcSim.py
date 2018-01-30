@@ -9,7 +9,7 @@ class simFiles:
 
     def __init__(self, config_file):  #name of the function that python uses to construct 
 
-        '''Object for a multiple simulations over energy and angle.'''
+        """Object for a multiple simulations over energy and angle."""
 
         if setPath():
             exit()
@@ -43,6 +43,19 @@ class simFiles:
         return sfs
 
     def calculateAeff(self):
+    """Calculates effective area from the information contained within the .sim files. 
+
+    Parameters
+    ----------
+    self : null
+       Unsure of this python terminology at the moment.   
+
+    Returns
+    ----------
+    aeffs : array
+        Numpy array containing effective area of detector. 
+    """
+
         '''
 
         calculates effective area from sim files
