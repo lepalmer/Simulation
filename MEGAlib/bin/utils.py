@@ -85,7 +85,7 @@ def getTriggerProbability(htsimfile, test=False):
                      
     prob_det_info=[energy, theta, det_vol1/float(actual), det_vol3/float(actual), det_vol/float(actual), det_vol2/float(actual)]
 
-                  
+    print prob_det_info
 
     return prob_det_info
     
