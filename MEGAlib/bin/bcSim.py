@@ -119,27 +119,49 @@ class simFile:
                             return megaDict
         return megaDict
 
-    def getHits(self):
+    def getHits(self, detID=4):
+
+        """Get the hit details of all of the events in the sim file.  Ignores
+        the a,b,and c details.
+
+        Parameters
+        ----------
+        detID : int
+           Detector ID (usually 4)
+
+
+        Returns
+        ----------
+        hits : numpy structured array
+            Five column Structured array.  Columns are all floats and
+            are `x_pos`, `y_pos`, `z_pos`, `E`, and `tobs`.
+
+        """
+
+        IDstr = 'HTsim {}'.format(detID)
 
         # Ugly hack to get first event
-        first_evt = [x for x in self.simDict['HTsim 4'] if type(x) is not list]
-        
+        first_evt = [x for x in self.simDict[IDstr] if type(x) is not list]
+
         dt = np.dtype([('x_pos', np.float64),
                        ('y_pos', np.float64),
                        ('z_pos', np.float64),
                        ('E', np.float64),
-                       ('tobs', np.float64),
-                       ('a', int),
-                       ('b', int),
-                       ('c', int)])
+                       ('tobs', np.float64)])
 
-        return first_evt        
-        
+        # Get all the rest of the events
+        events = [np.array(evt[:5], dtype=np.float64)
+                  for evt in self.simDict['HTsim 4'][len(first_evt):]]
 
-#                    HTsim detID; x_pos; y_pos; z_pos; E; tobs; a; b; c
+        hits = np.zeros((len(events)+1,), dtype=dt)
 
-                    
-                    
+        # First event in a numpy array.  Ignore a,b,c.
+        hits[0] = np.array(first_evt[:5], dtype=np.float64)
+
+        for i, evt in enumerate(events):
+            hits[i+1] = evt
+
+        return hits
 
     def printDetails(self):
         
