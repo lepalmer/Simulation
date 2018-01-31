@@ -92,11 +92,11 @@ class simFile:
 
     @property
     def energy(self):
-        return self.srcDict['One.Spectrum'][1]
+        return float(self.srcDict['One.Spectrum'][1])
 
     @property
     def theta(self):
-        return self.srcDict['One.Beam'][1]
+        return float(self.srcDict['One.Beam'][1])
 
     def fileToDict(self, filename, commentString='#', termString=None):
 
@@ -179,8 +179,8 @@ class simFile:
         print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0])
         print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
         print('Generated Particles: ' + self.simDict['TS'][0])
-        print('Theta: ' + self.theta)
-        print('Energy: ' + self.energy)
+        print('Theta: ' + str(self.theta))
+        print('Energy: ' + str(self.energy))
 
     def calculateAeff(self):
         
