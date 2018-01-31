@@ -127,6 +127,44 @@ class simFile:
                             return megaDict
         return megaDict
 
+    def logToDict(self, filename):
+
+        """Reads a gzipped log file and populates a dictionary with information about
+        the events.  Returns this dictionary.
+
+        Parameters
+        ----------
+        filename: string or byte like object
+            Name of log file to read.
+
+        Returns
+        ---------
+        eventDict : dictionary
+            
+        Dictionary with the key being the trigger number (int).  Each
+        value is a tuple of the event number (int) and the detector
+        (str) that was hit.
+
+        """
+        
+        import gzip
+        import re
+
+        f = gzip.open(filename, 'rb')
+        file_content = f.read()
+        f.close()
+
+        eventDict = {}
+
+        lines = file_content.splitlines()
+        for i, line in enumerate(lines):
+            if 'Storing event' in str(line):
+                evtnums = [int(s) for s in str(line).split() if s.isdigit()]
+                detname = re.search('\"(.*)\"', str(lines[i-1]))
+                eventDict[evtnums[0]] = (evtnums[1], detname.group(1))
+
+        return eventDict
+    
     def getHits(self, detID=4):
 
         """Get the hit details of all of the events in the sim file.  Ignores
