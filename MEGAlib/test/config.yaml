@@ -14,7 +14,7 @@ source:
   Flux : 1000.0
   ParticleType : 1
   Beam : FarfieldPointSource
-
+  
 run:
   basename : test
   srcdir : $BURSTCUBE/Simulation/MEGAlib/test/
