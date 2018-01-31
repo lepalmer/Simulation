@@ -15,7 +15,19 @@ import os
 from utils import setPath
 
 def runCosima(srcFile):
+    """Runs MEGAlib's cosima program on desired source files. 
 
+    Parameters
+    ----------
+    srcFile : string
+        Source file to be simulated. 
+
+    Returns
+    -------
+
+    The .sim file for the respective source file. 
+
+    """
     import subprocess
     import gzip
 
@@ -45,7 +57,8 @@ def runCosima(srcFile):
                 print("Log (stderr) too big.  Didn't write")
 
 def runRevan(simFile, cfgFile):
-
+    """Not sure what this does but here is spot where text goes. 
+    """
     import subprocess
     import gzip
 
@@ -77,12 +90,21 @@ def runRevan(simFile, cfgFile):
             
 
 def runRevan_star(files):
-    """Convert `f([1,2])` to `f(1,2)` call."""
+    """Convert `f([1,2])` to `f(1,2)` call.
+
+    Parameters
+    ----------
+    files : string 
+
+    """
     return runRevan(*files)
 
             
 def getFiles(searchDir = '', extension = 'source'):
+    """Identifies the source files to simulate with cosima. 
 
+
+    """
     from glob import glob    
 
     if not ('BURSTCUBE' in os.environ):
@@ -95,8 +117,14 @@ def getFiles(searchDir = '', extension = 'source'):
         return glob(os.environ['BURSTCUBE']+'/Simulations/PerformancePlotSourceFiles/*.'+extension)
 
 def makeLinks(files, folderName='SimFiles'):
+    """Function to make links in directories. Probably not useful. 
 
-    '''Function to make links in directories.  Probably not useful.'''
+    Parameters
+    ----------
+
+    files : string
+
+    """
 
     from os import symlink
     from os import chdir

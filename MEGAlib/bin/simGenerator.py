@@ -5,9 +5,18 @@ from os import path
 
 
 def createSourceString(config, energy, angle):
+    """Creates a source file from a configurator object with a specific angle and energy
 
-    '''Creates a source file from a configurator object and a specific
-    angle and energy.'''
+    Parameters
+    ----------
+    config : string
+       The .yaml file the imposes the conditions for the source files desired.  
+
+    Returns
+    ----------
+    In your directory a bunch of .source files with specific angles and energies.  
+    """
+
 
     from utils import getFilenameFromDetails
 
@@ -65,7 +74,8 @@ class configurator():
         self.config = self.loadConfig(path)
 
     def loadConfig(self, path):
-
+        """idk what to put here.
+        """
         import yaml
 
         with open(path, 'r') as f:
@@ -79,6 +89,8 @@ class configurator():
         return config
 
     def saveConfig(self, path):
+        """idk what to put here either.
+        """
 
         import yaml
 
@@ -87,22 +99,39 @@ class configurator():
 
     @property
     def costhetabins(self):
+        """Creates increments of cos(theta) to be sampled by individual source files.
+        """
         return np.linspace(self.config['run']['costhetamin'],
                            self.config['run']['costhetamax'],
                            self.config['run']['costhetanumbins'])
-
+    
     @property
     def thetabins(self):
+        """Creates increments of theta to be sampled by individual source files.
+        """
         return np.round(np.rad2deg(np.arccos(self.costhetabins)), decimals=2)
 
     @property
     def ebins(self):
+        """Creates increments of energy (keV) to be sampled by individual source files. 
+        """
         return np.logspace(np.log10(self.config['run']['emin']),
                            np.log10(self.config['run']['emax']),
                            self.config['run']['enumbins'])
 
     def createSourceFiles(self, dir=''):
+        """Creates a source file from a configurator object with a specific angle and energy
 
+        Parameters
+        ----------
+
+        dir : string 
+        the desired directory of the output
+
+        Returns
+        ----------
+        In your directory a bunch of .source files with specific angles and energies.  
+        """
         from utils import getFilenameFromDetails
         
         for angle, energy in [(angle, energy)
