@@ -39,9 +39,9 @@ def test_createSourceString(create_configurator):
     refstr += 'StoreCalibrate True\nStoreSimulationInfo True\n'
     refstr += 'StoreOnlyEventsWithEnergyLoss True\nDiscretizeHits True\n\n'
     refstr += 'Run FFPS\nFFPS.Filename $BURSTCUBE/Simulation/MEGAlib/test/'
-    refstr += 'test_100.000keV_Cos0.100\n'
+    refstr += 'test_100.000keV_Cos1.000\n'
     refstr += 'FFPS.NTriggers 1000\nFFPS.Source One\nOne.ParticleType 1\n'
-    refstr += 'One.Beam FarfieldPointSource 5.73 0\n'
+    refstr += 'One.Beam FarfieldPointSource 0.1 0\n'
     refstr += 'One.Spectrum Mono 100.0\nOne.Flux 1000.0\n'
 
     conf = create_configurator
