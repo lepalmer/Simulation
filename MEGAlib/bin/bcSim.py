@@ -179,8 +179,8 @@ class simFile:
         print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0])
         print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
         print('Generated Particles: ' + self.simDict['TS'][0])
-        print('Angle: ' + self.srcDict['One.Beam'][1])
-        print('Energy: ' + self.srcDict['One.Spectrum'][1])
+        print('Theta: ' + self.theta)
+        print('Energy: ' + self.energy)
 
     def calculateAeff(self):
         
