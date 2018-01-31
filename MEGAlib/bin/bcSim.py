@@ -95,7 +95,7 @@ class simFile:
         return self.srcDict['One.Spectrum'][1]
 
     @property
-    def angle(self):
+    def theta(self):
         return self.srcDict['One.Beam'][1]
 
     def fileToDict(self, filename, commentString='#', termString=None):
