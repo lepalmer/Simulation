@@ -23,12 +23,15 @@ def setPath(desiredPath = "", desiredPathName = 'BURSTCUBE'):
 
 def getFilenameFromDetails(details):
 
-    '''Takes a dictionary of details and makes a machine readible filename
-    out of it.'''
+    """Takes a dictionary of details and makes a machine readible filename
+    out of it.  Angle comes in radians."""
 
+    import numpy as np
+    
     filename = "{}_{:.3f}keV_Cos{:.3f}".format(details['base'],
                                                details['keV'],
-                                               details['Cos'])
+                                               np.cos(np.deg2rad(
+                                                   details['theta'])))
 
     return filename
 

@@ -1,21 +1,23 @@
 #!/usr/bin/env python
-"""
-------------------------------------------------------------------------
-A script that runs an analysis chain on a multicore system.
-
-Probably not useful in other cases...
-
-Author: Jeremy Perkins (jeremy.s.perkins@nasa.gov)
-
-------------------------------------------------------------------------
-"""
 
 import os
 
 from utils import setPath
 
 def runCosima(srcFile):
+    """Runs MEGAlib's cosima program on desired source files. 
 
+    Parameters
+    ----------
+    srcFile : string
+        Source file to be simulated. 
+
+    Returns
+    -------
+
+    The .sim file for the respective source file. 
+
+    """
     import subprocess
     import gzip
 
@@ -45,7 +47,8 @@ def runCosima(srcFile):
                 print("Log (stderr) too big.  Didn't write")
 
 def runRevan(simFile, cfgFile):
-
+    """ 
+    """
     import subprocess
     import gzip
 
@@ -77,12 +80,21 @@ def runRevan(simFile, cfgFile):
             
 
 def runRevan_star(files):
-    """Convert `f([1,2])` to `f(1,2)` call."""
+    """Convert `f([1,2])` to `f(1,2)` call.
+
+    Parameters
+    ----------
+    files : string 
+
+    """
     return runRevan(*files)
 
             
 def getFiles(searchDir = '', extension = 'source'):
+    """Identifies the source files to simulate with cosima. 
 
+
+    """
     from glob import glob    
 
     if not ('BURSTCUBE' in os.environ):
@@ -95,8 +107,13 @@ def getFiles(searchDir = '', extension = 'source'):
         return glob(os.environ['BURSTCUBE']+'/Simulations/PerformancePlotSourceFiles/*.'+extension)
 
 def makeLinks(files, folderName='SimFiles'):
+    """Function to make links in directories. 
+    Parameters
+    ----------
 
-    '''Function to make links in directories.  Probably not useful.'''
+    files : string
+
+    """
 
     from os import symlink
     from os import chdir
@@ -123,6 +140,8 @@ def notDone(sims, tras):
 
 
 def cli():
+    """
+    """
 
     from multiprocessing import Pool
 
