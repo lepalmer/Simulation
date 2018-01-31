@@ -27,11 +27,10 @@ def getFilenameFromDetails(details):
     out of it.  Angle comes in radians."""
 
     import numpy as np
-    
+
     filename = "{}_{:.3f}keV_Cos{:.3f}".format(details['base'],
                                                details['keV'],
-                                               np.cos(np.deg2rad(
-                                                   details['theta'])))
+                                               details['theta'])
 
     return filename
 
@@ -74,8 +73,6 @@ def getTriggerProbability(htsimfile, test=False):
     det_vol1 = 0
     det_vol2 = 0
     det_vol3 = 0
-
-    print htsimfile
 
     energy = htsimfile.energy
     theta = htsimfile.theta
