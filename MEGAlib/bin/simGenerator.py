@@ -74,7 +74,7 @@ class configurator():
         self.config = self.loadConfig(path)
 
     def loadConfig(self, path):
-        """idk what to put here.
+        """
         """
         import yaml
 
@@ -89,7 +89,7 @@ class configurator():
         return config
 
     def saveConfig(self, path):
-        """idk what to put here either.
+        """
         """
 
         import yaml
@@ -130,7 +130,8 @@ class configurator():
 
         Returns
         ----------
-        In your directory a bunch of .source files with specific angles and energies.  
+        
+        In your directory all of the source files with specific angles and energies.  
         """
         from utils import getFilenameFromDetails
         

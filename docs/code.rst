@@ -32,3 +32,13 @@ plotSim module
    :undoc-members:
    :show-inheritance:
    :inherited-members:
+
+
+utils module
+------------
+
+.. automodule:: utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:

@@ -20,6 +20,14 @@ class simFiles:
     def loadFiles(self):
         """
 
+        Parameters
+        ----------
+        self : null
+
+        Returns
+        ----------
+        sfs : array
+            numpy array containing information about each sim file. 
 
         """
         from utils import getFilenameFromDetails
@@ -48,7 +56,6 @@ class simFiles:
         Parameters
         ----------
         self : null
-            Unsure of this python terminology at the moment.   
 
         Returns
         ----------
@@ -120,7 +127,7 @@ class simFile:
         return megaDict
 
     def printDetails(self):
-        """
+        """Prints the general information about specific sim files. 
         """
         print('Sim File: ' + self.simFile)
         print('Source File: ' + self.srcFile)
@@ -132,7 +139,7 @@ class simFile:
         print('Energy: ' + self.srcDict['One.Spectrum'][1])
 
     def calculateAeff(self):
-        """
+        """Calculates effective area of sim file. 
         """
         
         from math import pi
@@ -151,6 +158,12 @@ class simFile:
         resolution at 662 keV with 1/sqrt(E) scaling.  Sigma is
         calculated as the FWHM or eres diveded by 2.35.
 
+        Returns
+        ---------- 
+        frac : float
+
+        mod_frac : float
+        
         """
 
         ed = np.array(self.simDict['ED']).astype(np.float)

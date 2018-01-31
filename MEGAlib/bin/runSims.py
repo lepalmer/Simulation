@@ -57,7 +57,7 @@ def runCosima(srcFile):
                 print("Log (stderr) too big.  Didn't write")
 
 def runRevan(simFile, cfgFile):
-    """Not sure what this does but here is spot where text goes. 
+    """ 
     """
     import subprocess
     import gzip
@@ -117,8 +117,7 @@ def getFiles(searchDir = '', extension = 'source'):
         return glob(os.environ['BURSTCUBE']+'/Simulations/PerformancePlotSourceFiles/*.'+extension)
 
 def makeLinks(files, folderName='SimFiles'):
-    """Function to make links in directories. Probably not useful. 
-
+    """Function to make links in directories. 
     Parameters
     ----------
 
@@ -151,6 +150,8 @@ def notDone(sims, tras):
 
 
 def cli():
+    """
+    """
 
     from multiprocessing import Pool
 
