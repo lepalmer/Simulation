@@ -75,15 +75,17 @@ def getTriggerProbability(htsimfile, test=False):
     det_vol2 = 0
     det_vol3 = 0
 
-    actual = 0
-    if test: dotest=20
-    else: dotest=len(htsimfile.energy)
-
-    print len(htsimfile.energy)
+    print htsimfile
 
     energy = htsimfile.energy
     theta = htsimfile.theta
     hits = htsimfile.getHits()
+
+    actual = 0
+    if test: dotest=20
+    else: dotest=len(hits)
+
+    print "analyzing", len(hits), "events"
 
     for i in range(0,dotest):
         actual+=1
