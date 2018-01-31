@@ -7,6 +7,7 @@ simGenerator module
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
 
 runSim module
 -------------
