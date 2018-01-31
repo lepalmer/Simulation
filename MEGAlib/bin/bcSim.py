@@ -61,8 +61,24 @@ class simFile:
 
     def __init__(self, simFile, sourceFile):
 
-        '''Object for a single simulation.'''
+        """Object for a single megalib simulation.  The main attributes are
+        dictionaries associated with the simulation file, the source file, and
+        the geometry file (`simDict`, `srcDict`, and `geoDict`.
 
+        Parameters
+        ----------
+        simFile : string
+           simulation file output from Cosima
+
+        sourceFile: sting
+           config file used as input to Cosima
+
+        Returns
+        ----------
+        simFile : simFile Object
+
+        """
+        
         self.simFile = simFile
         self.srcFile = sourceFile
 
@@ -102,6 +118,28 @@ class simFile:
                         if termString in line:
                             return megaDict
         return megaDict
+
+    def getHits(self):
+
+        # Ugly hack to get first event
+        first_evt = [x for x in self.simDict['HTsim 4'] if type(x) is not list]
+        
+        dt = np.dtype([('x_pos', np.float64),
+                       ('y_pos', np.float64),
+                       ('z_pos', np.float64),
+                       ('E', np.float64),
+                       ('tobs', np.float64),
+                       ('a', int),
+                       ('b', int),
+                       ('c', int)])
+
+        return first_evt        
+        
+
+#                    HTsim detID; x_pos; y_pos; z_pos; E; tobs; a; b; c
+
+                    
+                    
 
     def printDetails(self):
         
