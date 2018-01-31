@@ -34,7 +34,9 @@ class simFiles:
             sf = simFile(self.conf.config['run']['simdir']
                          + '/'+fname+'.inc1.id1.sim',
                          self.conf.config['run']['srcdir']
-                         + '/'+fname+'.source')
+                         + '/'+fname+'.source',
+                         self.conf.config['run']['simdir']
+                         + '/'+fname+'.stdout.gz')
             sfs.append(sf)
 
         return sfs
@@ -59,11 +61,11 @@ class simFiles:
 
 class simFile:
 
-    def __init__(self, simFile, sourceFile):
+    def __init__(self, simFile, sourceFile, logFile):
 
         """Object for a single megalib simulation.  The main attributes are
         dictionaries associated with the simulation file, the source file, and
-        the geometry file (`simDict`, `srcDict`, and `geoDict`.
+        the geometry file (`simDict`, `srcDict`, `geoDict`, and `logDict`.).
 
         Parameters
         ----------
@@ -81,6 +83,7 @@ class simFile:
         
         self.simFile = simFile
         self.srcFile = sourceFile
+        self.logFile = logFile
 
         if setPath():
             exit()
@@ -89,6 +92,8 @@ class simFile:
         self.simDict = self.fileToDict(simFile, '#', None)
         self.srcDict = self.fileToDict(sourceFile, '#', None)
         self.geoDict = self.fileToDict(self.srcDict['Geometry'][0], '//', None)
+        self.logDict = self.logToDict(self.logFile)
+        
 
     @property
     def energy(self):
