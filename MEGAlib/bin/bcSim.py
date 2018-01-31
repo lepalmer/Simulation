@@ -90,6 +90,14 @@ class simFile:
         self.srcDict = self.fileToDict(sourceFile, '#', None)
         self.geoDict = self.fileToDict(self.srcDict['Geometry'][0], '//', None)
 
+    @property
+    def energy(self):
+        return self.srcDict['One.Spectrum'][1]
+
+    @property
+    def angle(self):
+        return self.srcDict['One.Beam'][1]
+
     def fileToDict(self, filename, commentString='#', termString=None):
 
         from os import path
