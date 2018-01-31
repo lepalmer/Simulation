@@ -22,7 +22,7 @@ def createSourceString(config, energy, angle):
 
     fname = getFilenameFromDetails({'base': config['run']['basename'],
                                     'keV': energy,
-                                    'Cos': angle})
+                                    'theta': angle})
 
     srcstr = 'Version ' + str(config['general']['Version'])
     srcstr += '\n'
@@ -56,7 +56,7 @@ def createSourceString(config, energy, angle):
     srcstr += 'One.ParticleType ' + str(config['source']['ParticleType'])
     srcstr += '\n'
     srcstr += 'One.Beam ' + config['source']['Beam'] + ' '
-    srcstr += str(np.round(np.rad2deg(angle), decimals=2)) + ' 0'
+    srcstr += str(np.round(angle, decimals=2)) + ' 0'
     srcstr += '\n'
     srcstr += 'One.Spectrum Mono '
     srcstr += str(energy)
@@ -136,14 +136,14 @@ class configurator():
         from utils import getFilenameFromDetails
         
         for angle, energy in [(angle, energy)
-                              for angle in self.costhetabins
+                              for angle in self.thetabins
                               for energy in self.ebins]:
             srcstr = createSourceString(self.config, energy, angle)
 
             basename = self.config['run']['basename']
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
-                                            'Cos': angle})
+                                            'theta': angle})
             if dir:
                 fname = dir + '/' + fname + '.source'
             else:
