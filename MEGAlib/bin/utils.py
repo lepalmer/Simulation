@@ -55,8 +55,20 @@ def getDetailsFromFilename(filename):
 
 def getTriggerProbability(htsimfile, test=False):
 
-    '''Takes a single simFile (from bcSim.simFiles(config.yaml)) and 
-    returns the probability of hitting in each detector '''
+    """Takes a single simFile (from bcSim.simFiles(config.yaml)) and 
+    returns the probability of hitting in each detector
+
+    Parameters
+    ----------
+    self : simFile 
+    test : run a quick test over a limited number of events (20)
+    
+    Returns
+    ----------
+    prob_det_info : 1x6 numpy array containing information about the energy, angles and probability of 
+    hitting a given detector
+    
+    """
 
     det_vol = 0 
     det_vol1 = 0
@@ -65,47 +77,64 @@ def getTriggerProbability(htsimfile, test=False):
 
     actual = 0
     if test: dotest=20
-    else: dotest=len(htsims)
+    else: dotest=len(htsimfile.energy)
 
-    siminfo=htsimfile.simDict['HTsim 4']
+    print len(htsimfile.energy)
+
     energy = htsimfile.energy
     theta = htsimfile.theta
-    print energy, theta
-    
+    hits = htsimfile.getHits()
+
     for i in range(0,dotest):
-        if isinstance(siminfo[i],list): 
-            actual+=1
-            if float(siminfo[i][0])> 0.:
-                if float(siminfo[i][1])>0.:
-                    det_vol1+=1
-                else:
-                    det_vol3+=1
-            else:
-                if float(siminfo[i][1])>0.:
-                    det_vol2+=1
-                else:
-                    det_vol+=1
+        actual+=1
+        if hits[i][0]>0:
+            if hits[i][1]>0: det_vol1+=1
+            else: det_vol3+=1
+        else:
+            if hits[i][1]>0: det_vol2+=1
+            else: det_vol+=1
                      
     prob_det_info=[energy, theta, det_vol1/float(actual), det_vol3/float(actual), det_vol/float(actual), det_vol2/float(actual)]
-
-    print prob_det_info
 
     return prob_det_info
     
 
 def getAllTriggerProbability(filelist, test=False):
+
+    """Takes a bunch of simFiles (from bcSim.simFiles(config.yaml)) and 
+    returns the probability of hitting in each detector
+
+    Parameters
+    ----------
+    self : simFiles 
+    test : run a quick test over a limited number of files (20)
     
+    Returns
+    ----------
+    det_prob : numpy array containing information from all the files about the energy, angles and probability of 
+    hitting a given detector
+    
+    """
+
+    import numpy as np
     htsims=filelist.sims
-    
+
+    det_prob = np.empty(len(htsims),
+                        dtype={'names': ['energy', 'theta', 'prob_det_vol1',
+                                         'prob_det_vol3', 'prob_det_vol', 'prob_det_vol2'],
+                               'formats': ['float32', 'float32',
+                                           'float32', 'float32', 'float32', 'float32']})
+
     if test: dotest=1
     else: dotest=len(htsims)
 
     print "Analyzing", len(htsims), "files"
 
     for j in range(dotest):
-        det_prob = getTriggerProbability(htsims[j], test=test)
+        holder=getTriggerProbability(htsims[j], test=test)
+        det_prob[j]= np.array([tuple(holder)], dtype=det_prob.dtype)
 
 
-    return det_prob[2:4]
+    return det_prob
         
     
