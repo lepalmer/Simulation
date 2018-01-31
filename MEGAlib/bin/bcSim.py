@@ -84,8 +84,24 @@ class simFile:
 
     def __init__(self, simFile, sourceFile):
 
-        '''Object for a single simulation.'''
+        """Object for a single megalib simulation.  The main attributes are
+        dictionaries associated with the simulation file, the source file, and
+        the geometry file (`simDict`, `srcDict`, and `geoDict`.
 
+        Parameters
+        ----------
+        simFile : string
+           simulation file output from Cosima
+
+        sourceFile: sting
+           config file used as input to Cosima
+
+        Returns
+        ----------
+        simFile : simFile Object
+
+        """
+        
         self.simFile = simFile
         self.srcFile = sourceFile
 
@@ -96,6 +112,14 @@ class simFile:
         self.simDict = self.fileToDict(simFile, '#', None)
         self.srcDict = self.fileToDict(sourceFile, '#', None)
         self.geoDict = self.fileToDict(self.srcDict['Geometry'][0], '//', None)
+
+    @property
+    def energy(self):
+        return float(self.srcDict['One.Spectrum'][1])
+
+    @property
+    def theta(self):
+        return float(self.srcDict['One.Beam'][1])
 
     def fileToDict(self, filename, commentString='#', termString=None):
 
@@ -126,6 +150,50 @@ class simFile:
                             return megaDict
         return megaDict
 
+    def getHits(self, detID=4):
+
+        """Get the hit details of all of the events in the sim file.  Ignores
+        the a,b,and c details.
+
+        Parameters
+        ----------
+        detID : int
+           Detector ID (usually 4)
+
+
+        Returns
+        ----------
+        hits : numpy structured array
+            Five column Structured array.  Columns are all floats and
+            are `x_pos`, `y_pos`, `z_pos`, `E`, and `tobs`.
+
+        """
+
+        IDstr = 'HTsim {}'.format(detID)
+
+        # Ugly hack to get first event
+        first_evt = [x for x in self.simDict[IDstr] if type(x) is not list]
+
+        dt = np.dtype([('x_pos', np.float64),
+                       ('y_pos', np.float64),
+                       ('z_pos', np.float64),
+                       ('E', np.float64),
+                       ('tobs', np.float64)])
+
+        # Get all the rest of the events
+        events = [np.array(evt[:5], dtype=np.float64)
+                  for evt in self.simDict['HTsim 4'][len(first_evt):]]
+
+        hits = np.zeros((len(events)+1,), dtype=dt)
+
+        # First event in a numpy array.  Ignore a,b,c.
+        hits[0] = np.array(first_evt[:5], dtype=np.float64)
+
+        for i, evt in enumerate(events):
+            hits[i+1] = evt
+
+        return hits
+
     def printDetails(self):
         """Prints the general information about specific sim files. 
         """
@@ -135,8 +203,8 @@ class simFile:
         print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0])
         print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
         print('Generated Particles: ' + self.simDict['TS'][0])
-        print('Angle: ' + self.srcDict['One.Beam'][1])
-        print('Energy: ' + self.srcDict['One.Spectrum'][1])
+        print('Theta: ' + str(self.theta))
+        print('Energy: ' + str(self.energy))
 
     def calculateAeff(self):
         """Calculates effective area of sim file. 
