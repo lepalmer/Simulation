@@ -161,9 +161,12 @@ class simFile:
         import gzip
         import re
 
-        f = gzip.open(filename, 'rb')
-        
-            
+        # Try to read the gzip and fallback to normal if it doesn't exist.
+        try:
+            f = gzip.open(filename, 'rb')
+        except FileNotFoundError:
+            filename = filename[:-3]
+            f = open(filename, 'rb')
         file_content = f.read()
         f.close()
 
