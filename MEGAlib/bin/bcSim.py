@@ -61,7 +61,7 @@ class simFiles:
 
 class simFile:
 
-    def __init__(self, simFile, sourceFile, logFile):
+    def __init__(self, simFile, sourceFile, logFile=''):
 
         """Object for a single megalib simulation.  The main attributes are
         dictionaries associated with the simulation file, the source file, and
@@ -75,6 +75,9 @@ class simFile:
         sourceFile: sting
            config file used as input to Cosima
 
+        logFile: string
+           stdout from Cosima.  Optional. 
+
         Returns
         ----------
         simFile : simFile Object
@@ -84,7 +87,7 @@ class simFile:
         self.simFile = simFile
         self.srcFile = sourceFile
         self.logFile = logFile
-
+        
         if setPath():
             exit()
 
@@ -92,8 +95,10 @@ class simFile:
         self.simDict = self.fileToDict(simFile, '#', None)
         self.srcDict = self.fileToDict(sourceFile, '#', None)
         self.geoDict = self.fileToDict(self.srcDict['Geometry'][0], '//', None)
-        self.logDict = self.logToDict(self.logFile)
-        
+        if logFile:
+            self.logDict = self.logToDict(self.logFile)
+        else:
+            print("Log file not provided.  Not loading.")
 
     @property
     def energy(self):
