@@ -131,7 +131,7 @@ class simFile:
                                     megaDict[lineContents[0]].append(
                                         lineContents[1])
                             else:
-                                megaDict[lineContents[0]] = lineContents[1:]
+                                megaDict[lineContents[0]] = [lineContents[1:]]
                     if termString is not None:
                         if termString in line:
                             return megaDict
@@ -160,8 +160,11 @@ class simFile:
         import gzip
         import re
 
-        f = gzip.open(filename, 'rb')
-        file_content = f.read()
+        try:
+            f = gzip.open(filename, 'rb')
+        except FileNotFoundError:
+            
+            file_content = f.read()
         f.close()
 
         eventDict = {}
