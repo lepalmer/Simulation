@@ -43,7 +43,23 @@ def test_setPath():
     from utils import setPath
     assert(not setPath())
 
+    
+def test_energy(create_simfile):
 
+    sf = create_simfile
+    energy = sf.energy
+
+    assert (np.abs(energy - 200.0) < 1e-7)
+
+    
+def test_theta(create_simfile):
+
+    sf = create_simfile
+    energy = sf.theta
+    
+    assert (np.abs(energy - 30.0) < 1e-7)
+
+    
 def test_calculateAeff(create_simfile):
 
     sf = create_simfile
