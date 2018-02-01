@@ -52,50 +52,6 @@ def getDetailsFromFilename(filename):
 
     return details
 
-#def getTriggerProbability(htsimfile, test=False):
-#
-#    """Takes a single simFile (from bcSim.simFiles(config.yaml)) and 
-#    returns the probability of hitting in each detector
-#
-#    Parameters
-#    ----------
-#    self : simFile 
-#    test : run a quick test over a limited number of events (20)
-#    
-#    Returns
-#    ----------
-#    prob_det_info : 1x6 numpy array containing information about the energy, angles and probability of 
-#    hitting a given detector
-#    
-#    """
-#
-#    det_vol = 0 
-#    det_vol1 = 0
-#    det_vol2 = 0
-#    det_vol3 = 0
-#
-#    energy = htsimfile.energy
-#    theta = htsimfile.theta
-#    hits = htsimfile.getHits()
-#
-#    actual = 0
-#    if test: dotest=20
-#    else: dotest=len(hits)
-#
-#    print "analyzing", len(hits), "events"
-#
-#    for i in range(0,dotest):
-#        actual+=1
-#        if hits[i][0]>0:
-#            if hits[i][1]>0: det_vol1+=1
-#            else: det_vol3+=1
-#        else:
-#            if hits[i][1]>0: det_vol2+=1
-#            else: det_vol+=1
-#                     
-#    prob_det_info=[energy, theta, det_vol1/float(actual), det_vol3/float(actual), det_vol/float(actual), det_vol2/float(actual)]
-#
-#    return prob_det_info
 
 def getTriggerProbability(htsimfile, num_det=4, test=False):
 
@@ -118,25 +74,27 @@ def getTriggerProbability(htsimfile, num_det=4, test=False):
 
     det_vol=np.zeros(num_det)
 
-    print "test", det_vol
-
     energy = htsimfile.energy
     theta = htsimfile.theta
     hits = htsimfile.getHits()
 
-    actual = 1
     if test: dotest=20
     else: dotest=len(hits)
 
     print "analyzing", len(hits), "events"
 
     for key, value in htsimfile.logDict.items():
-        print hits[key], value[1]
         for i in range(num_det):
             if str(i) in value[1]:
-                print i, value
-                     
-    prob_det_info=[energy, theta, det_vol1/float(actual), det_vol3/float(actual), det_vol/float(actual), det_vol2/float(actual)]
+                #print i, value[1]
+                det_vol[i]+=1
+            elif i==0:
+                if '_' not in value[1]:
+                    det_vol[0]+=1
+
+    prob_det_info=[energy, theta]
+    for i in range(num_det):
+        prob_det_info=np.append(prob_det_info,det_vol[i]/float(len(hits)))
 
     return prob_det_info
     
@@ -162,8 +120,8 @@ def getAllTriggerProbability(filelist, num_detectors=4, test=False):
     htsims=filelist.sims
 
     det_prob = np.empty(len(htsims),
-                        dtype={'names': ['energy', 'theta', 'prob_det_vol1',
-                                         'prob_det_vol3', 'prob_det_vol', 'prob_det_vol2'],
+                        dtype={'names': ['energy', 'theta', 'prob_det_vol',
+                                         'prob_det_vol1', 'prob_det_vol2', 'prob_det_vol3'],
                                'formats': ['float32', 'float32',
                                            'float32', 'float32', 'float32', 'float32']})
 
