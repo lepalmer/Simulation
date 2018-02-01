@@ -52,8 +52,8 @@ class simFiles:
         for i, sf in enumerate(self.sims):
             frac, mod_frac = sf.passEres()
             aeff = sf.calculateAeff()
-            aeffs[i] = (sf.srcDict['One.Beam'][1],
-                        sf.srcDict['One.Spectrum'][1],
+            aeffs[i] = (sf.srcDict['One.Beam'][0][1],
+                        sf.srcDict['One.Spectrum'][0][1],
                         aeff, aeff*frac, aeff*mod_frac)
 
         return aeffs
@@ -163,6 +163,9 @@ class simFile:
         
         import gzip
         import re
+        from os import path
+
+        filename = path.expandvars(filename)
 
         # Try to read the gzip and fallback to normal if it doesn't exist.
         try:
@@ -226,8 +229,8 @@ class simFile:
         
         print('Sim File: ' + self.simFile)
         print('Source File: ' + self.srcFile)
-        print('Geometry File: ' + self.srcDict['Geometry'][0])
-        print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0])
+        print('Geometry File: ' + self.srcDict['Geometry'][0][0])
+        print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0][0])
         print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
         print('Generated Particles: ' + self.simDict['TS'][0])
         print('Theta: ' + str(self.theta))
@@ -237,7 +240,7 @@ class simFile:
         
         from math import pi
 
-        r_sphere = float(self.geoDict['SurroundingSphere'][0])
+        r_sphere = float(self.geoDict['SurroundingSphere'][0][0])
         triggers = int(self.srcDict['FFPS.NTriggers'][0])
         generated_particles = int(self.simDict['TS'][0])
 
