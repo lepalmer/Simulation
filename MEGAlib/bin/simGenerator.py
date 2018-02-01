@@ -5,15 +5,24 @@ from os import path
 
 
 def createSourceString(config, energy, angle):
+    """Creates a source file from a configurator object with a specific angle and energy
 
-    '''Creates a source file from a configurator object and a specific
-    angle and energy.'''
+    Parameters
+    ----------
+    config : string
+       The .yaml file the imposes the conditions for the source files desired.  
+
+    Returns
+    ----------
+    In your directory a bunch of .source files with specific angles and energies.  
+    """
+
 
     from utils import getFilenameFromDetails
 
     fname = getFilenameFromDetails({'base': config['run']['basename'],
                                     'keV': energy,
-                                    'Cos': angle})
+                                    'theta': angle})
 
     srcstr = 'Version ' + str(config['general']['Version'])
     srcstr += '\n'
@@ -47,7 +56,7 @@ def createSourceString(config, energy, angle):
     srcstr += 'One.ParticleType ' + str(config['source']['ParticleType'])
     srcstr += '\n'
     srcstr += 'One.Beam ' + config['source']['Beam'] + ' '
-    srcstr += str(np.round(np.rad2deg(angle), decimals=2)) + ' 0'
+    srcstr += str(np.round(angle, decimals=2)) + ' 0'
     srcstr += '\n'
     srcstr += 'One.Spectrum Mono '
     srcstr += str(energy)
@@ -65,7 +74,8 @@ class configurator():
         self.config = self.loadConfig(path)
 
     def loadConfig(self, path):
-
+        """
+        """
         import yaml
 
         with open(path, 'r') as f:
@@ -79,6 +89,8 @@ class configurator():
         return config
 
     def saveConfig(self, path):
+        """
+        """
 
         import yaml
 
@@ -87,33 +99,51 @@ class configurator():
 
     @property
     def costhetabins(self):
+        """Creates increments of cos(theta) to be sampled by individual source files.
+        """
         return np.linspace(self.config['run']['costhetamin'],
                            self.config['run']['costhetamax'],
                            self.config['run']['costhetanumbins'])
-
+    
     @property
     def thetabins(self):
+        """Creates increments of theta to be sampled by individual source files.
+        """
         return np.round(np.rad2deg(np.arccos(self.costhetabins)), decimals=2)
 
     @property
     def ebins(self):
+        """Creates increments of energy (keV) to be sampled by individual source files. 
+        """
         return np.logspace(np.log10(self.config['run']['emin']),
                            np.log10(self.config['run']['emax']),
                            self.config['run']['enumbins'])
 
     def createSourceFiles(self, dir=''):
+        """Creates a source file from a configurator object with a specific angle and energy
 
+        Parameters
+        ----------
+
+        dir : string 
+        the desired directory of the output
+
+        Returns
+        ----------
+        
+        In your directory all of the source files with specific angles and energies.  
+        """
         from utils import getFilenameFromDetails
         
         for angle, energy in [(angle, energy)
-                              for angle in self.costhetabins
+                              for angle in self.thetabins
                               for energy in self.ebins]:
             srcstr = createSourceString(self.config, energy, angle)
 
             basename = self.config['run']['basename']
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
-                                            'Cos': angle})
+                                            'theta': angle})
             if dir:
                 fname = dir + '/' + fname + '.source'
             else:

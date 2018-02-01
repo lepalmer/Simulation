@@ -92,6 +92,7 @@ def test_calculateAeffs(create_simfiles):
                   [57.30, 300.00, 46.63, 37.91, 38.79]],
                  dtype=np.float32)
 
+
     # the assert methods don't like
     # record arrays so you have to
     # convert to a regular numpy

@@ -2,23 +2,34 @@
 
 import numpy as np
 from utils import setPath
-from simGenerator import configurator
+from simGenerator import configurator  #requires simGenerator
 
 
 class simFiles:
 
-    def __init__(self, config_file):
+    def __init__(self, config_file):  #name of the function that python uses to construct 
 
-        '''Object for a multiple simulations over energy and angle.'''
+        """Object for a multiple simulations over energy and angle."""
 
         if setPath():
             exit()
 
         self.conf = configurator(config_file)
-        self.sims = self.loadFiles()
+        self.sims = self.loadFiles()  #this is defined later down? 
 
     def loadFiles(self):
+        """
 
+        Parameters
+        ----------
+        self : null
+
+        Returns
+        ----------
+        sfs : array
+            numpy array containing information about each sim file. 
+
+        """
         from utils import getFilenameFromDetails
 
         basename = self.conf.config['run']['basename']
@@ -30,7 +41,7 @@ class simFiles:
                               for energy in self.conf.ebins]:
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
-                                            'Cos': angle})
+                                            'theta': angle})
             sf = simFile(self.conf.config['run']['simdir']
                          + '/'+fname+'.inc1.id1.sim',
                          self.conf.config['run']['srcdir']
@@ -42,6 +53,18 @@ class simFiles:
         return sfs
 
     def calculateAeff(self):
+        """Calculates effective area from the information contained within the .sim files. 
+
+        Parameters
+        ----------
+        self : null
+
+        Returns
+        ----------
+        aeffs : array
+            Numpy array containing effective area of detector. 
+    
+        """
 
         aeffs = np.zeros(len(self.sims),
                          dtype={'names': ['theta', 'keV', 'aeff',
@@ -226,7 +249,8 @@ class simFile:
         return hits
 
     def printDetails(self):
-        
+        """Prints the general information about specific sim files. 
+        """
         print('Sim File: ' + self.simFile)
         print('Source File: ' + self.srcFile)
         print('Geometry File: ' + self.srcDict['Geometry'][0][0])
@@ -237,6 +261,8 @@ class simFile:
         print('Energy: ' + str(self.energy))
 
     def calculateAeff(self):
+        """Calculates effective area of sim file. 
+        """
         
         from math import pi
 
@@ -248,11 +274,19 @@ class simFile:
 
     def passEres(self, alpha=2.57, escape=30.0):
 
-        '''Calculates the fraction of events that are good (fully absorbed)
+        """Calculates the fraction of events that are good (fully absorbed)
         and those that escape.  The default escape photon energy is
         for CsI (30.0 keV).  An alpha of 2.57 is based on 10% energy
         resolution at 662 keV with 1/sqrt(E) scaling.  Sigma is
-        calculated as the FWHM or eres diveded by 2.35.'''
+        calculated as the FWHM or eres diveded by 2.35.
+
+        Returns
+        ---------- 
+        frac : float
+
+        mod_frac : float
+        
+        """
 
         ed = np.array(self.simDict['ED']).astype(np.float)
         ec = np.array(self.simDict['EC']).astype(np.float)
