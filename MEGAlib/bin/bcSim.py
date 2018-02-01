@@ -94,7 +94,7 @@ class simFile:
         print("Loading " + self.simFile)
         self.simDict = self.fileToDict(simFile, '#', None)
         self.srcDict = self.fileToDict(sourceFile, '#', None)
-        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0][0],
+        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0],
                                        '//', None)
         if logFile:
             self.logDict = self.logToDict(self.logFile)
@@ -103,11 +103,11 @@ class simFile:
 
     @property
     def energy(self):
-        return float(self.srcDict['One.Spectrum'][1])
+        return float(self.srcDict['One.Spectrum'][0][1])
 
     @property
     def theta(self):
-        return float(self.srcDict['One.Beam'][1])
+        return float(self.srcDict['One.Beam'][0][1])
 
     def fileToDict(self, filename, commentString='#', termString=None):
 
@@ -120,19 +120,22 @@ class simFile:
                 for line in f:
                     if commentString not in line:
                         if ';' in line:
-                            lineContents = line.split(';')
+                            contents = line.split(';')
                         else:
-                            lineContents = line.split()
-                        if len(lineContents) > 1:
-                            if lineContents[0] in megaDict:
+                            contents = line.split()
+                        if len(contents) > 1:
+                            if contents[0] in megaDict:
                                 if ';' in line:
-                                    megaDict[lineContents[0]].append(
-                                        lineContents[1:])
+                                    megaDict[contents[0]].append(
+                                        contents[1:])
                                 else:
-                                    megaDict[lineContents[0]].append(
-                                        lineContents[1])
+                                    megaDict[contents[0]].append(
+                                        contents[1])
                             else:
-                                megaDict[lineContents[0]] = [lineContents[1:]]
+                                if len(contents[1:]) > 1:
+                                    megaDict[contents[0]] = [contents[1:]]
+                                else:
+                                    megaDict[contents[0]] = contents[1:]
                     if termString is not None:
                         if termString in line:
                             return megaDict
