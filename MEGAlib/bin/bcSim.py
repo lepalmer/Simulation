@@ -94,7 +94,8 @@ class simFile:
         print("Loading " + self.simFile)
         self.simDict = self.fileToDict(simFile, '#', None)
         self.srcDict = self.fileToDict(sourceFile, '#', None)
-        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0], '//', None)
+        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0][0],
+                                       '//', None)
         if logFile:
             self.logDict = self.logToDict(self.logFile)
         else:
@@ -160,11 +161,10 @@ class simFile:
         import gzip
         import re
 
-        try:
-            f = gzip.open(filename, 'rb')
-        except FileNotFoundError:
+        f = gzip.open(filename, 'rb')
+        
             
-            file_content = f.read()
+        file_content = f.read()
         f.close()
 
         eventDict = {}
@@ -199,9 +199,6 @@ class simFile:
 
         IDstr = 'HTsim {}'.format(detID)
 
-        # Ugly hack to get first event
-        first_evt = [x for x in self.simDict[IDstr] if type(x) is not list]
-
         dt = np.dtype([('x_pos', np.float64),
                        ('y_pos', np.float64),
                        ('z_pos', np.float64),
@@ -209,16 +206,13 @@ class simFile:
                        ('tobs', np.float64)])
 
         # Get all the rest of the events
-        events = [np.array(evt[:5], dtype=np.float64)
-                  for evt in self.simDict['HTsim 4'][len(first_evt):]]
+        events = [np.array(evt, dtype=np.float64)
+                  for evt in self.simDict[IDstr]]
 
-        hits = np.zeros((len(events)+1,), dtype=dt)
-
-        # First event in a numpy array.  Ignore a,b,c.
-        hits[0] = np.array(first_evt[:5], dtype=np.float64)
+        hits = np.zeros((len(events),), dtype=dt)
 
         for i, evt in enumerate(events):
-            hits[i+1] = evt
+            hits[i] = evt
 
         return hits
 
