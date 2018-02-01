@@ -45,7 +45,9 @@ class simFiles:
             sf = simFile(self.conf.config['run']['simdir']
                          + '/'+fname+'.inc1.id1.sim',
                          self.conf.config['run']['srcdir']
-                         + '/'+fname+'.source')
+                         + '/'+fname+'.source',
+                         self.conf.config['run']['simdir']
+                         + '/'+fname+'.stdout.gz')
             sfs.append(sf)
 
         return sfs
@@ -82,11 +84,11 @@ class simFiles:
 
 class simFile:
 
-    def __init__(self, simFile, sourceFile):
+    def __init__(self, simFile, sourceFile, logFile=''):
 
         """Object for a single megalib simulation.  The main attributes are
         dictionaries associated with the simulation file, the source file, and
-        the geometry file (`simDict`, `srcDict`, and `geoDict`.
+        the geometry file (`simDict`, `srcDict`, `geoDict`, and `logDict`.).
 
         Parameters
         ----------
@@ -96,6 +98,9 @@ class simFile:
         sourceFile: sting
            config file used as input to Cosima
 
+        logFile: string
+           stdout from Cosima.  Optional. 
+
         Returns
         ----------
         simFile : simFile Object
@@ -104,14 +109,20 @@ class simFile:
         
         self.simFile = simFile
         self.srcFile = sourceFile
-
+        self.logFile = logFile
+        
         if setPath():
             exit()
 
         print("Loading " + self.simFile)
         self.simDict = self.fileToDict(simFile, '#', None)
         self.srcDict = self.fileToDict(sourceFile, '#', None)
-        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0], '//', None)
+        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0][0],
+                                       '//', None)
+        if logFile:
+            self.logDict = self.logToDict(self.logFile)
+        else:
+            print("Log file not provided.  Not loading.")
 
     @property
     def energy(self):
@@ -144,7 +155,7 @@ class simFile:
                                     megaDict[lineContents[0]].append(
                                         lineContents[1])
                             else:
-                                megaDict[lineContents[0]] = lineContents[1:]
+                                megaDict[lineContents[0]] = [lineContents[1:]]
                     if termString is not None:
                         if termString in line:
                             return megaDict
@@ -174,6 +185,8 @@ class simFile:
         import re
 
         f = gzip.open(filename, 'rb')
+        
+            
         file_content = f.read()
         f.close()
 
@@ -209,9 +222,6 @@ class simFile:
 
         IDstr = 'HTsim {}'.format(detID)
 
-        # Ugly hack to get first event
-        first_evt = [x for x in self.simDict[IDstr] if type(x) is not list]
-
         dt = np.dtype([('x_pos', np.float64),
                        ('y_pos', np.float64),
                        ('z_pos', np.float64),
@@ -219,16 +229,13 @@ class simFile:
                        ('tobs', np.float64)])
 
         # Get all the rest of the events
-        events = [np.array(evt[:5], dtype=np.float64)
-                  for evt in self.simDict['HTsim 4'][len(first_evt):]]
+        events = [np.array(evt, dtype=np.float64)
+                  for evt in self.simDict[IDstr]]
 
-        hits = np.zeros((len(events)+1,), dtype=dt)
-
-        # First event in a numpy array.  Ignore a,b,c.
-        hits[0] = np.array(first_evt[:5], dtype=np.float64)
+        hits = np.zeros((len(events),), dtype=dt)
 
         for i, evt in enumerate(events):
-            hits[i+1] = evt
+            hits[i] = evt
 
         return hits
 
