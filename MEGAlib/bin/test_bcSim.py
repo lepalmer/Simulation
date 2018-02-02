@@ -21,7 +21,8 @@ def create_simfile(request, tmpdir_factory):
 
     testdir = path.expandvars('$BURSTCUBE/Simulation/MEGAlib/test/')
     sf = simFile(testdir+'test.inc1.id1.sim',
-                 testdir+'FarFieldPointSource_test.source')
+                 testdir+'FarFieldPointSource_test.source',
+                 testdir+'FarFieldPointSource_test.stdout.gz',)
     return sf
 
 
@@ -99,3 +100,12 @@ def test_calculateAeffs(create_simfiles):
     y = aeffs.view(np.float32).reshape(aeffs.shape + (-1,))
 
     assert_allclose(x, y, 0.1)
+
+    
+def test_TriggerProb(create_simfile):
+
+    sf = create_simfile
+    prob = sf.getTriggerProbability(1, False)
+
+    assert_allclose(prob, (200.0, 30.0, 0.0316, 1.00), 1e-3)
+

@@ -321,9 +321,8 @@ class simFile:
     
         Returns
         ----------
-        prob_det_info : 1x6 numpy array 
-            Contains information about the energy, angles and
-            probability of hitting a given detector
+        prob_det_info : numpy array 
+            Array is (energy, angle, error, prob1, prob2, ...)
 
         """
 
