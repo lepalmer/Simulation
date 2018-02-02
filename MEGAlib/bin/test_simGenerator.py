@@ -39,7 +39,7 @@ def test_createSourceString(create_configurator):
     refstr += 'StoreCalibrate True\nStoreSimulationInfo True\n'
     refstr += 'StoreOnlyEventsWithEnergyLoss True\nDiscretizeHits True\n\n'
     refstr += 'Run FFPS\nFFPS.Filename $BURSTCUBE/Simulation/MEGAlib/test/'
-    refstr += 'test_100.000keV_Cos1.000\n'
+    refstr += 'test_100.000keV_0.10theta\n'
     refstr += 'FFPS.NTriggers 1000\nFFPS.Source One\nOne.ParticleType 1\n'
     refstr += 'One.Beam FarfieldPointSource 0.1 0\n'
     refstr += 'One.Spectrum Mono 100.0\nOne.Flux 1000.0\n'
@@ -55,15 +55,15 @@ def test_createSourceFiles(create_configurator, tmpdir_factory):
     from os.path import isfile
 
     srcdir = tmpdir_factory.mktemp('source')
-    files = ('test_100.000keV_Cos0.500.source',
-             'test_100.000keV_Cos0.750.source',
-             'test_100.000keV_Cos1.000.source',
-             'test_173.205keV_Cos0.500.source',
-             'test_173.205keV_Cos0.750.source',
-             'test_173.205keV_Cos1.000.source',
-             'test_300.000keV_Cos0.500.source',
-             'test_300.000keV_Cos0.750.source',
-             'test_300.000keV_Cos1.000.source')
+    files = ('test_100.000keV_0.00theta.source',
+             'test_100.000keV_41.41theta.source',
+             'test_100.000keV_60.00theta.source',
+             'test_173.205keV_0.00theta.source',
+             'test_173.205keV_41.41theta.source',
+             'test_173.205keV_60.00theta.source',
+             'test_300.000keV_0.00theta.source',
+             'test_300.000keV_41.41theta.source',
+             'test_300.000keV_60.00theta.source')
 
     conf = create_configurator
     conf.createSourceFiles(dir=srcdir.__str__())
