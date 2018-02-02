@@ -27,7 +27,7 @@ class simFiles:
         Returns
         ----------
         sfs : array
-            numpy array containing information about each sim file. 
+            numpy array containing information about each sim file.
 
         """
         from utils import getFilenameFromDetails
@@ -148,7 +148,7 @@ class simFile:
            config file used as input to Cosima
 
         logFile: string
-           stdout from Cosima.  Optional. 
+           stdout from Cosima.  Optional.
 
         Returns
         ----------
@@ -385,7 +385,7 @@ class simFile:
             dotest = len(hits)
 
         print("analyzing", len(hits), "events")
-        stat_err = len(hits)
+        # stat_err = len(hits)
 
         for key, value in self.logDict.items():
             for i in range(num_det):
