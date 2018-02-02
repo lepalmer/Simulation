@@ -17,7 +17,7 @@ except ImportError:
 
 
 @pytest.fixture(scope='module')
-def create_simfile(request, tmpdir_factory):
+def create_simfile(request):
 
     testdir = path.expandvars('$BURSTCUBE/Simulation/MEGAlib/test/')
     sf = simFile(testdir+'test.inc1.id1.sim',
@@ -27,7 +27,7 @@ def create_simfile(request, tmpdir_factory):
 
 
 @pytest.fixture(scope='module')
-def create_simfiles(request, tmpdir_factory):
+def create_simfiles(request):
 
     testdir = path.expandvars('$BURSTCUBE/Simulation/MEGAlib/test/')
     sfs = simFiles(testdir+'config.yaml')
