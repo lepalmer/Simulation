@@ -73,7 +73,7 @@ def test_passEres(create_simfile):
     sf = create_simfile
     fractions = sf.passEres()
 
-    assert_allclose(fractions, (0.897, 0.936), 1e-2)
+    assert_allclose(fractions, (0.911, 0.936), 1e-2)
 
 
 def test_calculateAeffs(create_simfiles):
@@ -81,18 +81,18 @@ def test_calculateAeffs(create_simfiles):
     sfs = create_simfiles
     aeffs = sfs.calculateAeff()
 
-    x = np.array([[28.65, 100.00, 71.74, 66.28, 69.66],
-                  [28.65, 173.21, 74.40, 69.05, 72.10],
-                  [28.65, 300.00, 61.25, 50.53, 52.12],
-                  [42.97, 100.00, 69.51, 62.84, 67.63],
-                  [42.97, 173.21, 64.46, 58.91, 61.43],
-                  [42.97, 300.00, 56.34, 46.14, 47.67],
-                  [57.30, 100.00, 56.56, 48.76, 53.68],
-                  [57.30, 173.21, 53.26, 47.45, 49.95],
-                  [57.30, 300.00, 46.63, 37.91, 38.79]],
+
+    x = np.array([[60.00, 100.00, 56.04, 48.92, 53.23], 
+                  [60.00, 173.21, 51.66, 46.18, 48.51], 
+                  [60.00, 300.00, 47.99, 39.16, 40.02], 
+                  [41.41, 100.00, 69.02, 62.67, 66.53], 
+                  [41.41, 173.21, 67.04, 61.61, 64.03], 
+                  [41.41, 300.00, 56.55, 45.75, 46.82], 
+                  [ 0.00, 100.00, 76.69, 71.63, 75.08], 
+                  [ 0.00, 173.21, 76.60, 71.93, 73.62], 
+                  [ 0.00, 300.00, 64.48, 52.68, 54.23]],
                  dtype=np.float32)
-
-
+    
     # the assert methods don't like
     # record arrays so you have to
     # convert to a regular numpy

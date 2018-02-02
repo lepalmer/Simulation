@@ -15,7 +15,7 @@ class simFiles:
             exit()
 
         self.conf = configurator(config_file)
-        self.sims = self.loadFiles()  #this is defined later down? 
+        self.sims = self.loadFiles()
 
     def loadFiles(self):
         """
@@ -37,7 +37,7 @@ class simFiles:
         sfs = []
 
         for angle, energy in [(angle, energy)
-                              for angle in self.conf.costhetabins
+                              for angle in self.conf.thetabins
                               for energy in self.conf.ebins]:
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
@@ -53,7 +53,9 @@ class simFiles:
         return sfs
 
     def calculateAeff(self):
-        """Calculates effective area from the information contained within the .sim files. 
+
+        """Calculates effective area from the information contained within the
+        .sim files.
 
         Parameters
         ----------
@@ -62,8 +64,8 @@ class simFiles:
         Returns
         ----------
         aeffs : array
-            Numpy array containing effective area of detector. 
-    
+            Numpy array containing effective area of detector.
+
         """
 
         aeffs = np.zeros(len(self.sims),
@@ -75,8 +77,8 @@ class simFiles:
         for i, sf in enumerate(self.sims):
             frac, mod_frac = sf.passEres()
             aeff = sf.calculateAeff()
-            aeffs[i] = (sf.srcDict['One.Beam'][0][1],
-                        sf.srcDict['One.Spectrum'][0][1],
+            aeffs[i] = (sf.theta,
+                        sf.energy,
                         aeff, aeff*frac, aeff*mod_frac)
 
         return aeffs
