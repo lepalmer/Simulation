@@ -8,10 +8,10 @@ StoreOnlyEventsWithEnergyLoss True
 DiscretizeHits True
 
 Run FFPS
-FFPS.Filename $BURSTCUBE/Simulation/MEGAlib/test/test_173.205keV_Cos1.000
+FFPS.Filename $BURSTCUBE/Simulation/MEGAlib/test/test_100.000keV_41.41theta
 FFPS.NTriggers 1000
 FFPS.Source One
 One.ParticleType 1
-One.Beam FarfieldPointSource 57.3 0
-One.Spectrum Mono 173.205080757
+One.Beam FarfieldPointSource 41.41 0
+One.Spectrum Mono 100.0
 One.Flux 1000.0

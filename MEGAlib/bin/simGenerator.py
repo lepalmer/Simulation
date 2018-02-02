@@ -5,18 +5,20 @@ from os import path
 
 
 def createSourceString(config, energy, angle):
-    """Creates a source file from a configurator object with a specific angle and energy
+
+    """Creates a source file from a configurator object with a specific
+    angle and energy
 
     Parameters
     ----------
     config : string
-       The .yaml file the imposes the conditions for the source files desired.  
+       The .yaml file the imposes the conditions for the source files desired.
 
     Returns
     ----------
-    In your directory a bunch of .source files with specific angles and energies.  
+    srcstr : string
+       A sring which can be used to create a source file for cosima.
     """
-
 
     from utils import getFilenameFromDetails
 

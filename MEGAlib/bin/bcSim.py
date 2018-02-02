@@ -15,7 +15,7 @@ class simFiles:
             exit()
 
         self.conf = configurator(config_file)
-        self.sims = self.loadFiles()  #this is defined later down? 
+        self.sims = self.loadFiles()
 
     def loadFiles(self):
         """
@@ -37,7 +37,7 @@ class simFiles:
         sfs = []
 
         for angle, energy in [(angle, energy)
-                              for angle in self.conf.costhetabins
+                              for angle in self.conf.thetabins
                               for energy in self.conf.ebins]:
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
@@ -45,13 +45,17 @@ class simFiles:
             sf = simFile(self.conf.config['run']['simdir']
                          + '/'+fname+'.inc1.id1.sim',
                          self.conf.config['run']['srcdir']
-                         + '/'+fname+'.source')
+                         + '/'+fname+'.source',
+                         self.conf.config['run']['simdir']
+                         + '/'+fname+'.stdout.gz')
             sfs.append(sf)
 
         return sfs
 
     def calculateAeff(self):
-        """Calculates effective area from the information contained within the .sim files. 
+
+        """Calculates effective area from the information contained within the
+        .sim files.
 
         Parameters
         ----------
@@ -60,8 +64,8 @@ class simFiles:
         Returns
         ----------
         aeffs : array
-            Numpy array containing effective area of detector. 
-    
+            Numpy array containing effective area of detector.
+
         """
 
         aeffs = np.zeros(len(self.sims),
@@ -73,8 +77,8 @@ class simFiles:
         for i, sf in enumerate(self.sims):
             frac, mod_frac = sf.passEres()
             aeff = sf.calculateAeff()
-            aeffs[i] = (sf.srcDict['One.Beam'][1],
-                        sf.srcDict['One.Spectrum'][1],
+            aeffs[i] = (sf.theta,
+                        sf.energy,
                         aeff, aeff*frac, aeff*mod_frac)
 
         return aeffs
@@ -82,11 +86,11 @@ class simFiles:
 
 class simFile:
 
-    def __init__(self, simFile, sourceFile):
+    def __init__(self, simFile, sourceFile, logFile=''):
 
         """Object for a single megalib simulation.  The main attributes are
         dictionaries associated with the simulation file, the source file, and
-        the geometry file (`simDict`, `srcDict`, and `geoDict`.
+        the geometry file (`simDict`, `srcDict`, `geoDict`, and `logDict`.).
 
         Parameters
         ----------
@@ -96,6 +100,9 @@ class simFile:
         sourceFile: sting
            config file used as input to Cosima
 
+        logFile: string
+           stdout from Cosima.  Optional. 
+
         Returns
         ----------
         simFile : simFile Object
@@ -104,22 +111,28 @@ class simFile:
         
         self.simFile = simFile
         self.srcFile = sourceFile
-
+        self.logFile = logFile
+        
         if setPath():
             exit()
 
         print("Loading " + self.simFile)
         self.simDict = self.fileToDict(simFile, '#', None)
         self.srcDict = self.fileToDict(sourceFile, '#', None)
-        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0], '//', None)
+        self.geoDict = self.fileToDict(self.srcDict['Geometry'][0],
+                                       '//', None)
+        if logFile:
+            self.logDict = self.logToDict(self.logFile)
+        else:
+            print("Log file not provided.  Not loading.")
 
     @property
     def energy(self):
-        return float(self.srcDict['One.Spectrum'][1])
+        return float(self.srcDict['One.Spectrum'][0][1])
 
     @property
     def theta(self):
-        return float(self.srcDict['One.Beam'][1])
+        return float(self.srcDict['One.Beam'][0][1])
 
     def fileToDict(self, filename, commentString='#', termString=None):
 
@@ -132,24 +145,73 @@ class simFile:
                 for line in f:
                     if commentString not in line:
                         if ';' in line:
-                            lineContents = line.split(';')
+                            contents = line.split(';')
                         else:
-                            lineContents = line.split()
-                        if len(lineContents) > 1:
-                            if lineContents[0] in megaDict:
+                            contents = line.split()
+                        if len(contents) > 1:
+                            if contents[0] in megaDict:
                                 if ';' in line:
-                                    megaDict[lineContents[0]].append(
-                                        lineContents[1:])
+                                    megaDict[contents[0]].append(
+                                        contents[1:])
                                 else:
-                                    megaDict[lineContents[0]].append(
-                                        lineContents[1])
+                                    megaDict[contents[0]].append(
+                                        contents[1])
                             else:
-                                megaDict[lineContents[0]] = lineContents[1:]
+                                if len(contents[1:]) > 1:
+                                    megaDict[contents[0]] = [contents[1:]]
+                                else:
+                                    megaDict[contents[0]] = contents[1:]
                     if termString is not None:
                         if termString in line:
                             return megaDict
         return megaDict
 
+    def logToDict(self, filename):
+
+        """Reads a gzipped log file and populates a dictionary with information about
+        the events.  Returns this dictionary.
+
+        Parameters
+        ----------
+        filename: string or byte like object
+            Name of log file to read.
+
+        Returns
+        ---------
+        eventDict : dictionary
+            
+        Dictionary with the key being the trigger number (int).  Each
+        value is a tuple of the event number (int) and the detector
+        (str) that was hit.
+
+        """
+        
+        import gzip
+        import re
+        from os import path
+
+        filename = path.expandvars(filename)
+
+        # Try to read the gzip and fallback to normal if it doesn't exist.
+        try:
+            f = gzip.open(filename, 'rb')
+        except FileNotFoundError:
+            filename = filename[:-3]
+            f = open(filename, 'rb')
+        file_content = f.read()
+        f.close()
+
+        eventDict = {}
+
+        lines = file_content.splitlines()
+        for i, line in enumerate(lines):
+            if 'Storing event' in str(line):
+                evtnums = [int(s) for s in str(line).split() if s.isdigit()]
+                detname = re.search('\"(.*)\"', str(lines[i-1]))
+                eventDict[evtnums[0]] = (evtnums[1], detname.group(1))
+
+        return eventDict
+    
     def getHits(self, detID=4):
 
         """Get the hit details of all of the events in the sim file.  Ignores
@@ -171,9 +233,6 @@ class simFile:
 
         IDstr = 'HTsim {}'.format(detID)
 
-        # Ugly hack to get first event
-        first_evt = [x for x in self.simDict[IDstr] if type(x) is not list]
-
         dt = np.dtype([('x_pos', np.float64),
                        ('y_pos', np.float64),
                        ('z_pos', np.float64),
@@ -181,16 +240,13 @@ class simFile:
                        ('tobs', np.float64)])
 
         # Get all the rest of the events
-        events = [np.array(evt[:5], dtype=np.float64)
-                  for evt in self.simDict['HTsim 4'][len(first_evt):]]
+        events = [np.array(evt, dtype=np.float64)
+                  for evt in self.simDict[IDstr]]
 
-        hits = np.zeros((len(events)+1,), dtype=dt)
-
-        # First event in a numpy array.  Ignore a,b,c.
-        hits[0] = np.array(first_evt[:5], dtype=np.float64)
+        hits = np.zeros((len(events),), dtype=dt)
 
         for i, evt in enumerate(events):
-            hits[i+1] = evt
+            hits[i] = evt
 
         return hits
 
@@ -199,8 +255,8 @@ class simFile:
         """
         print('Sim File: ' + self.simFile)
         print('Source File: ' + self.srcFile)
-        print('Geometry File: ' + self.srcDict['Geometry'][0])
-        print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0])
+        print('Geometry File: ' + self.srcDict['Geometry'][0][0])
+        print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0][0])
         print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
         print('Generated Particles: ' + self.simDict['TS'][0])
         print('Theta: ' + str(self.theta))
@@ -212,7 +268,7 @@ class simFile:
         
         from math import pi
 
-        r_sphere = float(self.geoDict['SurroundingSphere'][0])
+        r_sphere = float(self.geoDict['SurroundingSphere'][0][0])
         triggers = int(self.srcDict['FFPS.NTriggers'][0])
         generated_particles = int(self.simDict['TS'][0])
 
