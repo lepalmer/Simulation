@@ -2,12 +2,12 @@
 
 import numpy as np
 from utils import setPath
-from simGenerator import configurator  #requires simGenerator
+from simGenerator import configurator
 
 
 class simFiles:
 
-    def __init__(self, config_file):  #name of the function that python uses to construct 
+    def __init__(self, config_file):
 
         """Object for a multiple simulations over energy and angle."""
 
@@ -305,3 +305,56 @@ class simFile:
         mod_frac = (float(mod)+float(good))/float(len(ed))
 
         return frac, mod_frac
+
+    def getTriggerProbability(self, num_det=4, test=False):
+
+        """Takes a single simFile (from bcSim.simFiles(config.yaml)) and
+        returns the probability of hitting in each detector
+
+        Parameters
+        ----------
+        num_det : integer
+            Number of detectors to get triggers for.
+
+        test : boolean
+            Run a quick test over a limited number of events (20)
+    
+        Returns
+        ----------
+        prob_det_info : 1x6 numpy array 
+            Contains information about the energy, angles and
+            probability of hitting a given detector
+
+        """
+
+        from math import sqrt
+
+        det_vol = np.zeros(num_det)
+
+        hits = self.getHits()
+
+        if test:
+            dotest = 20
+        else:
+            dotest = len(hits)
+
+        print("analyzing", len(hits), "events")
+        stat_err = len(hits)
+
+        for key, value in self.logDict.items():
+            for i in range(num_det):
+                if str(i) in value[1]:
+                    det_vol[i] += 1
+                elif i == 0:
+                    if '_' not in value[1]:
+                        det_vol[0] += 1
+
+        prob_det_info = [self.energy, self.theta]
+        prob_det_info = np.append(prob_det_info,
+                                  sqrt(len(hits))/float(len(hits)))
+
+        for i in range(num_det):
+            prob_det_info = np.append(prob_det_info,
+                                      det_vol[i]/float(len(hits)))
+
+        return prob_det_info
