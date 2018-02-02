@@ -83,6 +83,53 @@ class simFiles:
 
         return aeffs
 
+    def getAllTriggerProbability(self, num_detectors=4, test=False):
+
+        """Returns the probabability of hitting each detector in each simulation.
+
+        Parameters
+        ----------
+            num_detectors : int
+                Number of detectors in the simulation
+
+            test : boolean
+                run a quick test over a limited number of files (20)
+    
+        Returns
+        ----------
+            det_prob : numpy array
+                Contains information from all the files about the energy,
+                angles and probability of hitting a given detector
+        """
+
+        names = ['energy', 'theta', 'stat_err',  'prob_det_vol']
+        formats = ['float32', 'float32', 'float32', 'float32']
+
+        for i in range(num_detectors-1):
+            names = np.append(names, 'prob_det_vol%i' % (i+1))
+            formats = np.append(formats, 'float32')
+
+        print(names)
+        print(formats)
+
+        det_prob = np.empty(len(self.sims),
+                            dtype={'names': names,
+                                   'formats': formats})
+
+        if test:
+            dotest = 1
+        else:
+            dotest = len(self.sims)
+
+        print("Analyzing", len(self.sims), "files")
+
+        for j in range(dotest):
+            holder = self.sims[j].getTriggerProbability(num_det=num_detectors,
+                                                        test=test)
+            det_prob[j] = np.array([tuple(holder)], dtype=det_prob.dtype)
+
+        return det_prob
+    
 
 class simFile:
 
