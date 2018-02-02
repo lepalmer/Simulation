@@ -109,3 +109,28 @@ def test_TriggerProb(create_simfile):
 
     assert_allclose(prob, (200.0, 30.0, 0.0316, 1.00), 1e-3)
 
+
+def test_AllTriggerProb(create_simfiles):
+
+    sfs = create_simfiles
+
+    probs = sfs.getAllTriggerProbability(1, False)
+
+    x = np.array([[100.00, 60.00, 0.03162277, 1.],
+                  [173.21, 60.00, 0.03162277, 1.],
+                  [300.00, 60.00, 0.03162277, 1.],
+                  [100.00, 41.41, 0.03162277, 1.],
+                  [173.21, 41.41, 0.03162277, 1.],
+                  [300.00, 41.41, 0.03162277, 1.],
+                  [100.00,  0.00, 0.03162277, 1.],
+                  [173.21,  0.00, 0.03162277, 1.],
+                  [300.00,  0.00, 0.03162277, 1.]],
+                 dtype=np.float32)
+
+    # the assert methods don't like
+    # record arrays so you have to
+    # convert to a regular numpy
+    # array
+    y = probs.view(np.float32).reshape(probs.shape + (-1,))
+
+    assert_allclose(x, y, 1e-3)
