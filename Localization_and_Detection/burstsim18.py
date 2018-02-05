@@ -1,6 +1,10 @@
+import numpy as np
+import healpy as hp
+import burstfuncs as bf
+
 class GRBs():
  
- 
+
     """
     Generates an array of GRB's given 
     certains strength at different sky positions.
@@ -21,9 +25,6 @@ class GRBs():
 
 
 class BurstCube:
-    import numpy as np
-    import healpy as hp
-    import burstfuncs as bf
     def __init__(self,background):
         import numpy as np
         import healpy as hp
