@@ -1,6 +1,6 @@
 class GRBs():
-    import numpy as np
-    import healpy as hp   #this produces an error, deal with soon!
+ 
+ 
     """
     Generates an array of GRB's given 
     certains strength at different sky positions.
@@ -8,6 +8,8 @@ class GRBs():
     Output should be an array. 
     """
     def __init__(self,NSIDE,strength):
+        import numpy as np
+        import healpy as hp
         #depending on NSIDE, there will be anywhere from 12 to infinite spots on the sky w/ GRBs
         self.Ao = strength
         self.pixels = hp.nside2npix(NSIDE)
@@ -23,6 +25,9 @@ class BurstCube:
     import healpy as hp
     import burstfuncs as bf
     def __init__(self,background):
+        import numpy as np
+        import healpy as hp
+        import burstfuncs as bf
         self.zenith = [0 , 0]
         self.bg = background
         test = input("Are the detectors alternating? ")

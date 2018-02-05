@@ -1,26 +1,17 @@
 #!/usr/bin/env python
 
 import numpy as np
-from numpy.testing import assert_allclose
+import healpy as hp
 
-from astropy.tests.helper import pytest
+import burstsim18 as bs18
 
-try:
-	from burstsim18 import GRBs
-except ImportError:
-	pass
-
-try:
-	from burstsim18 import BurstCube
-except ImportError:
-	pass
-
-@pytest.fixture(scope='module')
 
 
 def test_GRBs():
 
-	GRB = GRBs(1,500)
+	GRB = bs18.GRBs(1,500)
+
+	assert GRB.Ao == 500
 
 
-	assert_allclose(500, GRB.Ao(), 1e-3)
+#more to come!
