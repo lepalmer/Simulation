@@ -8,13 +8,51 @@ import healpy as hp
 
 
 def length(v):
-    return mth.sqrt(np.dot(v, v))
+    """
+    Finds the length of a vector
+    
+    Parameters
+    ----------
+    
+    v : array
+        numpy array representative of the vector you want to find the magnitude of. 
+    
+    Returns
+    -------
+    
+    magv : float
+        magnitude of v.
+    """
+    magv = mth.sqrt(np.dot(v, v))
+    return magv
 
 def angle(v1, v2):
+    """"
+    Finds the angle between 2 vectors
+    
+    Parameters
+    ----------
+    
+    v1 : array
+    v2 : array
+        The arrays representing the vectors who's angle is to be calculated.
+        
+    Returns
+    -------
+    
+    ang : float
+        Angle between the 2 vectors. 
+        
+    """
 
-    return mth.acos(np.dot(v1, v2) / (length(v1) * length(v2)))
+    ang = mth.acos(np.dot(v1, v2) / (length(v1) * length(v2)))
+    return ang
 
 def response(A,B):
+    """
+    Meant to imitate the actual response of a scintillator.
+    Inputs 2 vectors, and responds with a cos^x dependence.
+    """
     #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
  #   print(length(A),length(B))
 #if cosine is negative, 
@@ -61,7 +99,7 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,bgrd):
                         CHIsourceang=[oa[sa],ob[sb]]
                         CHIsourcexyz = hp.ang2vec(CHIsourceang[0],CHIsourceang[1])
                         CHIsep=angle(CHIsourcexyz,detnorms[s])                                           
-                        if CHIsep<np.pi: 
+                        if CHIsep<np.pi/2: 
                             chi=Aofit[sc]*response(CHIsourcexyz,detnorms[s])+bgrd
                             #print("Chi test angle"+str(CHIsourcexyz))
                             #print("detector"+str(dets[s]))
@@ -75,9 +113,9 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,bgrd):
                         if detsvals[s]>0:   #if there is a signal in the detector 
                             chiterm=((chi-detsvals[s])**2/detsvals[s])
                         else:    #if not, just zero 
-                            chiterm=10000
+                            chiterm=1e10
                     else: 
-                        chiterm=10000 #some large #, just to note that it definitely isn't right angle 
+                        chiterm=1e10 #some large #, just to note that it definitely isn't right angle 
                                                                        
                                     
                     chiterms.append(chiterm)   #this is an array of EVERY SINGLE term, need to split in pieces and add element by element...
