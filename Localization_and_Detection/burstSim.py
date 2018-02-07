@@ -1,54 +1,24 @@
-import healpy as hp
 import numpy as np
+import healpy as hp
+import burstutils as bf
 import random as rand
 import statistics as s
-import burstfuncs as bf
-
-class GRBs():
-   #this produces an error, deal with soon!
-    """
-    Generates an array of GRB's given 
-    certains strength at different sky positions.
-    
-    Output should be an array. 
-    """
-    
-  #  import numpy as np
-   # import healpy as hp
-    def __init__(self,NSIDE,strength):
-        from healpy import nside2npix
-        from healpy import pix2ang
-        #depending on NSIDE, there will be anywhere from 12 to infinite spots on the sky w/ GRBs
-        self.Ao = strength
-        self.pixels = nside2npix(NSIDE)
-
-        #want to convert these pixels into theta phi coords. 
-        self.sourceangs = []
-        for i in range(self.pixels):
-            self.sourceangs.append(pix2ang(NSIDE,i))
-
-    def say_Ao(self):
-        print("The GRBs being tested will be " + str(self.Ao) + " counts strong.")
-        
-        
 
 class BurstCube():
 
-    def __init__(self,background):
-        import numpy as np
-        import healpy as hp
-        import burstfuncs as bf
+    def __init__(self,background,dettilt,alternating=False):
+        if alternating == False:
+            self.tilt = np.deg2rad(dettilt)
+            self.tiltA = self.tiltB = self.tiltC = self.tiltD = self.tilt
+        
+        else:
+            self.tiltB = np.deg2rad(float(input("Please enter the second tilt (deg) ")))
+        
+            self.tiltC = self.tiltA = dettilt
+            self.tiltD = self.tiltB
         self.zenith = [0 , 0]
         self.bg = background
-        test = input("Are the detectors alternating? ")
-        if test == "yes" or test == "Yes" or test == "y" or test == "asdlfkjawe":           
-            self.tiltA = np.deg2rad(float(input("Please enter the first tilt (deg) ")))
-            self.tiltB = np.deg2rad(float(input("Please enter the second tilt (deg) ")))
-            self.tiltC = self.tiltA
-            self.tiltD = self.tiltB
-        else:
-            self.tilt = np.deg2rad(float(input("Please enter the tilt (deg) ")))
-            self.tiltA = self.tiltB = self.tiltC = self.tiltD = self.tilt
+
             
     
     #make the normal vectors!
@@ -82,13 +52,13 @@ class BurstCube():
         """BurstCube is composed of 4 separate scintillators to detect and localize events. 
         In this software package, they are labelled A through D. 
         """
-        return [ self.zenith[0] + self.tiltC , self.zenith[1] ]
+        return [ self.zenith[0] + self.tiltC , self.zenith[1] + np.pi ]
     @property 
     def detD(self):
         """BurstCube is composed of 4 separate scintillators to detect and localize events. 
         In this software package, they are labelled A through D. 
         """
-        return [ self.zenith[0] + self.tiltD , self.zenith[1] + np.pi/2 ]
+        return [ self.zenith[0] + self.tiltD , self.zenith[1] + 3*np.pi/2 ]
     @property
     def normA(self):
         return  hp.ang2vec(self.detA[0],self.detA[1])
@@ -132,7 +102,7 @@ class BurstCube():
         """
         
         self.localizationerrors = []    
-        for i in range(len(GRB.sourceangs/4)):
+        for i in range(len(GRB.sourceangs)):
             sourceAng = GRB.sourceangs[i]
             print("Testing " + str(np.rad2deg(sourceAng)))
            #this check passes.       
@@ -176,7 +146,6 @@ class BurstCube():
                 elif finethetaloc < 0:
                     #print("Same issue, there are limits to theta that are broken here. ")
                     break 
-                recpos = [0,0]    
                 recpos = [finethetaloc,finephiloc]
               #  print("Recovered position at " + str(recpos))
                 
@@ -192,44 +161,5 @@ class BurstCube():
                 #some big # signifying that it can't catch it 
 
             print("avg loc unc  " +  str(s.mean(np.rad2deg(locunc))))
-                #loc unc is the uncertainty at each sky position, localerros is for all of them
-            
-            #should there be more selfs? more prints? basically done so time to debug after lunch. 
-        
-        maybe = input("All done with the simulation, want to make the skymap too? ")
-        
-        if maybe == "yes" or maybe == "Yes" or maybe == "y": 
-            import matplotlib.pyplot as plt
-            from healpy import newvisufunc
-            if len(self.localizationerrors) == len(GRB.sourceangs):
-                im = np.array(self.localizationerrors)
-            else:
-                blockedpart=1000*np.ones(GRB.pixels-len(self.localizationerrors))
-                im = np.concatenate((self.localizationerrors,blockedpart))
-            hp.newvisufunc.mollview(im,min=0, max=30,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True,cmap='viridis_r')
-            plt.title('All Sky Localization Uncertainty for BurstCube')
-        else:
-            print("Ok, maybe next time!")
 
         return self.localizationerrors
-            
-    
-    
-
-    
-    """   
-    def plot_skymap(self,GRB):
-        import numpy as np
-        import matplotlib.pyplot as plt
-        import healpy as hp
-        from healpy import newvisufunc
-        if len(self.localizationerrors) == len(GRB.sourceangs):  #if the function successfully was able to catch all the spots (meaning nothing went wrong!)
-            im = np.array(self.localizationerrors) 
-        else:
-            blockedpart=1000*np.ones(GRB.pixels-len(angoffset))
-            im=np.concatenate((self.localizationerrors,blockedpart))
-        hp.newvisufunc.mollview(im,min=0, max=30,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True,cmap='viridis_r')
-        plt.title('All Sky Localization Uncertainty for BurstCube')
- 
-    """       
-        

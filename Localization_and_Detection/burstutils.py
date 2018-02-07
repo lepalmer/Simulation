@@ -80,7 +80,7 @@ def chimaker(chiterms,Ndets):
  
     return chisquareds
 
-def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,bgrd):
+def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,ntheta,nphi,bgrd):
 #this function uses a chi squared minimizer over a given range to identify the theta,phi,
 #and Ao values which correspond to the minimum chi squared and thus localized source. 
     confidence = []
@@ -88,8 +88,8 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,bgrd):
     thecon = []
     phicon = []
     for s in range(len(detsvals)):     
-        oa=np.deg2rad(np.linspace(bottheta,toptheta,n))  #range of thetas to sample
-        ob=np.deg2rad(np.linspace(botphi,topphi,n)) #phi
+        oa=np.deg2rad(np.linspace(bottheta,toptheta,ntheta))  #range of thetas to sample
+        ob=np.deg2rad(np.linspace(botphi,topphi,nphi)) #phi
         Aofit=np.linspace(0,1000,25)  
         for sa in range(len(oa)): 
             for sb in range(len(ob)):
@@ -121,7 +121,10 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,bgrd):
                     chiterms.append(chiterm)   #this is an array of EVERY SINGLE term, need to split in pieces and add element by element...
     chisquareds=chimaker(chiterms,len(detsvals))
     chimin=np.amin(chisquareds)
+    #print("The chi min is " + str(chimin))
+    #is there a better way to do this? 
     chisquareds=list(chisquareds)
+
     thetaloc = np.rad2deg(oa[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(ob)*len(Aofit))))/(len(ob)*len(Aofit)))])
     philoc = np.rad2deg(ob[int(((chisquareds.index(chimin) % (len(ob)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
     Aoguess=Aofit[int((chisquareds.index(chimin) % (len(ob)*len(Aofit)))  % len(Aofit))]
