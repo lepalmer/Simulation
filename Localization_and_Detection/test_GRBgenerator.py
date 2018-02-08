@@ -4,7 +4,7 @@ import GRBgenerator
 
 def test_sky():
 
-	GRB = GRBgenerator.sky(4,500)
+	GRB = GRBgenerator.Sky(4,500)
 
 	assert GRB.pixels == 192
 	assert GRB.Ao == 500

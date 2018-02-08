@@ -47,4 +47,4 @@ Documentation Contents
    :maxdepth: 2
 
    tutorial 
-   code
+   megalibstuff
