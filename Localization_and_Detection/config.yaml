@@ -14,7 +14,7 @@ source:
   Flux : 1000.0
   ParticleType : 1
   Beam : FarfieldPointSource
-  
+
 run:
   basename : test
   srcdir : $BURSTCUBE/Simulation/MEGAlib/test/
@@ -27,4 +27,24 @@ run:
   costhetanumbins : 3
 
 
+No need for categories
+
+
+
+NSIDEmin
+NSIDEmax
+
+
+background min
+
+dictionary all in here 
+
+
+
+tiltmin 30
+tiltmax 60
+tiltbins 5
+NSIDEmin 1
+NSIDEmax  16
+NSIDEbins ? Must be powers of 2
 

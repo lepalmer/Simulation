@@ -45,7 +45,7 @@ def angle(v1, v2):
         
     """
 
-    ang = mth.acos(np.dot(v1, v2) / (length(v1) * length(v2)))
+    ang = np.arccos(np.dot(v1, v2) / (length(v1) * length(v2)))
     return ang
 
 def response(A,B):
@@ -88,9 +88,13 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,ntheta,nphi,bgrd):
     thecon = []
     phicon = []
     for s in range(len(detsvals)):     
+        
+        
         oa=np.deg2rad(np.linspace(bottheta,toptheta,ntheta))  #range of thetas to sample
         ob=np.deg2rad(np.linspace(botphi,topphi,nphi)) #phi
         Aofit=np.linspace(0,1000,25)  
+
+        
         for sa in range(len(oa)): 
             for sb in range(len(ob)):
                 for sc in range(len(Aofit)):
