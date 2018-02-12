@@ -48,7 +48,8 @@ def angle(v1, v2):
     ang = np.arccos(np.dot(v1, v2) / (length(v1) * length(v2)))
     return ang
 
-def response(A,B):
+
+def response(A):
     """
     Meant to imitate the actual response of a scintillator.
     Inputs 2 vectors, and responds with a cos^x dependence.
@@ -56,7 +57,7 @@ def response(A,B):
     #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
  #   print(length(A),length(B))
 #if cosine is negative, 
-    return pow(abs(np.cos(angle(A,B))),0.76)
+    return pow(abs(np.cos(A)),0.76)
 
 def bilbo(theta):
     #getting the weighted average of the area of various parts along the unit sphere. Current simulation targets azimuth many more times than the rest of the sphere, so have to account for this being in a significantly smaller area
@@ -80,56 +81,51 @@ def chimaker(chiterms,Ndets):
  
     return chisquareds
 
-def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,ntheta,nphi,bgrd):
+def solver(detsvals,detnorms,bgrd):
 #this function uses a chi squared minimizer over a given range to identify the theta,phi,
 #and Ao values which correspond to the minimum chi squared and thus localized source. 
+    """Stray thoughts about code so far. Should be quicker, rather than 1000 use arbitrary vals, as well as top and bottom phi
+    No longer need chimaker since it adds it in. 
+    """
+    
+    chiterms = np.zeros(50)
     confidence = []
-    chiterms = []
     thecon = []
     phicon = []
-    for s in range(len(detsvals)):     
-        
-        
-        oa=np.deg2rad(np.linspace(bottheta,toptheta,ntheta))  #range of thetas to sample
-        ob=np.deg2rad(np.linspace(botphi,topphi,nphi)) #phi
-        Aofit=np.linspace(0,1000,25)  
+    for s in range(len(detsvals)): 
+        print("Testing detector " + str(s))
+        detresponse = detsvals[s]*np.ones(50)
+        oa = np.deg2rad(np.linspace(0,90,50))
+        ob = np.deg2rad(np.linspace(0,360,50))
+        Aofit = np.linspace(0,1000,50)
+        bg = bgrd*np.ones(50)
+        CHIsourcexyz = hp.ang2vec(oa,ob)
 
+        chisep = []
+        for i in range(len(CHIsourcexyz)): #all 1000 anyway
+            chisep.append(angle(CHIsourcexyz[i],detnorms[s]))
         
-        for sa in range(len(oa)): 
-            for sb in range(len(ob)):
-                for sc in range(len(Aofit)):
-                    #make sure it fits within the acceptable range
-                    if oa[sa]>=0 and oa[sa]<=np.pi and ob[sb]>=0 and ob[sb]<=2*np.pi:
-                        CHIsourceang=[oa[sa],ob[sb]]
-                        CHIsourcexyz = hp.ang2vec(CHIsourceang[0],CHIsourceang[1])
-                        CHIsep=angle(CHIsourcexyz,detnorms[s])                                           
-                        if CHIsep<np.pi/2: 
-                            chi=Aofit[sc]*response(CHIsourcexyz,detnorms[s])+bgrd
-                            #print("Chi test angle"+str(CHIsourcexyz))
-                            #print("detector"+str(dets[s]))
-                            #print("chi sometiems"+str(chi))
-                            #print("separation here, is it okay? " +str(np.rad2deg(CHIsep)))
+        #If necessary,here's where I would create another array saying to ignore >pi/2 terms.
+        chisep = np.array(chisep) 
+       # print("Len of chisep" + str(len(chisep)))
 
-                            #this produces nan error, se
-                            
-                        else:
-                            chi=0            
-                        if detsvals[s]>0:   #if there is a signal in the detector 
-                            chiterm=((chi-detsvals[s])**2/detsvals[s])
-                        else:    #if not, just zero 
-                            chiterm=1e10
-                    else: 
-                        chiterm=1e10 #some large #, just to note that it definitely isn't right angle 
-                                                                       
-                                    
-                    chiterms.append(chiterm)   #this is an array of EVERY SINGLE term, need to split in pieces and add element by element...
-    chisquareds=chimaker(chiterms,len(detsvals))
-    chimin=np.amin(chisquareds)
-    #print("The chi min is " + str(chimin))
-    #is there a better way to do this? 
-    chisquareds=list(chisquareds)
+        chiresponse =  Aofit * response(chisep) + bg 
+        for i in range(len(chiresponse)):
+            if chisep[i] > np.pi/2:
+                chiresponse[i] = 1e6 #arbitrarily huge number saying this number is out of the question. 
+        print("chi terms: ")
+        chiterms = chiterms + np.divide((chiresponse-detresponse)**2,detresponse)
+        print(chiterms)
+      #  print("len of Chiterms = " + str(len(chiterms)))                                                          
+        
+
+    chimin=np.amin(chiterms)
+    #print("Chi min" + str(chimin))
+
+    chisquareds=list(chiterms)
 
     thetaloc = np.rad2deg(oa[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(ob)*len(Aofit))))/(len(ob)*len(Aofit)))])
+    print("Theta loc " + str(thetaloc))
     philoc = np.rad2deg(ob[int(((chisquareds.index(chimin) % (len(ob)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
     Aoguess=Aofit[int((chisquareds.index(chimin) % (len(ob)*len(Aofit)))  % len(Aofit))]
     #print(Aoguess)
