@@ -93,19 +93,22 @@ def solver(detsvals,detnorms,bgrd):
     thecon = []
     phicon = []
     for s in range(len(detsvals)): 
-        print("Testing detector " + str(s))
+      #  print("Testing detector " + str(s))
         detresponse = detsvals[s]*np.ones(50)
         oa = np.deg2rad(np.linspace(0,90,50))
         ob = np.deg2rad(np.linspace(0,360,50))
         Aofit = np.linspace(0,1000,50)
         bg = bgrd*np.ones(50)
-        CHIsourcexyz = hp.ang2vec(oa,ob)
+        #incorrect, will need to review later. 
+        CHIsourcexyz.append(hp.ang2vec(oa,ob))  #this doesn't consider more than one option! Need to double iterate or something!
 
         chisep = []
         for i in range(len(CHIsourcexyz)): #all 1000 anyway
+           # print(detnorms[s])
             chisep.append(angle(CHIsourcexyz[i],detnorms[s]))
         
         #If necessary,here's where I would create another array saying to ignore >pi/2 terms.
+       # print(chisep)
         chisep = np.array(chisep) 
        # print("Len of chisep" + str(len(chisep)))
 
@@ -115,7 +118,7 @@ def solver(detsvals,detnorms,bgrd):
                 chiresponse[i] = 1e6 #arbitrarily huge number saying this number is out of the question. 
         print("chi terms: ")
         chiterms = chiterms + np.divide((chiresponse-detresponse)**2,detresponse)
-        print(chiterms)
+       # print(chiterms)
       #  print("len of Chiterms = " + str(len(chiterms)))                                                          
         
 
@@ -123,7 +126,7 @@ def solver(detsvals,detnorms,bgrd):
     #print("Chi min" + str(chimin))
 
     chisquareds=list(chiterms)
-
+    print("Index of theta; " + str(int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(ob)*len(Aofit))))/(len(ob)*len(Aofit)))))
     thetaloc = np.rad2deg(oa[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(ob)*len(Aofit))))/(len(ob)*len(Aofit)))])
     print("Theta loc " + str(thetaloc))
     philoc = np.rad2deg(ob[int(((chisquareds.index(chimin) % (len(ob)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
