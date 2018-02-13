@@ -1,0 +1,66 @@
+Type      tra
+Version   1
+Geometry  /Users/jracusin/proposals/BurstCube/gitrep/Simulation/MEGAlib/background/../geo/BurstCube.geo.setup
+
+Date      2018-02-13 09:17:42
+MEGAlib   2.99.04
+
+EN
+
+TE 3.000000000
+
+
+FT START
+
+---------------------------------------------------------------------------
+
+# Tracked events file options
+# Date 2018-02-13 09:17:42
+# OriginalFile /Users/jracusin/proposals/BurstCube/gitrep/Simulation/MEGAlib/background/GRB170817A_w_backgrounds.inc1.id1.sim
+# GeometryFile /Users/jracusin/proposals/BurstCube/gitrep/Simulation/MEGAlib/background/../geo/BurstCube.geo.setup
+# 
+# Clusterizer options:
+# 
+# Clusterizing by adjacent voxels
+# Level: 2
+# Sigma: 3
+# 
+# 
+# Tracking - Rank options:
+# 
+# Search MIPs:                  1
+# Search Pairs:                 1
+# Search Comptons:              1
+# Max. number of ambiguities:   5
+# Max. layer jump Compton:      1
+# Number of sequences to keep:  1
+# Reject pure ambiguities:      0
+# 
+# 
+# CSR Chi-Square options:
+# 
+# Test statistics:                 0
+# QualityFactorMin:                0
+# QualityFactorMax:                1000
+# MaxNInteractions:                7
+# UseComptelTypeEvents:            1
+# AssumeD1First:                   0
+# UndecidedHandling:               1
+# GuaranteeStartD1:                1
+# RejectOneDetectorTypeOnlyEvents: 0
+# 
+
+----------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------
+
+Event statistics for all triggered (!) events:
+
+  No events available
+
+----------------------------------------------------------------------------
+
+
+FT STOP
+

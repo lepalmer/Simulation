@@ -1,0 +1,23 @@
+# Simulation data file
+# Created by Cosima and  Geant4 version Name: geant4-10-02-patch-03    (27-January-2017)
+
+Type       SIM
+Version    101
+Geometry   /Users/jracusin/BurstCube/gitrep/Simulation/MEGAlib//geo/BurstCube.geo.setup
+
+Date       2018-02-13 09:07:52
+MEGAlib    2.99.04
+
+Seed       1518530872
+
+SimulationStartAreaFarField 282743
+BeamType Multiple
+SpectralType Multiple
+
+TB 0
+
+
+EN
+
+TE 3
+TS 31395542
