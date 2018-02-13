@@ -2,7 +2,7 @@
 
 
 Version         1
-Geometry        $BURSTCUBEPATH/geo/BurstCube.geo.setup
+Geometry        $BURSTCUBEPATH/Simulation/MEGAlib/geo/BurstCubeCylinder.geo.setup
 
 # Physics list
 PhysicsListEM                        Livermore
@@ -17,7 +17,7 @@ DiscretizeHits                       true
 
 Run SpaceSim
 SpaceSim.FileName         GRB170817A_w_backgrounds
-SpaceSim.Time             3.0
+SpaceSim.Time             10.0
 
 SpaceSim.Source GRB
 GRB.ParticleType           1
