@@ -17,13 +17,13 @@ DiscretizeHits                       true
 
 Run SpaceSim
 SpaceSim.FileName         GRB170817A_w_backgrounds
-SpaceSim.Time             10.0
+SpaceSim.Time             3.0
 
 SpaceSim.Source GRB
 GRB.ParticleType           1
 GRB.Beam                   FarFieldPointSource 0 0
-GRB.Spectrum               File GRB170817A_main_peak_mid.dat
-GRB.Flux                   0.7
+GRB.Spectrum               File bc_GRB170817A_main_peak_mid.dat
+GRB.Flux                   2.3
 GRB.LightCurve             File  True   GRB170817A_LC.dat
 
 # Partial beam file for cosima
