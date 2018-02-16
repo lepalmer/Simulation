@@ -62,7 +62,11 @@ def response(A):
     #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
  #   print(length(A),length(B))
 #if cosine is negative, 
-    return pow(abs(np.cos(A)),0.76)
+    if A.any() < np.pi/2:
+        R = pow(abs(np.cos(A)),0.76)
+    else:
+        R = 0
+    return R
 
 def bilbo(theta):
     #getting the weighted average of the area of various parts along the unit sphere. Current simulation targets azimuth many more times than the rest of the sphere, so have to account for this being in a significantly smaller area
@@ -99,23 +103,27 @@ def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,background
    # print("Len chi terms: the zeros one.. " + str(len(chiterms)))
     for s in range(len(detsvals)):
         normarr = detnorms[s]
-   #     print("normal array " + str(s) + " " + str(np.rad2deg(hp.vec2ang(normarr)))) 
+   #    print("normal array " + str(s) + " " + str(np.rad2deg(hp.vec2ang(normarr)))) 
         normarrs = []
         for garc in range((len(theta)*len(phi))):
             normarrs.append([normarr[0],normarr[1],normarr[2]])
         
         seps = findAngles(chivecs,normarrs)
         
-        mask = seps <np.pi/2
-        seps[mask]
+        #mask = seps < np.pi/2
+        #seps[mask]
         #only using seps under 90, good. 
-        AA,SS = np.meshgrid(As,seps[mask])
+        AA,SS = np.meshgrid(As,seps)
 
         Aofit = np.concatenate(AA)
         chiseps = np.concatenate(SS)
         bg = background * np.ones(len(chiseps))
-        chiResponse = np.multiply(Aofit,response(chiseps)) + bg
-      
+        #when chiseps in here are >90, make response huuuge
+        good = chiseps < np.pi/2
+        bad = chiseps > np.pi/2
+        chiseps[good]
+        chiResponse = np.multiply(Aofit,response(chisepschiseps[good])) + bg
+         
     #  print("iteration : " + str(s))
         chiterm = np.divide(np.power(np.subtract(chiResponse,detsvals[s]),2),detsvals[s])
       #  print("chiterm: " + str(chiterm))
@@ -124,6 +132,7 @@ def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,background
      #   print("chiterms final: " + str(chiterms))
     chimin = min(chiterms)
     chisquareds = list(chiterms)
+
     thetaloc = np.rad2deg(theta[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(phi)*len(Aofit))))/(len(phi)*len(Aofit)))])
     philoc = np.rad2deg(phi[int(((chisquareds.index(chimin) % (len(phi)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
     Aoguess=Aofit[int((chisquareds.index(chimin) % (len(phi)*len(Aofit)))  % len(Aofit))]
