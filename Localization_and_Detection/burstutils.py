@@ -48,6 +48,11 @@ def angle(v1, v2):
     ang = np.arccos(np.dot(v1, v2) / (length(v1) * length(v2)))
     return ang
 
+def findAngles(v1s, v2s):
+    dot = np.einsum('ijk,ijk->ij',[v1s,v1s,v2s],[v2s,v1s,v2s])
+    return np.arccos(dot[0,:]/(np.sqrt(dot[1,:])*np.sqrt(dot[2,:])))
+
+
 
 def response(A):
     """
@@ -81,61 +86,48 @@ def chimaker(chiterms,Ndets):
  
     return chisquareds
 
-def solver(detsvals,detnorms,bgrd):
-#this function uses a chi squared minimizer over a given range to identify the theta,phi,
-#and Ao values which correspond to the minimum chi squared and thus localized source. 
-    """Stray thoughts about code so far. Should be quicker, rather than 1000 use arbitrary vals, as well as top and bottom phi
-    No longer need chimaker since it adds it in. 
-    """
-    
-    chiterms = np.zeros(50)
-    confidence = []
-    thecon = []
-    phicon = []
-    for s in range(len(detsvals)): 
-      #  print("Testing detector " + str(s))
-        detresponse = detsvals[s]*np.ones(50)
-        oa = np.deg2rad(np.linspace(0,90,50))
-        ob = np.deg2rad(np.linspace(0,360,50))
-        Aofit = np.linspace(0,1000,50)
-        bg = bgrd*np.ones(50)
-        #incorrect, will need to review later. 
-        CHIsourcexyz.append(hp.ang2vec(oa,ob))  #this doesn't consider more than one option! Need to double iterate or something!
-
-        chisep = []
-        for i in range(len(CHIsourcexyz)): #all 1000 anyway
-           # print(detnorms[s])
-            chisep.append(angle(CHIsourcexyz[i],detnorms[s]))
+def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,background):
+    theta = np.deg2rad(np.linspace(bottheta,toptheta,n))
+    phi = np.deg2rad(np.linspace(botphi,topphi,n))
+    mtheta,mphi = np.meshgrid(theta,phi)
+    chiveco = hp.ang2vec(mtheta,mphi)
+    chivecs = np.concatenate(chiveco)
+    As= np.linspace(0,1000,30)
+    chiterms = np.zeros(len(As)*len(theta)*len(phi))
+   # print("Len chi terms: the zeros one.. " + str(len(chiterms)))
+    for s in range(len(detsvals)):
+        normarr = detnorms[s]
+   #     print("normal array " + str(s) + " " + str(np.rad2deg(hp.vec2ang(normarr)))) 
+        normarrs = []
+        for garc in range((len(theta)*len(phi))):
+            normarrs.append([normarr[0],normarr[1],normarr[2]])
         
-        #If necessary,here's where I would create another array saying to ignore >pi/2 terms.
-       # print(chisep)
-        chisep = np.array(chisep) 
-       # print("Len of chisep" + str(len(chisep)))
+        seps = findAngles(chivecs,normarrs)
 
-        chiresponse =  Aofit * response(chisep) + bg 
-        for i in range(len(chiresponse)):
-            if chisep[i] > np.pi/2:
-                chiresponse[i] = 1e6 #arbitrarily huge number saying this number is out of the question. 
-        print("chi terms: ")
-        chiterms = chiterms + np.divide((chiresponse-detresponse)**2,detresponse)
-       # print(chiterms)
-      #  print("len of Chiterms = " + str(len(chiterms)))                                                          
-        
+        AA,SS = np.meshgrid(As,seps)
 
-    chimin=np.amin(chiterms)
-    #print("Chi min" + str(chimin))
-
-    chisquareds=list(chiterms)
-    print("Index of theta; " + str(int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(ob)*len(Aofit))))/(len(ob)*len(Aofit)))))
-    thetaloc = np.rad2deg(oa[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(ob)*len(Aofit))))/(len(ob)*len(Aofit)))])
-    print("Theta loc " + str(thetaloc))
-    philoc = np.rad2deg(ob[int(((chisquareds.index(chimin) % (len(ob)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
-    Aoguess=Aofit[int((chisquareds.index(chimin) % (len(ob)*len(Aofit)))  % len(Aofit))]
-    #print(Aoguess)
-    #print(thetaloc,philoc)
+        Aofit = np.concatenate(AA)
+        chiseps = np.concatenate(SS)
+        bg = background * np.ones(len(chiseps))
+        for j in range(len(chiseps)):
+            if chiseps[j]<np.pi/2:
+                
+                chiResponse = np.multiply(Aofit[j],response(chiseps[j])) + bg[j]
+   
+        if detsvals[s] > 0:
+    #  print("iteration : " + str(s))
+            chiterm = np.divide(np.power(np.subtract(chiResponse,detsvals[s]),2),detsvals[s])
+      #  print("chiterm: " + str(chiterm))
+        else:
+        chiterms += chiterm
+     #   print("chiterms final: " + str(chiterms))
+    chimin = min(chiterms)
+    chisquareds = list(chiterms)
+    thetaloc = np.rad2deg(theta[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(phi)*len(Aofit))))/(len(phi)*len(Aofit)))])
+    philoc = np.rad2deg(phi[int(((chisquareds.index(chimin) % (len(phi)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
+    Aoguess=Aofit[int((chisquareds.index(chimin) % (len(phi)*len(Aofit)))  % len(Aofit))]
     
     return thetaloc,philoc,Aoguess
-
 
 def rotate(x,y,theta):
  #   #inpute the x and y (or what components to be rotated) of the normal, and transform them by angle theta, provided in code.
