@@ -87,12 +87,14 @@ def chimaker(chiterms,Ndets):
     return chisquareds
 
 def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,background):
+   # mask2 = np.array(detsvals) >background
+    #detsvals = detsvals[mask2]
     theta = np.deg2rad(np.linspace(bottheta,toptheta,n))
     phi = np.deg2rad(np.linspace(botphi,topphi,n))
     mtheta,mphi = np.meshgrid(theta,phi)
     chiveco = hp.ang2vec(mtheta,mphi)
     chivecs = np.concatenate(chiveco)
-    As= np.linspace(0,1000,30)
+    As= np.linspace(10,1000,30)
     chiterms = np.zeros(len(As)*len(theta)*len(phi))
    # print("Len chi terms: the zeros one.. " + str(len(chiterms)))
     for s in range(len(detsvals)):
@@ -103,22 +105,21 @@ def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,background
             normarrs.append([normarr[0],normarr[1],normarr[2]])
         
         seps = findAngles(chivecs,normarrs)
-
-        AA,SS = np.meshgrid(As,seps)
+        
+        mask = seps <np.pi/2
+        seps[mask]
+        #only using seps under 90, good. 
+        AA,SS = np.meshgrid(As,seps[mask])
 
         Aofit = np.concatenate(AA)
         chiseps = np.concatenate(SS)
         bg = background * np.ones(len(chiseps))
-        for j in range(len(chiseps)):
-            if chiseps[j]<np.pi/2:
-                
-                chiResponse = np.multiply(Aofit[j],response(chiseps[j])) + bg[j]
-   
-        if detsvals[s] > 0:
+        chiResponse = np.multiply(Aofit,response(chiseps)) + bg
+      
     #  print("iteration : " + str(s))
-            chiterm = np.divide(np.power(np.subtract(chiResponse,detsvals[s]),2),detsvals[s])
+        chiterm = np.divide(np.power(np.subtract(chiResponse,detsvals[s]),2),detsvals[s])
       #  print("chiterm: " + str(chiterm))
-        else:
+
         chiterms += chiterm
      #   print("chiterms final: " + str(chiterms))
     chimin = min(chiterms)
