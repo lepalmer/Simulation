@@ -90,26 +90,26 @@ def chimaker(chiterms,Ndets):
  
     return chisquareds
 
-def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,background):
+def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,background):
    # mask2 = np.array(detsvals) >background
     #detsvals = detsvals[mask2]
-    theta = np.deg2rad(np.linspace(bottheta,toptheta,n))
-    phi = np.deg2rad(np.linspace(botphi,topphi,n))
-    mtheta,mphi = np.meshgrid(theta,phi)
-    chiveco = hp.ang2vec(mtheta,mphi)
-    chivecs = np.concatenate(chiveco)
-    chiangs = hp.vec2ang(chivecs)
-    As= np.linspace(10,1000,30)
+    theta = np.deg2rad(np.linspace(bottheta,toptheta,3))
+    phi = np.deg2rad(np.linspace(botphi,topphi,4))
+    mphi,mtheta = np.meshgrid(phi,theta)
+    allthetas = np.concatenate(mtheta)
+    allphis = np.concatenate(mphi)
+    allvecs = hp.ang2vec(allthetas,allphis)
+    As= np.linspace(10,1000,5)
     chiterms = np.zeros(len(As)*len(theta)*len(phi))
    # print("Len chi terms: the zeros one.. " + str(len(chiterms)))
     for s in range(len(detsvals)):
-        normarr = detnorms[s]
+        normarr = detnorms[s]  #an array that is the normal vector for a given detector, changes for each loop. 
    #    print("normal array " + str(s) + " " + str(np.rad2deg(hp.vec2ang(normarr)))) 
         normarrs = []
         for garc in range((len(theta)*len(phi))):
             normarrs.append([normarr[0],normarr[1],normarr[2]])
         
-        seps = findAngles(chivecs,normarrs)
+        seps = findAngles(allvecs,normarrs)
         
         #mask = seps < np.pi/2
         #seps[mask]
@@ -132,11 +132,11 @@ def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,background
      #   print("chiterms final: " + str(chiterms))
     chimin = min(chiterms)
     chisquareds = list(chiterms)
-    return chiangs, chiResponse, chiterms
    # thetaloc = np.rad2deg(theta[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(phi)*len(Aofit))))/(len(phi)*len(Aofit)))])
-    #philoc = np.rad2deg(phi[int(((chisquareds.index(chimin) % (len(phi)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
-    #Aoguess=Aofit[int((chisquareds.index(chimin) % (len(phi)*len(Aofit)))  % len(Aofit))]
-    
+   # philoc = np.rad2deg(phi[int(((chisquareds.index(chimin) % (len(phi)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
+  #  Aoguess=Aofit[int((chisquareds.index(chimin) % (len(phi)*len(Aofit)))  % len(Aofit))]
+
+    return chiResponse, chiterms 
     
 
 def rotate(x,y,theta):
