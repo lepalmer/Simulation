@@ -98,6 +98,7 @@ def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,background
     mtheta,mphi = np.meshgrid(theta,phi)
     chiveco = hp.ang2vec(mtheta,mphi)
     chivecs = np.concatenate(chiveco)
+    chiangs = hp.vec2ang(chivecs)
     As= np.linspace(10,1000,30)
     chiterms = np.zeros(len(As)*len(theta)*len(phi))
    # print("Len chi terms: the zeros one.. " + str(len(chiterms)))
@@ -121,8 +122,7 @@ def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,background
         #when chiseps in here are >90, make response huuuge
         good = chiseps < np.pi/2
         bad = chiseps > np.pi/2
-        chiseps[good]
-        chiResponse = np.multiply(Aofit,response(chisepschiseps[good])) + bg
+        chiResponse = np.multiply(Aofit,response(chiseps)) + bg
          
     #  print("iteration : " + str(s))
         chiterm = np.divide(np.power(np.subtract(chiResponse,detsvals[s]),2),detsvals[s])
@@ -132,12 +132,12 @@ def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,n,background
      #   print("chiterms final: " + str(chiterms))
     chimin = min(chiterms)
     chisquareds = list(chiterms)
-
-    thetaloc = np.rad2deg(theta[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(phi)*len(Aofit))))/(len(phi)*len(Aofit)))])
-    philoc = np.rad2deg(phi[int(((chisquareds.index(chimin) % (len(phi)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
-    Aoguess=Aofit[int((chisquareds.index(chimin) % (len(phi)*len(Aofit)))  % len(Aofit))]
+    return chiangs, chiResponse, chiterms
+   # thetaloc = np.rad2deg(theta[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(phi)*len(Aofit))))/(len(phi)*len(Aofit)))])
+    #philoc = np.rad2deg(phi[int(((chisquareds.index(chimin) % (len(phi)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
+    #Aoguess=Aofit[int((chisquareds.index(chimin) % (len(phi)*len(Aofit)))  % len(Aofit))]
     
-    return thetaloc,philoc,Aoguess
+    
 
 def rotate(x,y,theta):
  #   #inpute the x and y (or what components to be rotated) of the normal, and transform them by angle theta, provided in code.
