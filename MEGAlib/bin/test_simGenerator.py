@@ -66,7 +66,6 @@ def test_createSourceFiles(create_configurator, tmpdir):
              'test_300.000keV_41.41theta.source',
              'test_300.000keV_60.00theta.source')
 
-
     conf = create_configurator
     conf.createSourceFiles(dir=srcdir.__str__())
 
