@@ -192,7 +192,7 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,ntheta,nphi,bgrd):
     #print(Aoguess)
     #print(thetaloc,philoc)
     
-    return thetaloc,philoc,Aoguess
+    return thetaloc,philoc,Aoguess, chisquareds
 
 
 
