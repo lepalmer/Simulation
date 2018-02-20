@@ -298,7 +298,7 @@ class simFile:
         return hits
 
     def printDetails(self):
-        """Prints the general information about specific sim files. 
+        """Prints the general information about specific sim files.
         """
         print('Sim File: ' + self.simFile)
         print('Source File: ' + self.srcFile)
@@ -308,7 +308,7 @@ class simFile:
         print('Generated Particles: ' + self.simDict['TS'][0])
         print('Theta: ' + str(self.theta))
         print('Energy: ' + str(self.energy))
-
+        
     def calculateAeff(self):
         """Calculates effective area of sim file. 
         """
