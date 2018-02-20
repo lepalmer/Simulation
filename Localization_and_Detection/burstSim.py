@@ -89,7 +89,7 @@ class BurstCube():
         Parameters
         ----------
         GRB : object
-        
+
         An instance of the separately defined "GRBs" class that contains a number of evenly spaced sky positions of a given strength. 
 
         Returns
