@@ -93,13 +93,13 @@ def chimaker(chiterms,Ndets):
 def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,background):
    # mask2 = np.array(detsvals) >background
     #detsvals = detsvals[mask2]
-    theta = np.deg2rad(np.linspace(bottheta,toptheta,3))
-    phi = np.deg2rad(np.linspace(botphi,topphi,4))
+    theta = np.deg2rad(np.linspace(bottheta,toptheta,30))
+    phi = np.deg2rad(np.linspace(botphi,topphi,40))
     mphi,mtheta = np.meshgrid(phi,theta)
     allthetas = np.concatenate(mtheta)
     allphis = np.concatenate(mphi)
     allvecs = hp.ang2vec(allthetas,allphis)
-    As= np.linspace(10,1000,5)
+    As= np.linspace(0,1000,50)
     chiterms = np.zeros(len(As)*len(theta)*len(phi))
    # print("Len chi terms: the zeros one.. " + str(len(chiterms)))
     for s in range(len(detsvals)):
@@ -137,7 +137,34 @@ def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,background):
   #  Aoguess=Aofit[int((chisquareds.index(chimin) % (len(phi)*len(Aofit)))  % len(Aofit))]
 
     return chiResponse, chiterms 
+
+def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,background):
+    theta = np.deg2rad(np.linspace(bottheta,toptheta,3))
+    phi = np.deg2rad(np.linspace(botphi,topphi,4))
+    mphi,mtheta = np.meshgrid(phi,theta)
+    allthetas = np.concatenate(mtheta)
+    allphis = np.concatenate(mphi)
+    allvecs = hp.ang2vec(allthetas,allphis)
+    As= np.linspace(400,600,2)
+    normarr = detnorm
+    normarrs = []
+    for garc in range((len(theta)*len(phi))):
+        normarrs.append([normarr[0],normarr[1],normarr[2]])
+        
+    seps = findAngles(allvecs,normarrs)
+    AA,SS = np.meshgrid(As,seps)
+    Aofit = np.concatenate(AA)
+    chiseps = np.concatenate(SS)
+    bg = background * np.ones(len(chiseps))
+    good = chiseps < np.pi/2
+    bad = chiseps > np.pi/2
+    chiResponse = np.multiply(Aofit,response(chiseps)) + bg
+    if detval > background: 
+        chiterm = np.divide(np.power(np.subtract(chiResponse,detval),2),detval)
+    else: 
+        chiterm = 1e5 * np.ones(len(theta)*len(phi)*len(As))
     
+    return chiterm
 
 def rotate(x,y,theta):
  #   #inpute the x and y (or what components to be rotated) of the normal, and transform them by angle theta, provided in code.
