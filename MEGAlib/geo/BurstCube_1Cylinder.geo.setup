@@ -66,16 +66,35 @@ AlWindow.Color 4
 AlWindow.Visibility 1
 AlWindow.Mother WorldVolume
 
-
 // Single cylinder of Scintillator CsI 
-//tech specs say it R=5.1, h=2.2 cm
+//tech specs say it R=4.9, h=2.2 cm
 Volume CSICylinder
 CSICylinder.Material CsI
 CSICylinder.Visibility 1
 CSICylinder.Color 2
-CSICylinder.Shape TUBS 0. 5. 1.1  0. 360. 
+CSICylinder.Shape TUBS 0. 4.9 1.1  0. 360. 
 CSICylinder.Position 0. 0. 0.05
 CSICylinder.Mother WorldVolume
+
+// Single cylinder of Scintillator NaI
+//tech specs say it R=4.9, h=2.7 cm
+Volume NaICylinder
+NaICylinder.Material NaI
+NaICylinder.Visibility 1
+NaICylinder.Color 2
+NaICylinder.Shape TUBS 0. 4.9 1.35  0. 360. 
+NaICylinder.Position 0. 0. 0.05
+//NaICylinder.Mother WorldVolume
+
+// Single cylinder of Scintillator BGO
+//tech specs say it R=4.9, h=1.4 cm
+Volume BGOCylinder
+BGOCylinder.Material BGO
+BGOCylinder.Visibility 1
+BGOCylinder.Color 2
+BGOCylinder.Shape TUBS 0. 4.9 0.7  0. 360. 
+BGOCylinder.Position 0. 0. 0.05
+//BGOCylinder.Mother WorldVolume
 
 //This chunk is the window on bottom
 //the tech specs say quartz the window is modified to fit in the hole dim are R=5.1, h=0.3 cm
@@ -126,3 +145,5 @@ Trigger MainTrigger
 MainTrigger.Veto false
 MainTrigger.TriggerByDetector true
 MainTrigger.Detector DCalCSI 1
+MainTrigger.Detector DCalNaI 1
+MainTrigger.Detector DCalBGO 1
