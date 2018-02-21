@@ -97,14 +97,14 @@ BGOCylinder.Position 0. 0. 0.05
 //BGOCylinder.Mother WorldVolume
 
 // Single cylinder of Scintillator PbWO4
-//tech specs say it R=4.9, h=1.4 cm - to have same mass as CsI
+//tech specs say it R=4.9, h=1.2 cm - to have same mass as CsI
 Volume PbWO4Cylinder
 PbWO4Cylinder.Material PbWO4
 PbWO4Cylinder.Visibility 1
 PbWO4Cylinder.Color 2
-PbWO4Cylinder.Shape TUBE 0. 4.9 0.7  0. 360.
+PbWO4Cylinder.Shape TUBS 0. 4.9 0.6  0. 360.
 PbWO4Cylinder.Position 0. 0. 0.05
-PbWO4Cylinder.Mother WorldVolume
+//PbWO4Cylinder.Mother WorldVolume
 
 //This chunk is the window on bottom
 //the tech specs say quartz the window is modified to fit in the hole dim are R=5.1, h=0.3 cm
