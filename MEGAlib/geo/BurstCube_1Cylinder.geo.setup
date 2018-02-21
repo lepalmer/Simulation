@@ -74,20 +74,20 @@ CSICylinder.Visibility 1
 CSICylinder.Color 2
 CSICylinder.Shape TUBS 0. 4.9 1.1  0. 360. 
 CSICylinder.Position 0. 0. 0.05
-CSICylinder.Mother WorldVolume
+//CSICylinder.Mother WorldVolume
 
 // Single cylinder of Scintillator NaI
-//tech specs say it R=4.9, h=2.7 cm
+//tech specs say it R=4.9, h=2.2 cm
 Volume NaICylinder
 NaICylinder.Material NaI
 NaICylinder.Visibility 1
 NaICylinder.Color 2
-NaICylinder.Shape TUBS 0. 4.9 1.35  0. 360. 
+NaICylinder.Shape TUBS 0. 4.9 1.1  0. 360. 
 NaICylinder.Position 0. 0. 0.05
 //NaICylinder.Mother WorldVolume
 
 // Single cylinder of Scintillator BGO
-//tech specs say it R=4.9, h=1.4 cm
+//tech specs say it R=4.9, h=1.4 cm - to have same mass as CsI
 Volume BGOCylinder
 BGOCylinder.Material BGO
 BGOCylinder.Visibility 1
@@ -95,6 +95,16 @@ BGOCylinder.Color 2
 BGOCylinder.Shape TUBS 0. 4.9 0.7  0. 360. 
 BGOCylinder.Position 0. 0. 0.05
 //BGOCylinder.Mother WorldVolume
+
+// Single cylinder of Scintillator PbWO4
+//tech specs say it R=4.9, h=1.4 cm - to have same mass as CsI
+Volume PbWO4Cylinder
+PbWO4Cylinder.Material PbWO4
+PbWO4Cylinder.Visibility 1
+PbWO4Cylinder.Color 2
+PbWO4Cylinder.Shape TUBE 0. 4.9 0.7  0. 360.
+PbWO4Cylinder.Position 0. 0. 0.05
+PbWO4Cylinder.Mother WorldVolume
 
 //This chunk is the window on bottom
 //the tech specs say quartz the window is modified to fit in the hole dim are R=5.1, h=0.3 cm

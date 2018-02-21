@@ -62,6 +62,26 @@ DCalBGO.EnergyResolution Gauss  2000  2000  33
 DCalBGO.EnergyResolution Gauss  5000  5000  50
 
 
+Scintillator   DCalPbWO4
+DCalPbWO4.SensitiveVolume PbWO4Cylinder
+DCalPbWO4.DetectorVolume PbWO4Cylinder
+
+DCalPbWO4.StructuralPitch 0. 0. 0.
+DCalPbWO4.StructuralOffset 0. 0. 0.
+
+DCalPbWO4.NoiseThreshold   5 
+DCalPbWO4.TriggerThreshold   10
+
+//Note the noise and trigger thresholds were 30/100 respectively
+
+//Might need to add some to these at lower energies
+DCalPbWO4.EnergyResolution Gauss   40    40   5
+DCalPbWO4.EnergyResolution Gauss  100   100   7.5
+DCalPbWO4.EnergyResolution Gauss  662   662   20
+DCalPbWO4.EnergyResolution Gauss  2000  2000  33
+DCalPbWO4.EnergyResolution Gauss  5000  5000  50
+
+
 
 
 

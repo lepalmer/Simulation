@@ -45,3 +45,10 @@ BGOCylinder.Visibility 1
 BGOCylinder.Color 2
 BGOCylinder.Shape TUBE 0. 5. 1.27  0. 360. 
 
+// Single cylinder
+Volume PbWO4Cylinder
+PbWO4Cylinder.Material PbWO4
+PbWO4Cylinder.Visibility 1
+PbWO4Cylinder.Color 2
+PbWO4Cylinder.Shape TUBE 0. 5. 1.27  0. 360. 
+
