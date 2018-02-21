@@ -22,6 +22,48 @@ DCalCSI.EnergyResolution Gauss  662   662   20
 DCalCSI.EnergyResolution Gauss  2000  2000  33
 DCalCSI.EnergyResolution Gauss  5000  5000  50
 
+Scintillator   DCalNaI
+DCalNaI.SensitiveVolume NaICylinder
+DCalNaI.DetectorVolume NaICylinder
+
+DCalNaI.StructuralPitch 0. 0. 0.
+DCalNaI.StructuralOffset 0. 0. 0.
+
+DCalNaI.NoiseThreshold   5 
+DCalNaI.TriggerThreshold   10
+
+//Note the noise and trigger thresholds were 30/100 respectively
+
+//Might need to add some to these at lower energies
+DCalNaI.EnergyResolution Gauss   40    40   5
+DCalNaI.EnergyResolution Gauss  100   100   7.5
+DCalNaI.EnergyResolution Gauss  662   662   20
+DCalNaI.EnergyResolution Gauss  2000  2000  33
+DCalNaI.EnergyResolution Gauss  5000  5000  50
+
+
+Scintillator   DCalBGO
+DCalBGO.SensitiveVolume BGOCylinder
+DCalBGO.DetectorVolume BGOCylinder
+
+DCalBGO.StructuralPitch 0. 0. 0.
+DCalBGO.StructuralOffset 0. 0. 0.
+
+DCalBGO.NoiseThreshold   5 
+DCalBGO.TriggerThreshold   10
+
+//Note the noise and trigger thresholds were 30/100 respectively
+
+//Might need to add some to these at lower energies
+DCalBGO.EnergyResolution Gauss   40    40   5
+DCalBGO.EnergyResolution Gauss  100   100   7.5
+DCalBGO.EnergyResolution Gauss  662   662   20
+DCalBGO.EnergyResolution Gauss  2000  2000  33
+DCalBGO.EnergyResolution Gauss  5000  5000  50
+
+
+
+
 
 
 
