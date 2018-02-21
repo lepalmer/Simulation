@@ -53,7 +53,7 @@ def findAngles(v1s, v2s):
     return np.arccos(dot[0,:]/(np.sqrt(dot[1,:])*np.sqrt(dot[2,:])))
 
 
-def chiresponse(A):
+def chiresponse(stren,A,back):
     """
     Meant to imitate the actual response of a scintillator.
     Inputs 2 vectors, and responds with a cos^x dependence.
@@ -65,12 +65,12 @@ def chiresponse(A):
     mask = A > np.pi/2.
 
     A[mask] = 0
-    A[~mask] = pow(abs(np.cos(A[~mask])),0.76)
+    A = np.add(np.multiply(stren,pow(abs(np.cos(A[~mask])),0.76)),back)
     
     
     return A
 
-def response(A):
+def response(strength,A,back):
     """
     Meant to imitate the actual response of a scintillator.
     Inputs 2 vectors, and responds with a cos^x dependence.
@@ -78,11 +78,13 @@ def response(A):
     #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
  #   print(length(A),length(B))
 #if cosine is negative, 
-
-    pow(abs(np.cos(A)),0.76)
+    if A < np.pi/2:
+        R = strength*pow(abs(np.cos(A)),0.76) + back
+    else: 
+        R = 0
     
     
-    return A
+    return R
 
 def bilbo(theta):
     #getting the weighted average of the area of various parts along the unit sphere. Current simulation targets azimuth many more times than the rest of the sphere, so have to account for this being in a significantly smaller area
@@ -145,11 +147,11 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,ntheta,nphi,bgrd):
     thecon = []
     phicon = []
     for s in range(len(detsvals)):     
-        
+        print("Det val: " + str(detsvals[s]))
         
         oa=np.deg2rad(np.linspace(bottheta,toptheta,ntheta))  #range of thetas to sample
         ob=np.deg2rad(np.linspace(botphi,topphi,nphi)) #phi
-        Aofit=np.linspace(0,1000,25)  
+        Aofit=np.linspace(0,1000,2)  
 
         
         for sa in range(len(oa)): 
@@ -160,8 +162,7 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,ntheta,nphi,bgrd):
                         CHIsourceang=[oa[sa],ob[sb]]
                         CHIsourcexyz = hp.ang2vec(CHIsourceang[0],CHIsourceang[1])
                         CHIsep=angle(CHIsourcexyz,detnorms[s])                                           
-                        if CHIsep<np.pi/2: 
-                            chi=Aofit[sc]*response(angle(CHIsourcexyz,detnorms[s]))+bgrd
+                        chi=response(Aofit[sc],CHIsep,bgrd)
                             #print("Chi test angle"+str(CHIsourcexyz))
                             #print("detector"+str(dets[s]))
                             #print("chi sometiems"+str(chi))
@@ -169,8 +170,8 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,ntheta,nphi,bgrd):
 
                             #this produces nan error, se
                             
-                        else:
-                            chi=0            
+                       # else:
+                       #     chi=0            
                         if detsvals[s]>0:   #if there is a signal in the detector 
                             chiterm=((chi-detsvals[s])**2/detsvals[s])
                         else:    #if not, just zero 
@@ -197,31 +198,33 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,ntheta,nphi,bgrd):
 
 
 def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,background):
-    theta = np.deg2rad(np.linspace(bottheta,toptheta,3))
-    phi = np.deg2rad(np.linspace(botphi,topphi,4))
+    print("Detector val: " + str(detval))
+    theta = np.deg2rad(np.linspace(bottheta,toptheta,2))
+    phi = np.deg2rad(np.linspace(botphi,topphi,2))
     mphi,mtheta = np.meshgrid(phi,theta)
     allthetas = np.concatenate(mtheta)
     allphis = np.concatenate(mphi)
     allvecs = hp.ang2vec(allthetas,allphis)
-    As= np.linspace(10,1000,5)
+    As= np.linspace(0,1000,2)
     normarr = detnorm
     normarrs = []
     for garc in range((len(theta)*len(phi))):
         normarrs.append([normarr[0],normarr[1],normarr[2]])
         
     seps = findAngles(allvecs,normarrs)
+    print("separation here, is it okay? " +str(np.rad2deg(seps)))
+
     AA,SS = np.meshgrid(As,seps)
     Aofit = np.concatenate(AA)
     chiseps = np.concatenate(SS)
     
     #this is close, but needs to be a way to go one step further and do this in the next chiR
     bg = background * np.ones(len(chiseps))
-    good = chiseps < np.pi/2
-    bad = chiseps > np.pi/2
+    #good = chiseps < np.pi/2
+    #bad = chiseps > np.pi/2
     
     
-    chiResponse = np.multiply(Aofit,chiresponse(chiseps)) + bg
-    [1e5 if x>np.pi/2 else x for x in chiseps]
+    chiResponse = chiresponse(Aofit,chiseps,background)
 
     if detval > background: 
         chiterm = np.divide(np.power(np.subtract(chiResponse,detval),2),detval)
