@@ -79,10 +79,10 @@ def response(A):
  #   print(length(A),length(B))
 #if cosine is negative, 
 
-    pow(abs(np.cos(A)),0.76)
+    R = pow(abs(np.cos(A)),0.76)
     
     
-    return A
+    return R         
 
 def bilbo(theta):
     #getting the weighted average of the area of various parts along the unit sphere. Current simulation targets azimuth many more times than the rest of the sphere, so have to account for this being in a significantly smaller area
@@ -106,53 +106,6 @@ def chimaker(chiterms,Ndets):
  
     return chisquareds
 
-def speedy_solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,background):
-   # mask2 = np.array(detsvals) >background
-    #detsvals = detsvals[mask2]
-    theta = np.deg2rad(np.linspace(bottheta,toptheta,30))
-    phi = np.deg2rad(np.linspace(botphi,topphi,40))
-    mphi,mtheta = np.meshgrid(phi,theta)
-    allthetas = np.concatenate(mtheta)
-    allphis = np.concatenate(mphi)
-    allvecs = hp.ang2vec(allthetas,allphis)
-    As= np.linspace(0,1000,50)
-    chiterms = np.zeros(len(As)*len(theta)*len(phi))
-   # print("Len chi terms: the zeros one.. " + str(len(chiterms)))
-    for s in range(len(detsvals)):
-        normarr = detnorms[s]  #an array that is the normal vector for a given detector, changes for each loop. 
-   #    print("normal array " + str(s) + " " + str(np.rad2deg(hp.vec2ang(normarr)))) 
-        normarrs = []
-        for garc in range((len(theta)*len(phi))):
-            normarrs.append([normarr[0],normarr[1],normarr[2]])
-        
-        seps = findAngles(allvecs,normarrs)
-        
-        #mask = seps < np.pi/2
-        #seps[mask]
-        #only using seps under 90, good. 
-        AA,SS = np.meshgrid(As,seps)
-
-        Aofit = np.concatenate(AA)
-        chiseps = np.concatenate(SS)
-        bg = background * np.ones(len(chiseps))
-        #when chiseps in here are >90, make response huuuge
-        good = chiseps < np.pi/2
-        bad = chiseps > np.pi/2
-        chiResponse = np.multiply(Aofit,response(chiseps)) + bg
-         
-    #  print("iteration : " + str(s))
-        chiterm = np.divide(np.power(np.subtract(chiResponse,detsvals[s]),2),detsvals[s])
-      #  print("chiterm: " + str(chiterm))
-
-        chiterms += chiterm
-     #   print("chiterms final: " + str(chiterms))
-    chimin = min(chiterms)
-    chisquareds = list(chiterms)
-   # thetaloc = np.rad2deg(theta[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(phi)*len(Aofit))))/(len(phi)*len(Aofit)))])
-   # philoc = np.rad2deg(phi[int(((chisquareds.index(chimin) % (len(phi)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
-  #  Aoguess=Aofit[int((chisquareds.index(chimin) % (len(phi)*len(Aofit)))  % len(Aofit))]
-
-    return chiResponse, chiterms 
 
 def indexer(chisquareds,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA):
     chimin = min(chisquareds)
@@ -167,14 +120,23 @@ def indexer(chisquareds,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA
     return thetaloc, philoc, Aoguess
 
 def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,background):
+    #Need a fix for fine opt,  can't handle subtractions from 0..
     theta = np.deg2rad(np.linspace(bottheta,toptheta,ntheta))
     phi = np.deg2rad(np.linspace(botphi,topphi,nphi))
+    #theta = [0 if o<0 else o for o in theta]
+    #theta = [np.pi if o>np.pi else o for o in theta]
+   # phi = [0 if p<0 else p for p in phi]
+   # phi = [2*np.pi if p>2*np.pi else p for p in phi]
     mphi,mtheta = np.meshgrid(phi,theta)
     allthetas = np.concatenate(mtheta)
     allphis = np.concatenate(mphi)
     allvecs = hp.ang2vec(allthetas,allphis)
     As= np.linspace(botA,topA,nA)
+  #alternate approach to the one below, doesn't really make a difference?   
+  #  normarrs = np.zeros(int(len(theta)*len(phi)))
+   # normarrs = [[detnorm[0],detnorm[1],detnorm[2]] if o==0 else o for o in normarrs]
     normarr = detnorm
+    
     normarrs = []
     for garc in range((len(theta)*len(phi))):
         normarrs.append([normarr[0],normarr[1],normarr[2]])
@@ -186,13 +148,12 @@ def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,
     
     #this is close, but needs to be a way to go one step further and do this in the next chiR
     bg = background * np.ones(len(chiseps))
-    good = chiseps < np.pi/2
-    bad = chiseps > np.pi/2
+    #good = chiseps < np.pi/2
+    #bad = chiseps > np.pi/2
     
-    
+    #probs that, don't want to include bg 
     chiResponse = np.multiply(Aofit,chiresponse(chiseps)) + bg
-    [1e5 if x>np.pi/2 else x for x in chiseps]
-
+    #chiResponse = [1e5 if i <= background else i for i in chiResponse]
     if detval > background: 
         chiterm = np.divide(np.power(np.subtract(chiResponse,detval),2),detval)
     else: 
@@ -201,12 +162,5 @@ def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,
     return chiterm
 
 
-def rotate(x,y,theta):
- #   #inpute the x and y (or what components to be rotated) of the normal, and transform them by angle theta, provided in code.
-    xnew=np.cos(theta)*x-np.sin(theta)*y
-    ynew=np.sin(theta)*x+np.cos(theta)*y
-    rotnorm=[xnew/((xnew*xnew+ynew*ynew)**.5),ynew/((xnew*xnew+ynew*ynew)**.5)]
-    return rotnorm
 
-    
     
