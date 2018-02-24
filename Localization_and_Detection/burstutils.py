@@ -55,8 +55,21 @@ def findAngles(v1s, v2s):
 
 def chiresponse(A):
     """
+    The response function used in the chi squared fitting portion of the simulation. 
     Meant to imitate the actual response of a scintillator.
     Inputs 2 vectors, and responds with a cos^x dependence.
+    
+    Parameters
+    ----------
+    A : float
+        The angle between the two vectors who's response is meant to be imitated. 
+
+    Returns
+    -------
+
+    A : float
+        The cosine dependence based on the angle, includes a mask so that terms corresponding to angular separations beyond pi/2 are 0, imitating what would happen if a GRB didn't strike the face of a detector. Further simulations of this effect are neccessary in a different software package to confirm this assumption, but its okay for now. 
+
     """
     #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
  #   print(length(A),length(B))
@@ -74,6 +87,17 @@ def response(A):
     """
     Meant to imitate the actual response of a scintillator.
     Inputs 2 vectors, and responds with a cos^x dependence.
+    
+    Parameters
+    -----------
+    A : float
+        The angular separation in radians between the normal vector of the detector, and the position in the sky of the simulated GRB. 
+
+    Returns
+    -------
+    R : float
+        The response function of how the scintillator will respond to a source at angle A. 
+
     """
     #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
  #   print(length(A),length(B))
@@ -84,42 +108,42 @@ def response(A):
     
     return R         
 
-def bilbo(theta):
-    #getting the weighted average of the area of various parts along the unit sphere. Current simulation targets azimuth many more times than the rest of the sphere, so have to account for this being in a significantly smaller area
-    #keep in mind this 5 has to do with the # of test theta, 5 works best since it is splits the rings perfectly between evenly spaced points of 10 (used)
-    if theta==0: 
-        #have to treat this slightly differently
-        A=abs(2*np.pi*(np.cos(theta)-np.cos(np.deg2rad(5)))) 
-    else:
-        A=abs(2*np.pi*(np.cos(theta+np.deg2rad(5))-np.cos(theta-np.deg2rad(5))))
-    return A
-
-def chimaker(chiterms,Ndets): 
-    	
-    	#Unfortunately when you separate the detectors in an array the total chi squared is turned into a giant one
-    	#need to add all of them instead. 
- 
-    a,b,c,d=np.array_split(chiterms,Ndets)
-    ab=np.add(a,b)
-    cd=np.add(c,d)
-    chisquareds=(np.add(ab,cd)) 
- 
-    return chisquareds
-
-
-def indexer(chisquareds,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA):
-    chimin = min(chisquareds)
-    chisquareds = list(chisquareds)
-    oa = np.deg2rad(np.linspace(bottheta,toptheta,ntheta))
-    ob = np.deg2rad(np.linspace(botphi,topphi,nphi))
-    Aofit = np.deg2rad(np.linspace(botA,topA,nA))
-    thetaloc = np.rad2deg(oa[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(ob)*len(Aofit))))/(len(ob)*len(Aofit)))])
-    philoc = np.rad2deg(ob[int(((chisquareds.index(chimin) % (len(ob)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
-    Aoguess=Aofit[int((chisquareds.index(chimin) % (len(ob)*len(Aofit)))  % len(Aofit))]
-    
-    return thetaloc, philoc, Aoguess
 
 def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,background):
+    """Generates an array of all possible chi terms for a given detector and the number of counts induced in it by some source. Named quad since BurstCube is composed of 4 detectors, and this generates 1/4 of the terms. 
+    
+    Parameters
+    ----------
+    detsvals : array
+        Numpy array containing the relative counts in a BurstCube detector.
+    detnorms : array
+        Numpy array containing the normal vector of a BurstCube detector. 
+    bottheta : float
+        Minimum polar angle to be tested. 
+    toptheta : float
+        Maximum polar angle to be tested. 
+    botphi : float
+        Minimum azimuthal angle to be tested. 
+    topphi : float
+        Maximum azimuthal angle to be tested. 
+    botA : float
+        Minimum signal strength to be tested. 
+    topA : float
+        Maximum signal strength to be tested.  
+    ntheta : int
+        Number of sample points between bottheta and toptheta.
+    nphi : int
+        Number of sample points between botphi and topphi.
+    bgrd : float
+        # of background counts inherent to each detector. 
+    nA : int
+        Number of sample points between botA and topA. 
+
+    Returns
+    ------- 
+    chiterm : array
+        Numpy array containing all the chisquared terms for one BurstCube detector. 
+    """
     #Need a fix for fine opt,  can't handle subtractions from 0..
     theta = np.deg2rad(np.linspace(bottheta,toptheta,ntheta))
     phi = np.deg2rad(np.linspace(botphi,topphi,nphi))
@@ -162,15 +186,15 @@ def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,
     return chiterm
 
 
-#already obselete and replaced by quad solver, but for testing purposes keep here. 
-def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,ntheta,nphi,bgrd):
-    """Based on the given normal of a detector along with its inferred # of counts, this function identifies the strength and sky position that best matches these conditions. 
+def indexer(chisquareds,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA):
+    """ After obtaining an array of all the possible chi squared values, this uses an equation I tediously discovered which can backtrack to what term in each array corresponds to the minimim chi squared. 
+    
+
     Parameters
     ----------
-    detsvals : array
-        Numpy array containing the relative counts in each of the 4 BurstCube detectors.
-    detnorms : array
-        Numpy array containing the normal vector of each of the 4 BurstCube detectors. 
+    chisquareds : array
+        numpy array of all possible chi squared values 
+
     bottheta : float
         Minimum polar angle to be tested. 
     toptheta : float
@@ -178,76 +202,38 @@ def solver(detsvals,detnorms,bottheta,toptheta,botphi,topphi,ntheta,nphi,bgrd):
     botphi : float
         Minimum azimuthal angle to be tested. 
     topphi : float
-        Maximum azimuthal angle to be tested. 
+        Maximum azimuthal angle to be tested.
+    botA : float
+        Minimum signal strength to be tested. 
+    topA : float
+        Maximum signal strength to be tested.  
     ntheta : int
         Number of sample points between bottheta and toptheta.
     nphi : int
         Number of sample points between botphi and topphi.
-    bgrd : float
-        # of background counts inherent to each detector. 
-    Returns 
+    nA : int
+        Number of sample points between botA and topA. 
+
+
+    Returns
     -------
     thetaloc : float
-        The inferred polar angle of the incident GRB. 
+        The reconstructed polar angle of the source.
     philoc : float
-        The inferred azimuthal angle of the incident GRB.
-    Aoguess : float
-        The inferred strength of the incident GRB. 
+        The reconstructeed azimuthal angle of the source. 
+    Aoguess : float 
+        The reconstructed strength of the source. 
     """
-#this function uses a chi squared minimizer over a given range to identify the theta,phi,
-#and Ao values which correspond to the minimum chi squared and thus localized source. 
-    confidence = []
-    chiterms = []
-    thecon = []
-    phicon = []
-    for s in range(len(detsvals)):     
-        
-        
-        oa=np.deg2rad(np.linspace(bottheta,toptheta,ntheta))  #range of thetas to sample
-        ob=np.deg2rad(np.linspace(botphi,topphi,nphi)) #phi
-        Aofit=np.linspace(0,1000,25)  
-
-        
-        for sa in range(len(oa)): 
-            for sb in range(len(ob)):
-                for sc in range(len(Aofit)):
-                    #make sure it fits within the acceptable range
-                    if oa[sa]>=0 and oa[sa]<=np.pi and ob[sb]>=0 and ob[sb]<=2*np.pi:
-                        CHIsourceang=[oa[sa],ob[sb]]
-                        CHIsourcexyz = hp.ang2vec(CHIsourceang[0],CHIsourceang[1])
-                        CHIsep=angle(CHIsourcexyz,detnorms[s])                                           
-                        if CHIsep<np.pi/2: 
-                            chi=Aofit[sc]*response(angle(CHIsourcexyz,detnorms[s]))+bgrd
-                            #print("Chi test angle"+str(CHIsourcexyz))
-                            #print("detector"+str(dets[s]))
-                            #print("chi sometiems"+str(chi))
-                            #print("separation here, is it okay? " +str(np.rad2deg(CHIsep)))
-
-                            #this produces nan error, se
-                            
-                        else:
-                            chi=0            
-                        if detsvals[s]>0:   #if there is a signal in the detector 
-                            chiterm=((chi-detsvals[s])**2/detsvals[s])
-                        else:    #if not, just zero 
-                            chiterm=1e10
-                    else: 
-                        chiterm=1e10 #some large #, just to note that it definitely isn't right angle 
-                                                                       
-                                    
-                    chiterms.append(chiterm)   #this is an array of EVERY SINGLE term, need to split in pieces and add element by element...
-    chisquareds=chimaker(chiterms,len(detsvals))
-    chimin=np.amin(chisquareds)
-    #print("The chi min is " + str(chimin))
-    #is there a better way to do this? 
-    chisquareds=list(chisquareds)
-
+    chimin = min(chisquareds)
+    chisquareds = list(chisquareds)
+    oa = np.deg2rad(np.linspace(bottheta,toptheta,ntheta))
+    ob = np.deg2rad(np.linspace(botphi,topphi,nphi))
+    Aofit = np.deg2rad(np.linspace(botA,topA,nA))
     thetaloc = np.rad2deg(oa[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(ob)*len(Aofit))))/(len(ob)*len(Aofit)))])
     philoc = np.rad2deg(ob[int(((chisquareds.index(chimin) % (len(ob)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
     Aoguess=Aofit[int((chisquareds.index(chimin) % (len(ob)*len(Aofit)))  % len(Aofit))]
-    #print(Aoguess)
-    #print(thetaloc,philoc)
     
-    return thetaloc,philoc,Aoguess
+    return thetaloc, philoc, Aoguess
 
-    
+
+

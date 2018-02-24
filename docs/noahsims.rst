@@ -10,7 +10,7 @@ GRBgenerator module
 
 burstSim module
 -------------------
-.. automodule:: burstSim
+.. automodule:: fastcube
    :members:
    :undoc-members:
 
