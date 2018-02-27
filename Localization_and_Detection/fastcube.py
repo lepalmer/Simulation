@@ -6,6 +6,8 @@ import burstutils as bf
 import random as rand
 import statistics as s
 import time as time
+from healpy import newvisufunc
+import matplotlib.pyplot as plt
 
 class FastCube():
 
@@ -111,7 +113,7 @@ class FastCube():
 
         else:
             sample = len(GRB.sourceangs) 
-            samples = 50 #times  per sky pos
+            samples = 5 #times  per sky pos
             bottheta = 0
             toptheta = 90
             botphi = 0 
@@ -234,4 +236,12 @@ class FastCube():
                 loop +=1
             print("Avg loc offset = " + str(s.mean(locunc)) + " deg.")
             self.localizationerrors.append(s.mean(locunc))
-        return self.localizationerrorsq
+        return self.localizationerrors
+
+
+    def plotSkymap(self,skyvals):
+        im = np.array(skyvals)
+        hp.newvisufunc.mollview(im,min=0, max=15,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True)
+        plt.title('All Sky Localization Uncertainty for BurstCube set as ' + str(np.rad2deg(self.tilt)) + ' deg')  #should add something about design too! 
+
+        plt.show()
