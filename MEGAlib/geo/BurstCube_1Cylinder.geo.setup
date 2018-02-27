@@ -74,7 +74,7 @@ CSICylinder.Visibility 1
 CSICylinder.Color 2
 CSICylinder.Shape TUBS 0. 5.0 1.1  0. 360. 
 CSICylinder.Position 0. 0. 0.05
-//CSICylinder.Mother WorldVolume
+CSICylinder.Mother WorldVolume
 
 // Single cylinder of Scintillator NaI
 //tech specs say it R=5.0, h=2.2 cm
@@ -157,3 +157,5 @@ MainTrigger.TriggerByDetector true
 MainTrigger.Detector DCalCSI 1
 MainTrigger.Detector DCalNaI 1
 MainTrigger.Detector DCalBGO 1
+MainTrigger.Detector DCalPbWO4 1
+
