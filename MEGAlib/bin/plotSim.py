@@ -113,3 +113,35 @@ def plotAeff(simFiles, plotGBM=False):
         plt.grid(True)
 
     plt.show()
+
+    
+def plotComparison(sims, names, AeffvsEnergy=True, AeffvsTheta=True):
+
+    """Makes comparison plots of two or more simulations.
+
+    Parameters
+    ----------
+    sims : list
+       List of simulation objects that need to be compared.
+
+    names : list
+       List of strings used to label the plots.  Should be
+       the same length as the sims list.
+
+    Returns
+    ----------
+       Nothing
+
+    """
+
+    for sim in sims:
+        aeffs = sim.calculateAeff()
+
+        for angle in set(aeffs['theta']):
+            mask = aeffs['theta'] == angle
+            plotAeffvsEnergy(aeffs['keV'][mask],
+                             aeffs['aeff'][mask],
+                             aeffs['aeff_eres'][mask],
+                             aeffs['aeff_eres_modfrac'][mask],
+                             angle)
+    plt.show()
