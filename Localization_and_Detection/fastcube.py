@@ -71,7 +71,7 @@ class FastCube():
     
     
     
-    def response2GRB(self, GRB, test=True):   #is this how I inherit? 
+    def response2GRB(self, GRB, test=True,talk=False):   #is this how I inherit? 
         start = time.time()
         #first need to include the GRB.
        
@@ -126,7 +126,8 @@ class FastCube():
         self.localizationerrors = []    
         for i in range(sample):
             sourceAng = GRB.sourceangs[i]
-            print("Testing " + str(np.rad2deg(sourceAng)))
+            if talk:
+                print("Testing " + str(np.rad2deg(sourceAng)))
            #this check passes.       
 
             
@@ -234,7 +235,9 @@ class FastCube():
                 
                 locunc.append(locoffset)
                 loop +=1
-            print("Avg loc offset = " + str(s.mean(locunc)) + " deg.")
+            if talk:
+                print("Avg loc offset = " + str(s.mean(locunc)) + " deg.")
+
             self.localizationerrors.append(s.mean(locunc))
         return self.localizationerrors
 

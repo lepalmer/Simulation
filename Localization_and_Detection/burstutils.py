@@ -228,7 +228,7 @@ def indexer(chisquareds,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA
     chisquareds = list(chisquareds)
     oa = np.deg2rad(np.linspace(bottheta,toptheta,ntheta))
     ob = np.deg2rad(np.linspace(botphi,topphi,nphi))
-    Aofit = np.deg2rad(np.linspace(botA,topA,nA))
+    Aofit = (np.linspace(botA,topA,nA))
     thetaloc = np.rad2deg(oa[int((chisquareds.index(chimin)-(chisquareds.index(chimin) % (len(ob)*len(Aofit))))/(len(ob)*len(Aofit)))])
     philoc = np.rad2deg(ob[int(((chisquareds.index(chimin) % (len(ob)*len(Aofit)))-(chisquareds.index(chimin) % (len(Aofit))))/len(Aofit))])
     Aoguess=Aofit[int((chisquareds.index(chimin) % (len(ob)*len(Aofit)))  % len(Aofit))]

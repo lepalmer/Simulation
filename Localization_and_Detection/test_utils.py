@@ -35,4 +35,22 @@ def test_chiresponse():
 	np.testing.assert_allclose(testAs,(0.768438,0),1e-3)
 
 def test_response():
-	testA = 
+	testR = burstutils.response(np.pi/4)
+
+	assert (np.abs(testR- 0.768438) < 1e-3)
+
+
+def test_quadsolver():
+
+	fakenorm = [0,0,1]
+	fakeval = 1600
+
+	fakechi = burstutils.quad_solver(fakeval,fakenorm,0,5,0,360,0,500,1,1,2,1000)
+
+	np.testing.assert_allclose(fakechi, (225, 6.25), 1e-3)
+
+def test_indexer():
+	fakechisquareds = [10,100,4,60,66,1002,99,93]
+	fakeindex = burstutils.indexer(fakechisquareds,1,8,27,99,23,45,2,2,2)
+
+	np.testing.assert_allclose(fakeindex, (1.0, 99.0, 23.0), 1e-3)
