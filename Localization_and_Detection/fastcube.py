@@ -113,7 +113,7 @@ class FastCube():
 
         else:
             sample = len(GRB.sourceangs) 
-            samples = 5 #times  per sky pos
+            samples = 50 #times  per sky pos
             bottheta = 0
             toptheta = 90
             botphi = 0 
