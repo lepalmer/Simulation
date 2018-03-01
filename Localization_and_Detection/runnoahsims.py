@@ -1,15 +1,14 @@
 import fastcube
 import GRBgenerator
-import time	
 
 NSIDE = 16
 STRENGTH = 500
 BACKGROUND = 1000
 TILT = 45
+SAMPLES = 5
 ALTERNATING = False
 TEST = False
 TALK = False
-
 
 """
 Parameters
@@ -44,12 +43,8 @@ sim1 = GRBgenerator.Sky(NSIDE,STRENGTH)
 #run this file, and you immediately get
 cube1 = fastcube.FastCube(BACKGROUND,TILT,alternating = ALTERNATING)
 
-start = time.time()
 
-response = cube1.response2GRB(sim1,test=TEST,talk=TALK)
-
-end = time.time()
-print(end-start)
+response = cube1.response2GRB(sim1,samples=SAMPLES,test=TEST,talk=TALK)
 print("Response: " + str(response))
 
 if TEST == False: 

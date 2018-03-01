@@ -71,7 +71,7 @@ class FastCube():
     
     
     
-    def response2GRB(self, GRB, test=True,talk=False):   #is this how I inherit? 
+    def response2GRB(self, GRB, samples,test=True,talk=False):   #is this how I inherit? 
         start = time.time()
         #first need to include the GRB.
        
@@ -100,7 +100,6 @@ class FastCube():
         
         if test:
             sample = 1
-            samples = 50  #times  per sky pos
             bottheta = 0
             toptheta = 90
             botphi = 0 
@@ -113,7 +112,6 @@ class FastCube():
 
         else:
             sample = len(GRB.sourceangs) 
-            samples = 50 #times  per sky pos
             bottheta = 0
             toptheta = 90
             botphi = 0 
