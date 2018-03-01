@@ -9,7 +9,7 @@ def test_fastcube():
 	testcube = fastcube.FastCube(1000,45)
 	start = time.time()
 
-	testresponse = testcube.response2GRB(testsim,test=True,talk=False)
+	testresponse = testcube.response2GRB(testsim,samples=50,test=True,talk=False)
 	end = time.time()
 
 	elapsed = end-start   #should be about 1 second to do 50 samples...
