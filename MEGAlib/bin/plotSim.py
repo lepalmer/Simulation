@@ -203,55 +203,60 @@ def plotAeffComparison(sims, names, compareTo='GBM', theta=0):
     gbmdata = getGBMdata()
     if compareTo == 'GBM':
         comp_aeff = sims[0].calculateAeff()
-        gbminterp = np.interp(comp_aeff['energy'],
-                              gbmdata['energy'],
-                              gbmdata['aeff'])
     else:
         i = names.index(compareTo)
         comp_aeff = sims[i].calculateAeff()
 
     for angle in set(comp_aeff['theta']):
+        
         mask = comp_aeff['theta'] == angle
+
+        if compareTo == 'GBM':
+            gbminterp = np.interp(comp_aeff['keV'][mask],
+                                  gbmdata['energy'][mask],
+                                  gbmdata['aeff'][mask])
+
         plt.figure(figsize=(8, 6))
         plt.subplots_adjust(hspace=0.0)
         gs = gridspec.GridSpec(2, 1,
                                height_ratios=[4, 1])
         
-    ax1 = plt.subplot(gs[0])
-    ax2 = plt.subplot(gs[1])
+        ax1 = plt.subplot(gs[0])
+        ax2 = plt.subplot(gs[1])
 
-    ax1.set_title(r'Effective Area vs. Energy ($\theta$ = {:,.0f}$^\circ$)'
-                  .format(theta))
-    ax1.set_xscale('log')
-    ax1.set_xlabel('Energy (keV)', fontsize=16)
-    ax1.set_yscale('log')
-    ax1.set_ylabel('Effective Area (cm$^2$)', fontsize=16)
-    ax1.set_xticklabels(ax1.get_xticklabels(), visible=False)
+        ax1.set_title(r'Effective Area vs. Energy ($\theta$ = {:,.0f}$^\circ$)'
+                      .format(theta))
+        ax1.set_xscale('log')
+        ax1.set_xlabel('Energy (keV)', fontsize=16)
+        ax1.set_yscale('log')
+        ax1.set_ylabel('Effective Area (cm$^2$)', fontsize=16)
+        ax1.set_xticklabels(ax1.get_xticklabels(), visible=False)
 
-    ax2.set_xscale('log')
-    ax2.set_xlabel('Energy (keV)', fontsize=16)
-    ax2.set_ylabel('% Diff', fontsize=16)
+        ax2.set_xscale('log')
+        ax2.set_xlabel('Energy (keV)', fontsize=16)
+        ax2.set_ylabel('% Diff', fontsize=16)
 
-    ax1.plot(gbmdata['energy'], gbmdata['aeff'], color='green', alpha=0.75,
-             linestyle='-', lw=2, label='GBM NaI')
+        ax1.plot(gbmdata['energy'], gbmdata['aeff'], color='green', alpha=0.75,
+                 linestyle='-', lw=2, label='GBM NaI')
     
-    for sim, name, color in zip(sims, names, colors):
-        aeffs = sim.calculateAeff()
-        energy = aeffs['keV'][mask]
-        aeff = aeffs['aeff'][mask]
+        for sim, name, color in zip(sims, names, colors):
+            aeffs = sim.calculateAeff()
+            energy = aeffs['keV'][mask]
+            aeff = aeffs['aeff'][mask]
 
-        ax1.scatter(energy, aeff, color=color)
-        ax1.plot(energy, aeff, alpha=0.5, linestyle='--',
-                 lw=2, label=name, color=color)
-        ax1.legend(loc='lower center', prop={'size': 16}, numpoints=1,
-                   frameon=False)
+            ax1.scatter(energy, aeff, color=color)
+            ax1.plot(energy, aeff, alpha=0.5, linestyle='--',
+                     lw=2, label=name, color=color)
+            ax1.legend(loc='lower center', prop={'size': 16}, numpoints=1,
+                       frameon=False)
         
-        if compareTo == 'GBM':
-            diff = gbminterp-aeff
-        else:
-            diff = 100.*(aeff - comp_aeff['aeff'])/comp_aeff['aeff']
+            if compareTo == 'GBM':
+                diff = gbminterp-aeff
+            else:
+                diff = 100.*(aeff -
+                             comp_aeff['aeff'][mask])/comp_aeff['aeff'][mask]
 
-        ax2.scatter(energy, diff, color=color)
-        ax2.set_xlim(ax1.get_xlim())
-        plt.setp(ax2.get_yticklabels()[-1], visible=False)
+                ax2.scatter(energy, diff, color=color)
+                ax2.set_xlim(ax1.get_xlim())
+                plt.setp(ax2.get_yticklabels()[-1], visible=False)
         plt.show()
