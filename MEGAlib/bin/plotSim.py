@@ -260,3 +260,80 @@ def plotAeffComparison(sims, names, compareTo='GBM', theta=0):
             ax2.set_xlim(ax1.get_xlim())
             plt.setp(ax2.get_yticklabels()[-1], visible=False)
         plt.show()
+
+        
+def plotThetaComparison(sims, names, compareTo='', energy=100):
+
+    """Makes Theta comparison plots of two or more simulations.
+
+    Parameters
+    ----------
+    sims : list
+       List of simulation objects that need to be compared.
+
+    names : list
+       List of strings used to label the plots.  Should be
+       the same length as the sims list.
+
+    compareTo : string
+       The curve to make the comparison to in the percent difference.
+       Default is the first in the list.  You can pick any of the
+       other curves in the `names` list.
+
+    energy : float
+       The energy bin (in keV) to plot.
+
+    Returns
+    ----------
+       Nothing
+
+    """
+
+    colors = plt.cm.rainbow(np.linspace(0, 1, len(sims)))
+
+    if compareTo == '':
+        i = 0
+    else:
+        i = names.index(compareTo)
+    comp_aeff = sims[i].calculateAeff()
+
+    for energy in set(comp_aeff['keV']):
+        mask = comp_aeff['keV'] == energy
+        
+        plt.figure(figsize=(8, 6))
+        plt.subplots_adjust(hspace=0.0)
+        gs = gridspec.GridSpec(2, 1,
+                               height_ratios=[4, 1])
+        
+        ax1 = plt.subplot(gs[0])
+        ax2 = plt.subplot(gs[1])
+
+        ax1.set_title(r'Effective Area vs. Angle (E = {:,.0f} keV)'
+                      .format(energy))
+
+        ax1.set_xlabel('Incident Angle (deg)', fontsize=16)
+        ax1.set_ylabel('Effective Area (cm$^2$)', fontsize=16)
+        ax1.set_xticklabels(ax1.get_xticklabels(), visible=False)
+
+        ax2.set_xlabel('Incident Angle (deg)', fontsize=16)
+        ax2.set_ylabel('% Diff', fontsize=16)
+       
+        for sim, name, color in zip(sims, names, colors):
+            aeffs = sim.calculateAeff()
+            aeff = aeffs['aeff'][mask]
+            theta = aeffs['theta'][mask]
+       
+            ax1.scatter(theta, aeff, color=color)
+            ax1.plot(theta, aeff, color=color, alpha=0.5, linestyle='--',
+                     lw=2, label=name)
+            ax1.legend(loc='lower center', scatterpoints=1, prop={'size': 16},
+                       frameon=False)
+            ax1.grid(True)
+    
+            diff = 100.*(aeff -
+                         comp_aeff['aeff'][mask])/comp_aeff['aeff'][mask]
+    
+            ax2.scatter(theta, diff, color=color)
+            ax2.set_xlim(ax1.get_xlim())
+            plt.setp(ax2.get_yticklabels()[-1], visible=False)
+        plt.show()
