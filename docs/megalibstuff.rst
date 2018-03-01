@@ -1,5 +1,5 @@
-Code
-====
+MEGAlib
+=======
 
 simGenerator module
 -------------------

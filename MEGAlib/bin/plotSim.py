@@ -28,7 +28,8 @@ def getGBMdata(gbmfile='$BURSTCUBE/Simulation/GEANT3/gbm_effective_area.dat'):
 
     Returns
     ----------
-    gbmdata : numpy array with two columns ``energy`` and ``aeff``
+    gbmdata : array 
+    numpy array with two columns ``energy`` and ``aeff``
     """
 
     from numpy import genfromtxt
