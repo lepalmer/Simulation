@@ -251,12 +251,12 @@ def plotAeffComparison(sims, names, compareTo='GBM', theta=0):
                        frameon=False)
         
             if compareTo == 'GBM':
-                diff = gbminterp-aeff
+                diff = 100.*(aeff - gbminterp) / gbminterp
             else:
                 diff = 100.*(aeff -
                              comp_aeff['aeff'][mask])/comp_aeff['aeff'][mask]
 
-                ax2.scatter(energy, diff, color=color)
-                ax2.set_xlim(ax1.get_xlim())
-                plt.setp(ax2.get_yticklabels()[-1], visible=False)
+            ax2.scatter(energy, diff, color=color)
+            ax2.set_xlim(ax1.get_xlim())
+            plt.setp(ax2.get_yticklabels()[-1], visible=False)
         plt.show()
