@@ -213,8 +213,8 @@ def plotAeffComparison(sims, names, compareTo='GBM', theta=0):
 
         if compareTo == 'GBM':
             gbminterp = np.interp(comp_aeff['keV'][mask],
-                                  gbmdata['energy'][mask],
-                                  gbmdata['aeff'][mask])
+                                  gbmdata['energy'],
+                                  gbmdata['aeff'])
 
         plt.figure(figsize=(8, 6))
         plt.subplots_adjust(hspace=0.0)
