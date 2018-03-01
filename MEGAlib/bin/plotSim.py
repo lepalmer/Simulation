@@ -14,6 +14,8 @@ except ImportError:
           "Do not try to make plots or bad things will happen! ****")
     exit()
 
+from matplotlib import gridspec
+import numpy as np
     
 def getGBMdata(gbmfile='$BURSTCUBE/Simulation/GEANT3/gbm_effective_area.dat'):
     """Reads the GBM NaI effective area file and returns a numpy array
@@ -169,9 +171,9 @@ def plotAeff(simFiles, plotGBM=False):
     plt.show()
 
     
-def plotComparison(sims, names, AeffvsEnergy=True, AeffvsTheta=True):
+def plotAeffComparison(sims, names, compareTo='GBM', theta=0):
 
-    """Makes comparison plots of two or more simulations.
+    """Makes Aeff comparison plots of two or more simulations.
 
     Parameters
     ----------
@@ -182,20 +184,74 @@ def plotComparison(sims, names, AeffvsEnergy=True, AeffvsTheta=True):
        List of strings used to label the plots.  Should be
        the same length as the sims list.
 
+    compareTo : string
+       The curve to make the comparison to in the percent difference.
+       Default is GBM.  You can pick any of the other curves in the
+       `names` list.
+
+    theta : float
+       The theta angle to plot.
+
     Returns
     ----------
        Nothing
 
     """
 
-    for sim in sims:
-        aeffs = sim.calculateAeff()
+    colors = plt.cm.rainbow(np.linspace(0, 1, len(sims)))
 
-        for angle in set(aeffs['theta']):
-            mask = aeffs['theta'] == angle
-            plotAeffvsEnergy(aeffs['keV'][mask],
-                             aeffs['aeff'][mask],
-                             aeffs['aeff_eres'][mask],
-                             aeffs['aeff_eres_modfrac'][mask],
-                             angle)
-    plt.show()
+    gbmdata = getGBMdata()
+    if compareTo == 'GBM':
+        comp_aeff = sims[0].calculateAeff()
+        gbminterp = np.interp(comp_aeff['energy'],
+                              gbmdata['energy'],
+                              gbmdata['aeff'])
+    else:
+        i = names.index(compareTo)
+        comp_aeff = sims[i].calculateAeff()
+
+    for angle in set(comp_aeff['theta']):
+        mask = comp_aeff['theta'] == angle
+        plt.figure(figsize=(8, 6))
+        plt.subplots_adjust(hspace=0.0)
+        gs = gridspec.GridSpec(2, 1,
+                               height_ratios=[4, 1])
+        
+    ax1 = plt.subplot(gs[0])
+    ax2 = plt.subplot(gs[1])
+
+    ax1.set_title(r'Effective Area vs. Energy ($\theta$ = {:,.0f}$^\circ$)'
+                  .format(theta))
+    ax1.set_xscale('log')
+    ax1.set_xlabel('Energy (keV)', fontsize=16)
+    ax1.set_yscale('log')
+    ax1.set_ylabel('Effective Area (cm$^2$)', fontsize=16)
+    ax1.set_xticklabels(ax1.get_xticklabels(), visible=False)
+
+    ax2.set_xscale('log')
+    ax2.set_xlabel('Energy (keV)', fontsize=16)
+    ax2.set_ylabel('% Diff', fontsize=16)
+
+    ax1.plot(gbmdata['energy'], gbmdata['aeff'], color='green', alpha=0.75,
+             linestyle='-', lw=2, label='GBM NaI')
+    
+    for sim, name, color in zip(sims, names, colors):
+        aeffs = sim.calculateAeff()
+        energy = aeffs['keV'][mask]
+        aeff = aeffs['aeff'][mask]
+
+        ax1.scatter(energy, aeff, color=color)
+        ax1.plot(energy, aeff, alpha=0.5, linestyle='--',
+                 lw=2, label=name, color=color)
+        ax1.legend(loc='lower center', prop={'size': 16}, numpoints=1,
+                   frameon=False)
+        
+        if compareTo == 'GBM':
+            diff = gbminterp-aeff
+        else:
+            diff = 100.*(aeff - comp_aeff['aeff'])/comp_aeff['aeff']
+
+        ax2.scatter(energy, diff, color=color)
+        ax2.set_xlim(ax1.get_xlim())
+        plt.setp(ax2.get_yticklabels()[-1], visible=False)
+        plt.show()
