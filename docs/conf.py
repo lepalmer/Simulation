@@ -16,7 +16,7 @@ import os
 import sys
 import mock
 #fake modules so readthedocs doesn't realize ;)
-MOCK_MODULES = ['numpy', 'statistics', 'matplotlib', 'matplotlib.pyplot', 'healpy']
+MOCK_MODULES = ['numpy', 'statistics', 'matplotlib', 'matplotlib.pyplot', 'healpy','createSourcestring']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
