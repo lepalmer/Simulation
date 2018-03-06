@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math as mth
 import random as rand
-import statistics as s
 import healpy as hp
 
 

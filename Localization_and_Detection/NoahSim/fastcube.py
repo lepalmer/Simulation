@@ -1,11 +1,9 @@
 #The following cell contains the "FastCube" class. This is the simulation I hope to use to be able to run quicker simulations. 
 
-from numpy import rad2deg,deg2rad,pi,sqrt,add,array
+from numpy import rad2deg,deg2rad,pi,sqrt,add,array,average
 from healpy import ang2vec, newvisufunc
 import burstutils as bf
 from random import gauss
-import statistics as s
-from statistics import mean
 import matplotlib.pyplot as plt
 
 class FastCube():
@@ -52,36 +50,27 @@ class FastCube():
         return [ self.zenith[0] + self.tiltD , self.zenith[1] + 3*pi/2 ]
     @property
     def normA(self):
-        """The normal vector of the corresponding detector. 
-        """
         return  ang2vec(self.detA[0],self.detA[1])
     @property 
     def normB(self):
-        """The normal vector of the corresponding detector. 
-        """
         return  ang2vec(self.detB[0],self.detB[1])
     @property
     def normC(self):
-        """The normal vector of the corresponding detector. 
-        """
         return  ang2vec(self.detC[0],self.detC[1])
     @property 
     def normD(self):
-        """The normal vector of the corresponding detector. 
-        """
         return  ang2vec(self.detD[0],self.detD[1])
 
     
     @property
     def dets(self):
-        """Array of these normals. 
-        """
         return [self.normA,self.normB,self.normC,self.normD] 
     
     
     
     def response2GRB(self, GRB, samples,test=True,talk=False):   #is this how I inherit? 
-        #first need to include the GRB.
+
+    #first need to include the GRB.
        
         """
         Using least squares regression, respond2GRB will determine the sky position of an array of GRB sources assuming some inherent background noise within 
@@ -93,10 +82,9 @@ class FastCube():
             An instance of the separately defined "GRBs" class that contains a number of evenly spaced sky positions of a given strength. 
         
         test : boolean 
-            For testing purposes, if the simulation seems to give unrealistic results, switching to test mode allows for much quicker sampling, allowing it easier to spot potential errors. 
+            For sanity purposes, if the simulation seems to give unrealistic results, switching to test mode allows for much quicker sampling, allowing it easier to spot potential errors. 
         
-        talk : boolean
-            For instance by instance localizations, gives updates about localizations at each sky positions. Default is False. 
+        
 
         Returns
         ----------
@@ -243,26 +231,13 @@ class FastCube():
                 locunc.append(locoffset)
                 loop +=1
             if talk:
-                print("Avg loc offset = " + str(mean(locunc)) + " deg.")
+                print("Avg loc offset = " + str(average(locunc)) + " deg.")
 
             self.localizationerrors.append(mean(locunc))
         return self.localizationerrors
 
 
     def plotSkymap(self,skyvals):
-        """Creates a full skymap representing the localization uncertainty of BurstCube. 
-
-        Parameters
-        ----------
-        skyvals : list
-            List of localization uncertanties generated in the response2GRB function. Converted to proper data format here. 
-
-        Returns
-        -------
-
-        A skymap. 
-        
-        """
         im = array(skyvals)
         newvisufunc.mollview(im,min=0, max=15,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True)
         plt.title('All Sky Localization Uncertainty for BurstCube set as ' + str(rad2deg(self.tilt)) + ' deg')  #should add something about design too! 
