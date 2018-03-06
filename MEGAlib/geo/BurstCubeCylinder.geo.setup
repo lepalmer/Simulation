@@ -114,54 +114,55 @@ G10Plane.Mother ReadOutDetectorVolume
 DetectorVolume.Copy DetectorVolume_1
 DetectorVolume_1 Position 5.5 5.5 0.
 //DetectorVolume_1.Rotation -25.0 25.0 0.0
-DetectorVolume_1.Rotation 90 45 0 45 90 0
+DetectorVolume_1.Rotation 45 0 135
 DetectorVolume_1.Mother WorldVolume
 
-//ReadOutDetectorVolume.Copy ReadOutDetectorVolume_1
-//ReadOutDetectorVolume_1 Position 5. 5. -1.4
+ReadOutDetectorVolume.Copy ReadOutDetectorVolume_1
+ReadOutDetectorVolume_1 Position 5. 5. -1.4
 //ReadOutDetectorVolume_1.Rotation -25.0 25.0 0.0
-//ReadOutDetectorVolume_1.Mother WorldVolume
+ReadOutDetectorVolume_1.Rotation 45 0 135
+ReadOutDetectorVolume_1.Mother WorldVolume
 
-//DetectorVolume.Copy DetectorVolume_2
-//DetectorVolume_2 Position -5.5 5.5 0.
-//DetectorVolume_2.Rotation -25.0 -25.0 0.0
-//DetectorVolume_2.Mother WorldVolume
+DetectorVolume.Copy DetectorVolume_2
+DetectorVolume_2 Position -5.5 5.5 0.
+DetectorVolume_2.Rotation 45 0 225
+DetectorVolume_2.Mother WorldVolume
 
-//ReadOutDetectorVolume.Copy ReadOutDetectorVolume_2
-//ReadOutDetectorVolume_2 Position -5. 5. -1.4
-//ReadOutDetectorVolume_2.Rotation -25.0 -25.0 0.0
-//ReadOutDetectorVolume_2.Mother WorldVolume
+ReadOutDetectorVolume.Copy ReadOutDetectorVolume_2
+ReadOutDetectorVolume_2 Position -5. 5. -1.4
+ReadOutDetectorVolume_2.Rotation 45 0 225
+ReadOutDetectorVolume_2.Mother WorldVolume
 
-//DetectorVolume.Copy DetectorVolume_3
-//DetectorVolume_3 Position 5.5 -5.5 0.
-//DetectorVolume_3.Rotation 25.0 25.0 0.0
-//DetectorVolume_3.Mother WorldVolume
+DetectorVolume.Copy DetectorVolume_3
+DetectorVolume_3 Position 5.5 -5.5 0.
+DetectorVolume_3.Rotation 45 0 45
+DetectorVolume_3.Mother WorldVolume
 
-//ReadOutDetectorVolume.Copy ReadOutDetectorVolume_3
-//ReadOutDetectorVolume_3 Position 5. -5. -1.4
-//ReadOutDetectorVolume_3.Rotation 25.0 25.0 0.0
-//ReadOutDetectorVolume_3.Mother WorldVolume
+ReadOutDetectorVolume.Copy ReadOutDetectorVolume_3
+ReadOutDetectorVolume_3 Position 5. -5. -1.4
+ReadOutDetectorVolume_3.Rotation 45 0 45
+ReadOutDetectorVolume_3.Mother WorldVolume
 
-//DetectorVolume.Copy DetectorVolume_4
-//DetectorVolume_4 Position -5.5 -5.5 0.
-//DetectorVolume_4.Rotation 25.0 -25.0 0.0
-//DetectorVolume_4.Mother WorldVolume
+DetectorVolume.Copy DetectorVolume_4
+DetectorVolume_4 Position -5.5 -5.5 0.
+DetectorVolume_4.Rotation 45 0 315
+DetectorVolume_4.Mother WorldVolume
 
-//ReadOutDetectorVolume.Copy ReadOutDetectorVolume_4
-//ReadOutDetectorVolume_4 Position -5. -5. -1.4
-//ReadOutDetectorVolume_4.Rotation 25.0 -25.0 0.0
-//ReadOutDetectorVolume_4.Mother WorldVolume
+ReadOutDetectorVolume.Copy ReadOutDetectorVolume_4
+ReadOutDetectorVolume_4 Position -5. -5. -1.4
+ReadOutDetectorVolume_4.Rotation 45 0 315
+ReadOutDetectorVolume_4.Mother WorldVolume
 
 
 //This chunk our spacecraft
 //the tech specs say dim are block of aluminium 10x20x10 cm
-//Volume Spacecraft
-//Spacecraft.Material Aluminium
-//Spacecraft.Shape BOX 5. 10. 5.
-//Spacecraft.Position 17. 0. 0.
-//Spacecraft.Color 6
-//Spacecraft.Visibility 1
-//Spacecraft.Mother WorldVolume
+Volume Spacecraft
+Spacecraft.Material Aluminium
+Spacecraft.Shape BOX 5. 10. 5.
+Spacecraft.Position 17. 0. 0.
+Spacecraft.Color 6
+Spacecraft.Visibility 1
+Spacecraft.Mother WorldVolume
 
 
 # Base Trigger
