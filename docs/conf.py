@@ -15,6 +15,8 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../MEGAlib/bin'))
+sys.path.insert(0, os.path.abspath('../Localization_and_Detection/NoahSim'))
+
 #sys.path.append(os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
