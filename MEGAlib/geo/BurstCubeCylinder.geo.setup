@@ -151,6 +151,17 @@ ReadOutDetectorVolume_3.Rotation 25.0 25.0 0.0
 ReadOutDetectorVolume_3.Mother WorldVolume
 
 
+//This chunk our spacecraft
+//the tech specs say dim are block of aluminium 10x20x10 cm
+Volume Spacecraft
+Spacecraft.Material Aluminium
+Spacecraft.Shape BOX 5. 10. 5.
+Spacecraft.Position 17. 0. 0.
+Spacecraft.Color 6
+Spacecraft.Visibility 1
+Spacecraft.Mother WorldVolume
+
+
 # Base Trigger
 Trigger MainTrigger
 MainTrigger.Veto false
