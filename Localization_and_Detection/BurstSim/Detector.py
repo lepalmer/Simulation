@@ -3,10 +3,10 @@
 import numpy as np
 import ephem as eph
 
-from Utils import deg2DMS,deg2HMS
+from BurstSim.Utils import deg2DMS, deg2HMS
 
 class Detector(object):
-    
+
     def __init__(self, name = 'det', 
                        azimuth_angle = '0:0:0', 
                        zenith_angle = '0:0:0', 
@@ -30,7 +30,7 @@ class Detector(object):
         self.azimuth = eph.degrees(azimuth_angle)
         self.noise = noise
         self.t = np.arange(0)
-    	self.background_rate = background_rate
+        self.background_rate = background_rate
         self.window = window
         self.significance = np.arange(0)
         self.square = False
@@ -126,7 +126,7 @@ class Detector(object):
         for window in windows:
 
             if window < 1:
-                print "Step must be bigger than 1."
+                print("Step must be bigger than 1.")
                 self._sign_times[window] = np.arange(len(self.response))
                 self.significances[window] = np.zeros_like(self.response)
             else:
@@ -142,7 +142,7 @@ class Detector(object):
         window = self.window/self._grb.binz
 
         if window < 1:
-            print "Step must be bigger than 1."
+            print("Step must be bigger than 1.")
             self._sign_time = np.arange(len(self.response))
             self.significance = np.zeros_like(self.response)
         else:
