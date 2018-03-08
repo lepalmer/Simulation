@@ -113,13 +113,11 @@ G10Plane.Mother ReadOutDetectorVolume
 
 DetectorVolume.Copy DetectorVolume_1
 DetectorVolume_1 Position 5.5 5.5 0.
-//DetectorVolume_1.Rotation -25.0 25.0 0.0
 DetectorVolume_1.Rotation 45 0 135
 DetectorVolume_1.Mother WorldVolume
 
 ReadOutDetectorVolume.Copy ReadOutDetectorVolume_1
 ReadOutDetectorVolume_1 Position 5. 5. -1.4
-//ReadOutDetectorVolume_1.Rotation -25.0 25.0 0.0
 ReadOutDetectorVolume_1.Rotation 45 0 135
 ReadOutDetectorVolume_1.Mother WorldVolume
 
@@ -155,11 +153,12 @@ ReadOutDetectorVolume_4.Mother WorldVolume
 
 
 //This chunk our spacecraft
-//the tech specs say dim are block of aluminium 10x20x10 cm
+//the tech specs say dim are block of aluminium 1x10x10 cm
+//This is to get a mass of 0.5 kg
 Volume Spacecraft
 Spacecraft.Material Aluminium
-Spacecraft.Shape BOX 5. 10. 5.
-Spacecraft.Position 17. 0. 0.
+Spacecraft.Shape BOX 0.5 5. 5.
+Spacecraft.Position 12. -5. 0.
 Spacecraft.Color 6
 Spacecraft.Visibility 1
 Spacecraft.Mother WorldVolume
