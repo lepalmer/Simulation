@@ -1,25 +1,22 @@
 #The following cell contains the "FastCube" class. This is the simulation I hope to use to be able to run quicker simulations. 
 
-import numpy as np
-import healpy as hp
+from numpy import rad2deg,deg2rad,pi,sqrt,add,array,average
+from healpy import ang2vec, newvisufunc
 import burstutils as bf
-import random as rand
-import statistics as s
-import time as time
-from healpy import newvisufunc
+from random import gauss
 import matplotlib.pyplot as plt
 
 class FastCube():
 
     def __init__(self,background,dettilt,alternating=False):
         if alternating == False:
-            self.tilt = np.deg2rad(dettilt)
+            self.tilt = deg2rad(dettilt)
             self.tiltA = self.tiltB = self.tiltC = self.tiltD = self.tilt
         
         else:
             self.tiltB = (float(input("Please enter the second tilt (deg) ")))
-            self.tiltB = np.deg2rad(self.tiltB)
-            self.tiltC = self.tiltA = np.deg2rad(dettilt)
+            self.tiltB = deg2rad(self.tiltB)
+            self.tiltC = self.tiltA = deg2rad(dettilt)
             self.tiltD = self.tiltB
         
         self.zenith = [0 , 0]
@@ -38,31 +35,31 @@ class FastCube():
         """BurstCube is composed of 4 separate scintillators to detect and localize events. 
         In this software package, they are labelled A through D. 
         """
-        return [ self.zenith[0] + self.tiltB , self.zenith[1] + np.pi/2 ]
+        return [ self.zenith[0] + self.tiltB , self.zenith[1] + pi/2 ]
     @property
     def detC(self):
         """BurstCube is composed of 4 separate scintillators to detect and localize events. 
         In this software package, they are labelled A through D. 
         """
-        return [ self.zenith[0] + self.tiltC , self.zenith[1] + np.pi ]
+        return [ self.zenith[0] + self.tiltC , self.zenith[1] + pi ]
     @property 
     def detD(self):
         """BurstCube is composed of 4 separate scintillators to detect and localize events. 
         In this software package, they are labelled A through D. 
         """
-        return [ self.zenith[0] + self.tiltD , self.zenith[1] + 3*np.pi/2 ]
+        return [ self.zenith[0] + self.tiltD , self.zenith[1] + 3*pi/2 ]
     @property
     def normA(self):
-        return  hp.ang2vec(self.detA[0],self.detA[1])
+        return  ang2vec(self.detA[0],self.detA[1])
     @property 
     def normB(self):
-        return  hp.ang2vec(self.detB[0],self.detB[1])
+        return  ang2vec(self.detB[0],self.detB[1])
     @property
     def normC(self):
-        return  hp.ang2vec(self.detC[0],self.detC[1])
+        return  ang2vec(self.detC[0],self.detC[1])
     @property 
     def normD(self):
-        return  hp.ang2vec(self.detD[0],self.detD[1])
+        return  ang2vec(self.detD[0],self.detD[1])
 
     
     @property
@@ -72,8 +69,8 @@ class FastCube():
     
     
     def response2GRB(self, GRB, samples,test=True,talk=False):   #is this how I inherit? 
-        start = time.time()
-        #first need to include the GRB.
+
+    #first need to include the GRB.
        
         """
         Using least squares regression, respond2GRB will determine the sky position of an array of GRB sources assuming some inherent background noise within 
@@ -125,12 +122,12 @@ class FastCube():
         for i in range(sample):
             sourceAng = GRB.sourceangs[i]
             if talk:
-                print("Testing " + str(np.rad2deg(sourceAng)))
+                print("Testing " + str(rad2deg(sourceAng)))
            #this check passes.       
 
             
            # print("Testing at " + str(np.rad2deg(GRB.sourceangs)))
-            sourcexyz = hp.ang2vec(sourceAng[0],sourceAng[1]) #cartesian position of the burst
+            sourcexyz = ang2vec(sourceAng[0],sourceAng[1]) #cartesian position of the burst
             loop = 0 #I'm going to want to sample each sky position more than once,
                     #here's where I define how many times that is
             locunc = []
@@ -139,7 +136,7 @@ class FastCube():
                    # print("separation from A is " + str(np.rad2deg(sepA)))
                    #this check passes.  
                
-                if sepA < np.pi/2: # meaning if >90, would not be facing detector.
+                if sepA < pi/2: # meaning if >90, would not be facing detector.
                     dtheoryA=GRB.Ao*bf.response(bf.angle(sourcexyz,self.normA))  #still need to define strength, brb and gonna do that 
                 else: #like I was saying, has to face it!
                     dtheoryA = 0 
@@ -148,8 +145,8 @@ class FastCube():
                     # this check passes too. 
                     
                 countsA = dtheoryA + self.bg #another artifact, incl this background effect somewhere
-                unccountsA = np.sqrt(countsA)
-                detactualA = rand.gauss(countsA,unccountsA)  #there is a lot of noise, present, updating it now. 
+                unccountsA = sqrt(countsA)
+                detactualA = gauss(countsA,unccountsA)  #there is a lot of noise, present, updating it now. 
                 if detactualA-self.bg < 0:
                     detactualA = self.bg
                     
@@ -159,7 +156,7 @@ class FastCube():
                    # print("separation from B is " + str(np.rad2deg(sepB)))
                    #this check passes.  
                
-                if sepB < np.pi/2: # meaning if >90, would not be facing detector.
+                if sepB < pi/2: # meaning if >90, would not be facing detector.
                     dtheoryB=GRB.Ao*bf.response(bf.angle(sourcexyz,self.normB))  #still need to define strength, brb and gonna do that 
                 else: #like I was saying, has to face it!
                     dtheoryB = 0 
@@ -168,8 +165,8 @@ class FastCube():
                     # this check passes too. 
                     
                 countsB = dtheoryB + self.bg #another artifact, incl this background effect somewhere
-                unccountsB = np.sqrt(countsB)
-                detactualB = rand.gauss(countsB,unccountsB)  #there is a lot of noise, present, updating it now. 
+                unccountsB = sqrt(countsB)
+                detactualB = gauss(countsB,unccountsB)  #there is a lot of noise, present, updating it now. 
                 if detactualB-self.bg < 0:
                     detactualB = self.bg
                     
@@ -179,7 +176,7 @@ class FastCube():
                    # print("separation from C is " + str(np.rad2deg(sepC)))
                    #this check passes.  
                
-                if sepC < np.pi/2: # meaning if >90, would not be facing detector.
+                if sepC < pi/2: # meaning if >90, would not be facing detector.
                     dtheoryC=GRB.Ao*bf.response(bf.angle(sourcexyz,self.normC))  #still need to define strength, brb and gonna do that 
                 else: #like I was saying, has to face it!
                     dtheoryC = 0 
@@ -188,8 +185,8 @@ class FastCube():
                     # this check passes too. 
                     
                 countsC = dtheoryC + self.bg #another artifact, incl this background effect somewhere
-                unccountsC = np.sqrt(countsC)
-                detactualC = rand.gauss(countsC,unccountsC)  #there is a lot of noise, present, updating it now. 
+                unccountsC = sqrt(countsC)
+                detactualC = gauss(countsC,unccountsC)  #there is a lot of noise, present, updating it now. 
                 if detactualC-self.bg < 0:
                     detactualC = self.bg
                     
@@ -199,7 +196,7 @@ class FastCube():
                    # print("separation from D is " + str(np.rad2deg(sepD)))
                    #this check passes.  
                
-                if sepD < np.pi/2: # meaning if >90, would not be facing detector.q
+                if sepD < pi/2: # meaning if >90, would not be facing detector.q
                     dtheoryD=GRB.Ao*bf.response(bf.angle(sourcexyz,self.normD))  #still need to define strength, brb and gonna do that 
                 else: #like I was saying, has to face it!
                     dtheoryD = 0 
@@ -208,8 +205,8 @@ class FastCube():
                     # this check passes too. 
                     
                 countsD = dtheoryD + self.bg #another artifact, incl this background effect somewhere
-                unccountsD = np.sqrt(countsD)
-                detactualD = rand.gauss(countsD,unccountsD)  #there is a lot of noise, present, updating it now. 
+                unccountsD = sqrt(countsD)
+                detactualD = gauss(countsD,unccountsD)  #there is a lot of noise, present, updating it now. 
                 if detactualD-self.bg < 0:
                     detactualD = self.bg
                     
@@ -221,28 +218,28 @@ class FastCube():
                 chiC = bf.quad_solver(detcountsC,self.normC,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg)
                 chiD = bf.quad_solver(detcountsD,self.normD,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg)
                 
-                chisquared = np.add(np.add(chiA,chiB),np.add(chiC,chiD)) #adds it all up for total chi2
+                chisquared = add(add(chiA,chiB),add(chiC,chiD)) #adds it all up for total chi2
                 
                 #print("Chi squareds: " +str(chisquared))
                 
                 
                 thetaloc, philoc, Aguess = bf.indexer(chisquared,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA)
-                recvec = hp.ang2vec(np.deg2rad(thetaloc),np.deg2rad(philoc))
-                locoffset = np.rad2deg(bf.angle(sourcexyz,recvec))
+                recvec = ang2vec(deg2rad(thetaloc),deg2rad(philoc))
+                locoffset = rad2deg(bf.angle(sourcexyz,recvec))
                # print("Loc offset = " + str(locoffset) + " deg")
                 
                 locunc.append(locoffset)
                 loop +=1
             if talk:
-                print("Avg loc offset = " + str(s.mean(locunc)) + " deg.")
+                print("Avg loc offset = " + str(average(locunc)) + " deg.")
 
-            self.localizationerrors.append(s.mean(locunc))
+            self.localizationerrors.append(mean(locunc))
         return self.localizationerrors
 
 
     def plotSkymap(self,skyvals):
-        im = np.array(skyvals)
-        hp.newvisufunc.mollview(im,min=0, max=15,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True)
-        plt.title('All Sky Localization Uncertainty for BurstCube set as ' + str(np.rad2deg(self.tilt)) + ' deg')  #should add something about design too! 
+        im = array(skyvals)
+        newvisufunc.mollview(im,min=0, max=15,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True)
+        plt.title('All Sky Localization Uncertainty for BurstCube set as ' + str(rad2deg(self.tilt)) + ' deg')  #should add something about design too! 
 
         plt.show()
