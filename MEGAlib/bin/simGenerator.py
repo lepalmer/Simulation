@@ -58,8 +58,8 @@ def createSourceString(config, energy, angle):
     srcstr += 'One.ParticleType ' + str(config['source']['ParticleType'])
     srcstr += '\n'
     srcstr += 'One.Beam ' + config['source']['Beam'] + ' '
-    srcstr += str(np.round(angle, decimals=2)) + ' '
-    srcstr += str(config['source']['azimuth'])
+    srcstr += str(config['source']['azimuth']) + ' '
+    srcstr += str(np.round(angle, decimals=2))
     srcstr += '\n'
     srcstr += 'One.Spectrum Mono '
     srcstr += str(energy)
