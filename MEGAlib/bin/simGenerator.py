@@ -167,8 +167,8 @@ class configurator():
             basename = self.config['run']['basename']
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
-                                            'zenith': ze,
-                                            'azimuth': az})
+                                            'ze': ze,
+                                            'az': az})
             if dir:
                 fname = dir + '/' + fname + '.source'
             else:
