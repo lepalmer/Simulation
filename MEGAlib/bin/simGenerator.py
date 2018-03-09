@@ -4,7 +4,7 @@ import numpy as np
 from os import path
 
 
-def createSourceString(config, energy, angle):
+def createSourceString(config, energy, zenith, azimuth):
 
     """Creates a source file from a configurator object with a specific
     angle and energy
@@ -24,7 +24,8 @@ def createSourceString(config, energy, angle):
 
     fname = getFilenameFromDetails({'base': config['run']['basename'],
                                     'keV': energy,
-                                    'theta': angle})
+                                    'zenith': zenith,
+                                    'azimuth': azimuth})
 
     srcstr = 'Version ' + str(config['general']['Version'])
     srcstr += '\n'
@@ -58,8 +59,8 @@ def createSourceString(config, energy, angle):
     srcstr += 'One.ParticleType ' + str(config['source']['ParticleType'])
     srcstr += '\n'
     srcstr += 'One.Beam ' + config['source']['Beam'] + ' '
-    srcstr += str(np.round(angle, decimals=2)) + ' '
-    srcstr += str(config['source']['azimuth'])
+    srcstr += str(np.round(zenith, decimals=2)) + ' '
+    srcstr += str(np.round(azimuth, decimals=2))
     srcstr += '\n'
     srcstr += 'One.Spectrum Mono '
     srcstr += str(energy)
@@ -101,31 +102,45 @@ class configurator():
             yaml.dump(self.config, f, default_flow_style=False)
 
     @property
-    def costhetabins(self):
-        """Creates increments of cos(theta) to be sampled by individual source files.
+    def azbins(self):
+
+        """Creates increments of azimuth angle to be sampled by individual
+        source files.
+
         """
-        return np.linspace(self.config['run']['costhetamin'],
-                           self.config['run']['costhetamax'],
-                           self.config['run']['costhetanumbins'])
+        
+        return np.linspace(self.config['run']['azmin'],
+                           self.config['run']['azmax'],
+                           self.config['run']['aznumbins'])
     
     @property
-    def thetabins(self):
-        """Creates increments of theta to be sampled by individual source files.
+    def zebins(self):
+
+        """Creates increments of zenith angle to be sampled by individual
+        source files.
+
         """
-        return np.linspace(self.config['run']['thetamin'],
-                           self.config['run']['thetamax'],
-                           self.config['run']['thetanumbins'])
+
+        return np.linspace(self.config['run']['zemin'],
+                           self.config['run']['zemax'],
+                           self.config['run']['zenumbins'])
 
     @property
     def ebins(self):
-        """Creates increments of energy (keV) to be sampled by individual source files. 
+
+        """Creates increments of energy (keV) to be sampled by individual
+        source files.
+
         """
+
         return np.logspace(np.log10(self.config['run']['emin']),
                            np.log10(self.config['run']['emax']),
                            self.config['run']['enumbins'])
 
     def createSourceFiles(self, dir=''):
-        """Creates a source file from a configurator object with a specific angle and energy
+
+        """Creates a source file from a configurator object with a specific
+        angle and energy
 
         Parameters
         ----------
@@ -136,19 +151,24 @@ class configurator():
         Returns
         ----------
         
-        In your directory all of the source files with specific angles and energies.  
+        In your directory all of the source files with specific angles
+        and energies.
+
         """
+        
         from utils import getFilenameFromDetails
         
-        for angle, energy in [(angle, energy)
-                              for angle in self.thetabins
-                              for energy in self.ebins]:
-            srcstr = createSourceString(self.config, energy, angle)
+        for ze, az, energy in [(ze, az, energy)
+                               for ze in self.zebins
+                               for az in self.azbins
+                               for energy in self.ebins]:
+            srcstr = createSourceString(self.config, energy, ze, az)
 
             basename = self.config['run']['basename']
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
-                                            'theta': angle})
+                                            'zenith': ze,
+                                            'azimuth': az})
             if dir:
                 fname = dir + '/' + fname + '.source'
             else:
