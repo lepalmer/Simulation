@@ -2,12 +2,12 @@
 
 import numpy as np
 from utils import setPath
-from simGenerator import configurator  #requires simGenerator
+from simGenerator import configurator
 
 
 class simFiles:
 
-    def __init__(self, config_file):  #name of the function that python uses to construct 
+    def __init__(self, config_file):
 
         """Object for a multiple simulations over energy and angle."""
 
@@ -27,7 +27,7 @@ class simFiles:
         Returns
         ----------
         sfs : array
-            numpy array containing information about each sim file. 
+            numpy array containing information about each sim file.
 
         """
         from utils import getFilenameFromDetails

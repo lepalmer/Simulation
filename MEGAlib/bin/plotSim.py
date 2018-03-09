@@ -16,7 +16,8 @@ except ImportError:
 
 from matplotlib import gridspec
 import numpy as np
-    
+
+
 def getGBMdata(gbmfile='$BURSTCUBE/Simulation/GEANT3/gbm_effective_area.dat'):
     """Reads the GBM NaI effective area file and returns a numpy array
     with two columns ``energy`` and ``aeff``.

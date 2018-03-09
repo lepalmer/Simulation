@@ -112,7 +112,9 @@ class configurator():
     def thetabins(self):
         """Creates increments of theta to be sampled by individual source files.
         """
-        return np.round(np.rad2deg(np.arccos(self.costhetabins)), decimals=2)
+        return np.linspace(self.config['run']['thetamin'],
+                           self.config['run']['thetamax'],
+                           self.config['run']['thetanumbins'])
 
     @property
     def ebins(self):
