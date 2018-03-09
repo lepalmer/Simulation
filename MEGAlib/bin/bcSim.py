@@ -36,12 +36,14 @@ class simFiles:
 
         sfs = []
 
-        for angle, energy in [(angle, energy)
-                              for angle in self.conf.thetabins
-                              for energy in self.conf.ebins]:
+        for ze, az, energy in [(ze, az, energy)
+                               for ze in self.conf.zebins
+                               for az in self.conf.azbins
+                               for energy in self.conf.ebins]:
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
-                                            'theta': angle})
+                                            'ze': ze,
+                                            'az': az})
             sf = simFile(self.conf.config['run']['simdir']
                          + '/'+fname+'.inc1.id1.sim',
                          self.conf.config['run']['srcdir']
@@ -69,15 +71,16 @@ class simFiles:
         """
 
         aeffs = np.zeros(len(self.sims),
-                         dtype={'names': ['theta', 'keV', 'aeff',
+                         dtype={'names': ['az', 'ze', 'keV', 'aeff',
                                           'aeff_eres', 'aeff_eres_modfrac'],
-                                'formats': ['float32', 'float32',
+                                'formats': ['float32', 'float32', 'float32',
                                             'float32', 'float32', 'float32']})
 
         for i, sf in enumerate(self.sims):
             frac, mod_frac = sf.passEres()
             aeff = sf.calculateAeff()
-            aeffs[i] = (sf.theta,
+            aeffs[i] = (sf.azimuth,
+                        sf.zenith,
                         sf.energy,
                         aeff, aeff*frac, aeff*mod_frac)
 
@@ -131,7 +134,7 @@ class simFile:
         return float(self.srcDict['One.Spectrum'][0][1])
 
     @property
-    def theta(self):
+    def zenith(self):
         return float(self.srcDict['One.Beam'][0][1])
 
     @property
@@ -263,7 +266,8 @@ class simFile:
         print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0][0])
         print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
         print('Generated Particles: ' + self.simDict['TS'][0])
-        print('Theta: ' + str(self.theta))
+        print('Azimuth: ' + str(self.azimuth))
+        print('Zenith: ' + str(self.zenith))
         print('Energy: ' + str(self.energy))
 
     def calculateAeff(self):
