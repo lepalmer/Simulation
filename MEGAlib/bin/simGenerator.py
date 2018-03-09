@@ -4,7 +4,7 @@ import numpy as np
 from os import path
 
 
-def createSourceString(config, energy, zenith, azimuth):
+def createSourceString(config, energy, ze, az):
 
     """Creates a source file from a configurator object with a specific
     angle and energy
@@ -24,8 +24,8 @@ def createSourceString(config, energy, zenith, azimuth):
 
     fname = getFilenameFromDetails({'base': config['run']['basename'],
                                     'keV': energy,
-                                    'zenith': zenith,
-                                    'azimuth': azimuth})
+                                    'ze': ze,
+                                    'az': az})
 
     srcstr = 'Version ' + str(config['general']['Version'])
     srcstr += '\n'
@@ -59,8 +59,8 @@ def createSourceString(config, energy, zenith, azimuth):
     srcstr += 'One.ParticleType ' + str(config['source']['ParticleType'])
     srcstr += '\n'
     srcstr += 'One.Beam ' + config['source']['Beam'] + ' '
-    srcstr += str(np.round(zenith, decimals=2)) + ' '
-    srcstr += str(np.round(azimuth, decimals=2))
+    srcstr += str(np.round(ze, decimals=2)) + ' '
+    srcstr += str(np.round(az, decimals=2))
     srcstr += '\n'
     srcstr += 'One.Spectrum Mono '
     srcstr += str(energy)
