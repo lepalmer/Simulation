@@ -132,11 +132,11 @@ class simFile:
 
     @property
     def theta(self):
-        return float(self.srcDict['One.Beam'][0][2])
+        return float(self.srcDict['One.Beam'][0][1])
 
     @property
     def azimuth(self):
-        return float(self.srcDict['One.Beam'][0][1])
+        return float(self.srcDict['One.Beam'][0][2])
 
     def fileToDict(self, filename, commentString='#', termString=None):
 
