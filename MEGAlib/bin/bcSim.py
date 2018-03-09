@@ -134,6 +134,10 @@ class simFile:
     def theta(self):
         return float(self.srcDict['One.Beam'][0][2])
 
+    @property
+    def azimuth(self):
+        return float(self.srcDict['One.Beam'][0][1])
+
     def fileToDict(self, filename, commentString='#', termString=None):
 
         from os import path
