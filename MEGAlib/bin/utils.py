@@ -26,10 +26,10 @@ def getFilenameFromDetails(details):
     """Takes a dictionary of details and makes a machine readible filename
     out of it.  Angle comes in radians."""
 
-    filename = "{}_{:.3f}keV_{:.2f}zeV_{:.2f}az".format(details['base'],
-                                                        details['keV'],
-                                                        details['ze'],
-                                                        details['az'])
+    filename = "{}_{:.3f}keV_{:.2f}ze_{:.2f}az".format(details['base'],
+                                                       details['keV'],
+                                                       details['ze'],
+                                                       details['az'])
 
     return filename
 
