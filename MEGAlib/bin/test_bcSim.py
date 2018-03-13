@@ -53,12 +53,20 @@ def test_energy(create_simfile):
     assert (np.abs(energy - 200.0) < 1e-7)
 
     
-def test_theta(create_simfile):
+def test_az(create_simfile):
 
     sf = create_simfile
-    energy = sf.theta
+    azimuth = sf.azimuth
     
-    assert (np.abs(energy - 30.0) < 1e-7)
+    assert (np.abs(azimuth - 0.0) < 1e-7)
+
+    
+def test_ze(create_simfile):
+
+    sf = create_simfile
+    zenith = sf.zenith
+    
+    assert (np.abs(zenith - 30.0) < 1e-7)
 
     
 def test_calculateAeff(create_simfile):
