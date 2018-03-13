@@ -105,8 +105,8 @@ class simFiles:
                 angles and probability of hitting a given detector
         """
 
-        names = ['energy', 'theta', 'stat_err',  'prob_det_vol']
-        formats = ['float32', 'float32', 'float32', 'float32']
+        names = ['energy', 'az', 'ze', 'stat_err',  'prob_det_vol']
+        formats = ['float32', 'float32', 'float32', 'float32', 'float32']
 
         for i in range(num_detectors-1):
             names = np.append(names, 'prob_det_vol%i' % (i+1))
@@ -376,8 +376,8 @@ class simFile:
     
         Returns
         ----------
-        prob_det_info : numpy array 
-            Array is (energy, angle, error, prob1, prob2, ...)
+        prob_det_info : numpy array
+            Array is (energy, az, ze, error, prob1, prob2, ...)
 
         """
 
@@ -403,7 +403,7 @@ class simFile:
                     if '_' not in value[1]:
                         det_vol[0] += 1
 
-        prob_det_info = [self.energy, self.theta]
+        prob_det_info = [self.energy, self.azimuth, self.zenith]
         prob_det_info = np.append(prob_det_info,
                                   sqrt(len(hits))/float(len(hits)))
 
