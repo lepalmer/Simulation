@@ -86,6 +86,53 @@ class simFiles:
 
         return aeffs
 
+    def getAllTriggerProbability(self, num_detectors=4, test=False):
+
+        """Returns the probabability of hitting each detector in each simulation.
+
+        Parameters
+        ----------
+            num_detectors : int
+                Number of detectors in the simulation
+
+            test : boolean
+                run a quick test over a limited number of files (20)
+    
+        Returns
+        ----------
+            det_prob : numpy array
+                Contains information from all the files about the energy,
+                angles and probability of hitting a given detector
+        """
+
+        names = ['energy', 'theta', 'stat_err',  'prob_det_vol']
+        formats = ['float32', 'float32', 'float32', 'float32']
+
+        for i in range(num_detectors-1):
+            names = np.append(names, 'prob_det_vol%i' % (i+1))
+            formats = np.append(formats, 'float32')
+
+        print(names)
+        print(formats)
+
+        det_prob = np.empty(len(self.sims),
+                            dtype={'names': names,
+                                   'formats': formats})
+
+        if test:
+            dotest = 1
+        else:
+            dotest = len(self.sims)
+
+        print("Analyzing", len(self.sims), "files")
+
+        for j in range(dotest):
+            holder = self.sims[j].getTriggerProbability(num_det=num_detectors,
+                                                        test=test)
+            det_prob[j] = np.array([tuple(holder)], dtype=det_prob.dtype)
+
+        return det_prob
+    
 
 class simFile:
 
@@ -104,7 +151,7 @@ class simFile:
            config file used as input to Cosima
 
         logFile: string
-           stdout from Cosima.  Optional. 
+           stdout from Cosima.  Optional.
 
         Returns
         ----------
@@ -258,7 +305,7 @@ class simFile:
         return hits
 
     def printDetails(self):
-        """Prints the general information about specific sim files. 
+        """Prints the general information about specific sim files.
         """
         print('Sim File: ' + self.simFile)
         print('Source File: ' + self.srcFile)
@@ -269,7 +316,7 @@ class simFile:
         print('Azimuth: ' + str(self.azimuth))
         print('Zenith: ' + str(self.zenith))
         print('Energy: ' + str(self.energy))
-
+        
     def calculateAeff(self):
         """Calculates effective area of sim file. 
         """
@@ -313,3 +360,55 @@ class simFile:
         mod_frac = (float(mod)+float(good))/float(len(ed))
 
         return frac, mod_frac
+
+    def getTriggerProbability(self, num_det=4, test=False):
+
+        """Takes a single simFile (from bcSim.simFiles(config.yaml)) and
+        returns the probability of hitting in each detector
+
+        Parameters
+        ----------
+        num_det : integer
+            Number of detectors to get triggers for.
+
+        test : boolean
+            Run a quick test over a limited number of events (20)
+    
+        Returns
+        ----------
+        prob_det_info : numpy array 
+            Array is (energy, angle, error, prob1, prob2, ...)
+
+        """
+
+        from math import sqrt
+
+        det_vol = np.zeros(num_det)
+
+        hits = self.getHits()
+
+        if test:
+            dotest = 20
+        else:
+            dotest = len(hits)
+
+        print("analyzing", len(hits), "events")
+        # stat_err = len(hits)
+
+        for key, value in self.logDict.items():
+            for i in range(num_det):
+                if str(i) in value[1]:
+                    det_vol[i] += 1
+                elif i == 0:
+                    if '_' not in value[1]:
+                        det_vol[0] += 1
+
+        prob_det_info = [self.energy, self.theta]
+        prob_det_info = np.append(prob_det_info,
+                                  sqrt(len(hits))/float(len(hits)))
+
+        for i in range(num_det):
+            prob_det_info = np.append(prob_det_info,
+                                      det_vol[i]/float(len(hits)))
+
+        return prob_det_info

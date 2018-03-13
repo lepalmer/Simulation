@@ -50,11 +50,12 @@ def test_createSourceString(create_configurator):
     assert(sourcestr == refstr)
 
 
-def test_createSourceFiles(create_configurator, tmpdir_factory):
+def test_createSourceFiles(create_configurator, tmpdir):
 
     from os.path import isfile
 
-    srcdir = tmpdir_factory.mktemp('source')
+    srcdir = tmpdir.mkdir('source')
+    
     files = ('test_100.000keV_0.00theta.source',
              'test_100.000keV_41.41theta.source',
              'test_100.000keV_60.00theta.source',
