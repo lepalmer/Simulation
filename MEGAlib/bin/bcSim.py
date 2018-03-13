@@ -36,12 +36,14 @@ class simFiles:
 
         sfs = []
 
-        for angle, energy in [(angle, energy)
-                              for angle in self.conf.thetabins
-                              for energy in self.conf.ebins]:
+        for ze, az, energy in [(ze, az, energy)
+                               for ze in self.conf.zebins
+                               for az in self.conf.azbins
+                               for energy in self.conf.ebins]:
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
-                                            'theta': angle})
+                                            'ze': ze,
+                                            'az': az})
             sf = simFile(self.conf.config['run']['simdir']
                          + '/'+fname+'.inc1.id1.sim',
                          self.conf.config['run']['srcdir']
@@ -69,15 +71,16 @@ class simFiles:
         """
 
         aeffs = np.zeros(len(self.sims),
-                         dtype={'names': ['theta', 'keV', 'aeff',
+                         dtype={'names': ['az', 'ze', 'keV', 'aeff',
                                           'aeff_eres', 'aeff_eres_modfrac'],
-                                'formats': ['float32', 'float32',
+                                'formats': ['float32', 'float32', 'float32',
                                             'float32', 'float32', 'float32']})
 
         for i, sf in enumerate(self.sims):
             frac, mod_frac = sf.passEres()
             aeff = sf.calculateAeff()
-            aeffs[i] = (sf.theta,
+            aeffs[i] = (sf.azimuth,
+                        sf.zenith,
                         sf.energy,
                         aeff, aeff*frac, aeff*mod_frac)
 
@@ -102,8 +105,8 @@ class simFiles:
                 angles and probability of hitting a given detector
         """
 
-        names = ['energy', 'theta', 'stat_err',  'prob_det_vol']
-        formats = ['float32', 'float32', 'float32', 'float32']
+        names = ['energy', 'az', 'ze', 'stat_err',  'prob_det_vol']
+        formats = ['float32', 'float32', 'float32', 'float32', 'float32']
 
         for i in range(num_detectors-1):
             names = np.append(names, 'prob_det_vol%i' % (i+1))
@@ -178,8 +181,12 @@ class simFile:
         return float(self.srcDict['One.Spectrum'][0][1])
 
     @property
-    def theta(self):
+    def zenith(self):
         return float(self.srcDict['One.Beam'][0][1])
+
+    @property
+    def azimuth(self):
+        return float(self.srcDict['One.Beam'][0][2])
 
     def fileToDict(self, filename, commentString='#', termString=None):
 
@@ -306,7 +313,8 @@ class simFile:
         print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0][0])
         print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
         print('Generated Particles: ' + self.simDict['TS'][0])
-        print('Theta: ' + str(self.theta))
+        print('Azimuth: ' + str(self.azimuth))
+        print('Zenith: ' + str(self.zenith))
         print('Energy: ' + str(self.energy))
         
     def calculateAeff(self):
@@ -368,8 +376,8 @@ class simFile:
     
         Returns
         ----------
-        prob_det_info : numpy array 
-            Array is (energy, angle, error, prob1, prob2, ...)
+        prob_det_info : numpy array
+            Array is (energy, az, ze, error, prob1, prob2, ...)
 
         """
 
@@ -395,7 +403,7 @@ class simFile:
                     if '_' not in value[1]:
                         det_vol[0] += 1
 
-        prob_det_info = [self.energy, self.theta]
+        prob_det_info = [self.energy, self.azimuth, self.zenith]
         prob_det_info = np.append(prob_det_info,
                                   sqrt(len(hits))/float(len(hits)))
 

@@ -39,13 +39,13 @@ def test_createSourceString(create_configurator):
     refstr += 'StoreCalibrate True\nStoreSimulationInfo True\n'
     refstr += 'StoreOnlyEventsWithEnergyLoss True\nDiscretizeHits True\n\n'
     refstr += 'Run FFPS\nFFPS.Filename $BURSTCUBE/Simulation/MEGAlib/test/'
-    refstr += 'test_100.000keV_0.10theta\n'
+    refstr += 'test_100.000keV_0.00ze_10.00az\n'
     refstr += 'FFPS.NTriggers 1000\nFFPS.Source One\nOne.ParticleType 1\n'
-    refstr += 'One.Beam FarfieldPointSource 0.1 0\n'
+    refstr += 'One.Beam FarfieldPointSource 0.0 10.0\n'
     refstr += 'One.Spectrum Mono 100.0\nOne.Flux 1000.0\n'
 
     conf = create_configurator
-    sourcestr = createSourceString(conf.config, 100., 0.1)
+    sourcestr = createSourceString(conf.config, 100., 0.0, 10.0)
 
     assert(sourcestr == refstr)
 
@@ -55,17 +55,35 @@ def test_createSourceFiles(create_configurator, tmpdir):
     from os.path import isfile
 
     srcdir = tmpdir.mkdir('source')
+   
+    files = ('test_100.000keV_0.00ze_0.00az.source',
+             'test_100.000keV_0.00ze_30.00az.source',
+             'test_100.000keV_0.00ze_60.00az.source',
+             'test_100.000keV_30.00ze_0.00az.source',
+             'test_100.000keV_30.00ze_30.00az.source',
+             'test_100.000keV_30.00ze_60.00az.source',
+             'test_100.000keV_60.00ze_0.00az.source',
+             'test_100.000keV_60.00ze_30.00az.source',
+             'test_100.000keV_60.00ze_60.00az.source',
+             'test_173.205keV_0.00ze_0.00az.source',
+             'test_173.205keV_0.00ze_30.00az.source',
+             'test_173.205keV_0.00ze_60.00az.source',
+             'test_173.205keV_30.00ze_0.00az.source',
+             'test_173.205keV_30.00ze_30.00az.source',
+             'test_173.205keV_30.00ze_60.00az.source',
+             'test_173.205keV_60.00ze_0.00az.source',
+             'test_173.205keV_60.00ze_30.00az.source',
+             'test_173.205keV_60.00ze_60.00az.source',
+             'test_300.000keV_0.00ze_0.00az.source',
+             'test_300.000keV_0.00ze_30.00az.source',
+             'test_300.000keV_0.00ze_60.00az.source',
+             'test_300.000keV_30.00ze_0.00az.source',
+             'test_300.000keV_30.00ze_30.00az.source',
+             'test_300.000keV_30.00ze_60.00az.source',
+             'test_300.000keV_60.00ze_0.00az.source',
+             'test_300.000keV_60.00ze_30.00az.source',
+             'test_300.000keV_60.00ze_60.00az.source')
     
-    files = ('test_100.000keV_0.00theta.source',
-             'test_100.000keV_41.41theta.source',
-             'test_100.000keV_60.00theta.source',
-             'test_173.205keV_0.00theta.source',
-             'test_173.205keV_41.41theta.source',
-             'test_173.205keV_60.00theta.source',
-             'test_300.000keV_0.00theta.source',
-             'test_300.000keV_41.41theta.source',
-             'test_300.000keV_60.00theta.source')
-
     conf = create_configurator
     conf.createSourceFiles(dir=srcdir.__str__())
 
