@@ -22,8 +22,11 @@ run:
   emin : 100.000
   emax : 300.000
   enumbins : 3
-  costhetamin : 0.5
-  costhetamax : 1.0 
-  costhetanumbins : 3
+  azmin : 0
+  azmax : 60
+  aznumbins : 3
+  zemin : 0
+  zemax : 60
+  zenumbins : 3
 
 
