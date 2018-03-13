@@ -1,4 +1,4 @@
-import burstutils
+from NoahSim import burstutils
 
 import numpy as np
 
