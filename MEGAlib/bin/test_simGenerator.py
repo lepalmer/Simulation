@@ -55,17 +55,35 @@ def test_createSourceFiles(create_configurator, tmpdir):
     from os.path import isfile
 
     srcdir = tmpdir.mkdir('source')
+   
+    files = ('test_100.000keV_0.00ze_0.00az.source',
+             'test_100.000keV_0.00ze_30.00az.source',
+             'test_100.000keV_0.00ze_60.00az.source',
+             'test_100.000keV_30.00ze_0.00az.source',
+             'test_100.000keV_30.00ze_30.00az.source',
+             'test_100.000keV_30.00ze_60.00az.source',
+             'test_100.000keV_60.00ze_0.00az.source',
+             'test_100.000keV_60.00ze_30.00az.source',
+             'test_100.000keV_60.00ze_60.00az.source',
+             'test_173.205keV_0.00ze_0.00az.source',
+             'test_173.205keV_0.00ze_30.00az.source',
+             'test_173.205keV_0.00ze_60.00az.source',
+             'test_173.205keV_30.00ze_0.00az.source',
+             'test_173.205keV_30.00ze_30.00az.source',
+             'test_173.205keV_30.00ze_60.00az.source',
+             'test_173.205keV_60.00ze_0.00az.source',
+             'test_173.205keV_60.00ze_30.00az.source',
+             'test_173.205keV_60.00ze_60.00az.source',
+             'test_300.000keV_0.00ze_0.00az.source',
+             'test_300.000keV_0.00ze_30.00az.source',
+             'test_300.000keV_0.00ze_60.00az.source',
+             'test_300.000keV_30.00ze_0.00az.source',
+             'test_300.000keV_30.00ze_30.00az.source',
+             'test_300.000keV_30.00ze_60.00az.source',
+             'test_300.000keV_60.00ze_0.00az.source',
+             'test_300.000keV_60.00ze_30.00az.source',
+             'test_300.000keV_60.00ze_60.00az.source')
     
-    files = ('test_100.000keV_0.00theta.source',
-             'test_100.000keV_41.41theta.source',
-             'test_100.000keV_60.00theta.source',
-             'test_173.205keV_0.00theta.source',
-             'test_173.205keV_41.41theta.source',
-             'test_173.205keV_60.00theta.source',
-             'test_300.000keV_0.00theta.source',
-             'test_300.000keV_41.41theta.source',
-             'test_300.000keV_60.00theta.source')
-
     conf = create_configurator
     conf.createSourceFiles(dir=srcdir.__str__())
 
