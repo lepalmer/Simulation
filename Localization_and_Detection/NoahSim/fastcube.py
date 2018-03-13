@@ -1,8 +1,8 @@
 #The following cell contains the "FastCube" class. This is the simulation I hope to use to be able to run quicker simulations. 
 
-from numpy import rad2deg,deg2rad,pi,sqrt,add,array,average
+from numpy import rad2deg, deg2rad, pi, sqrt, add, array, average, mean
 from healpy import ang2vec, newvisufunc
-import burstutils as bf
+from NoahSim import burstutils as bf
 from random import gauss
 import matplotlib.pyplot as plt
 
