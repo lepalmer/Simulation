@@ -329,6 +329,44 @@ class simFile:
 
         return r_sphere**2*pi*triggers/generated_particles
 
+    def calculateEres(self, energies, widths):
+        
+        """Takes the energy deposited in the detector (ED) and adds a noise
+        factor on an event by event basis based on the energy resolution of
+        the detector.  Does a linear interpolation between the varous energy
+        measurements.  Assumes gaussian noise.
+
+        To-do:
+          * Need to make the interpolation non-linear
+            (functional)
+          * Need to make sure it goes above and below the
+            lowest (highest) value measurements.
+
+
+        Parameters
+        ----------
+        energies : list
+           List of energies in keV at which the energy resolution
+           (width) is calculated.
+
+        widths: list
+           List of energy widths (resolution) in keV.
+
+        Returns
+        ----------
+        energy : numpy array
+          An array of energy values that have been corrected for the
+          energy resolution.
+
+        """
+
+        ED = np.array([float(ed) for ed in self.simDict['ED']])
+        e_interp = list(set(ED))
+        res_interp = np.interp(e_interp, energies, widths)
+        indexes = [e_interp.index(ed) for ed in ED]
+        noise = [np.random.normal(0, res_interp[i], 1)[0] for i in indexes]
+        return ED + noise
+
     def passEres(self, alpha=2.57, escape=30.0):
 
         """Calculates the fraction of events that are good (fully absorbed)
