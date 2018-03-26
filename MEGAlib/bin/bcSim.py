@@ -54,6 +54,16 @@ class simFiles:
 
         return sfs
 
+    def calculateEres(self):
+        """Applies the energy resolution to the deposited energy and stores it
+        in ED_res."""
+
+        e = self.conf.config['detector']['resolution']['energy']
+        w = self.conf.config['detector']['resolution']['width']
+
+        for sf in self.sims:
+            sf.ED_res = sf.calculateEres(e, w)
+    
     def calculateAeff(self):
 
         """Calculates effective area from the information contained within the
@@ -354,7 +364,7 @@ class simFile:
 
         Returns
         ----------
-        energy : numpy array
+        ED + noise : numpy array
           An array of energy values that have been corrected for the
           energy resolution.
 
