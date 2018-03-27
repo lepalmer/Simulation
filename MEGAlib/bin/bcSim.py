@@ -55,20 +55,15 @@ class simFiles:
         return sfs
 
     def applyEres(self):
-        """Applies the energy resolution to the deposited energy and stores it
-        in ED_res.  Also returns a flattened array for plotting.
+        """Applies the energy resolution to the deposited energy in each sim
+        file and returns a flattened array for plotting.
 
         Returns
         ----------
             null : numpy array
             numpy array that contains all of the events with eres applied.
+
         """
-
-        e = self.conf.config['detector']['resolution']['energy']
-        w = self.conf.config['detector']['resolution']['width']
-
-        for sf in self.sims:
-            sf.ED_res = sf.applyEres(e, w)
 
         return np.array([sf.ED_res for sf in self.sims]).flatten()
     
@@ -83,7 +78,7 @@ class simFiles:
 
         useEres : boolean 
           Switch to use the energy resolution in the
-          calculation.  Need to have run the applyEres function first.
+          calculation.
 
         sigma : float
           Width of energy cut in sigma.  Default is 2.0.
@@ -205,6 +200,8 @@ class simFile:
         self.srcDict = self.fileToDict(sourceFile, '#', None)
         self.geoDict = self.fileToDict(self.srcDict['Geometry'][0],
                                        '//', None)
+        self.eres = self.getEresFromFile(self.geoDict['Include'][1])
+        
         if logFile:
             self.logDict = self.logToDict(self.logFile)
         else:
@@ -222,6 +219,17 @@ class simFile:
     def azimuth(self):
         return float(self.srcDict['One.Beam'][0][2])
 
+    @property
+    def ED_res(self):
+        try:
+            self._ED_res
+        except AttributeError:
+            print('Applying Eres on {}'.format(self.simFile))
+            self._ED_res = self._applyEres(self.eres['energy'],
+                                           self.eres['sigma'])
+
+        return(self._ED_res)
+    
     def fileToDict(self, filename, commentString='#', termString=None):
 
         from os import path
@@ -253,6 +261,28 @@ class simFile:
                         if termString in line:
                             return megaDict
         return megaDict
+
+    def getEresFromFile(self, filename, commentString='//'):
+
+        from os import path
+        
+        eres_lines = []
+        filename = path.expandvars(filename)
+        with open(filename) as f:
+            for line in f:
+                if commentString not in line:
+                    if 'EnergyResolution' in line:
+                        eres_lines.append(line)
+
+        eres = np.zeros(len(eres_lines),
+                        dtype={'names': ['energy', 'sigma'],
+                               'formats': ['float32', 'float32']})
+                        
+        for i, res in enumerate(eres_lines):
+            res_split = res.split()
+            eres[i] = (res_split[-2], res_split[-1])
+
+        return eres
 
     def logToDict(self, filename):
 
@@ -358,10 +388,8 @@ class simFile:
         ----------
         useEres : Boolean
            Switch to either use the energy resolution in the
-           calculation or not.  The energy resolution needs to be
-           applied (using the applyEres function) before you can use
-           this.  If you don't use this it assumes all of the events
-           are good.
+           calculation or not.  If you don't use this it assumes all
+           of the events are good.
 
         width: Float
            The energy width that is used to reject events in the selection.
@@ -387,7 +415,7 @@ class simFile:
 
         return r_sphere**2*pi*triggers/generated_particles
 
-    def applyEres(self, energies, widths):
+    def _applyEres(self, energies, widths):
         
         """Takes the energy deposited in the detector (ED) and adds a noise
         factor on an event by event basis based on the energy resolution of
