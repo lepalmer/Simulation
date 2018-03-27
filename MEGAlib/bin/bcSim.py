@@ -72,7 +72,7 @@ class simFiles:
 
         return np.array([sf.ED_res for sf in self.sims]).flatten()
     
-    def calculateAeff(self):
+    def calculateAeff(self, useEres=False, sigma=2.0):
 
         """Calculates effective area from the information contained within the
         .sim files.
@@ -80,6 +80,14 @@ class simFiles:
         Parameters
         ----------
         self : null
+
+        useEres : boolean 
+          Switch to use the energy resolution in the
+          calculation.  Need to have run the applyEres function first.
+
+        sigma : float
+          Width of energy cut in sigma.  Default is 2.0.
+
 
         Returns
         ----------
@@ -94,9 +102,17 @@ class simFiles:
                                 'formats': ['float32', 'float32', 'float32',
                                             'float32', 'float32', 'float32']})
 
+        if useEres:
+            e = self.conf.config['detector']['resolution']['energy']
+            w = self.conf.config['detector']['resolution']['width']
+            e_interp = np.array([sf.energy for sf in self.sims])
+            res_interp = np.interp(e_interp, e, w)
+        else:
+            res_interp = np.zeros(len(self.sims))
+        
         for i, sf in enumerate(self.sims):
             frac, mod_frac = sf.passEres()
-            aeff = sf.calculateAeff()
+            aeff = sf.calculateAeff(useEres, res_interp[i]*sigma)
             aeffs[i] = (sf.azimuth,
                         sf.zenith,
                         sf.energy,
