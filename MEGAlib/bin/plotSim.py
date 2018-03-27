@@ -183,7 +183,7 @@ def plotAeff(simFiles, useEres=False, plotGBM=False):
     plt.show()
 
     
-def plotAeffComparison(sims, names, compareTo='GBM', axis='ze'):
+def plotAeffComparison(sims, names, useEres=False, compareTo='GBM', axis='ze'):
 
     """Makes Aeff comparison plots of two or more simulations.
 
@@ -214,10 +214,10 @@ def plotAeffComparison(sims, names, compareTo='GBM', axis='ze'):
 
     gbmdata = getGBMdata()
     if compareTo == 'GBM':
-        comp_aeff = sims[0].calculateAeff()
+        comp_aeff = sims[0].calculateAeff(useEres=useEres)
     else:
         i = names.index(compareTo)
-        comp_aeff = sims[i].calculateAeff()
+        comp_aeff = sims[i].calculateAeff(useEres=useEres)
 
     for angle in set(comp_aeff[axis]):
         
@@ -252,7 +252,7 @@ def plotAeffComparison(sims, names, compareTo='GBM', axis='ze'):
                  linestyle='-', lw=2, label='GBM NaI')
     
         for sim, name, color in zip(sims, names, colors):
-            aeffs = sim.calculateAeff()
+            aeffs = sim.calculateAeff(useEres=useEres)
             energy = aeffs['keV'][mask]
             aeff = aeffs['aeff'][mask]
 
