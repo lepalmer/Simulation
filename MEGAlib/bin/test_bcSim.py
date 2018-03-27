@@ -83,7 +83,6 @@ def test_calculateAeff_Eres(create_simfile):
     w = [5.0, 7.5, 20.0, 33.0, 50.0]
     
     sf = create_simfile
-    sf.ED_res = sf.applyEres(e, w)
     aeff = sf.calculateAeff(True, 2*7.5)
 
     assert (np.abs(aeff - 58.0) < 3.0)
