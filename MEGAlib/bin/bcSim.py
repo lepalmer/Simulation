@@ -60,7 +60,7 @@ class simFiles:
 
         Returns
         ----------
-            : numpy array
+            null : numpy array
             numpy array that contains all of the events with eres applied.
         """
 
@@ -68,7 +68,7 @@ class simFiles:
         w = self.conf.config['detector']['resolution']['width']
 
         for sf in self.sims:
-            sf.ED_res = sf.calculateEres(e, w)
+            sf.ED_res = sf.applyEres(e, w)
 
         return np.array([sf.ED_res for sf in self.sims]).flatten()
     
@@ -335,15 +335,39 @@ class simFile:
         print('Zenith: ' + str(self.zenith))
         print('Energy: ' + str(self.energy))
         
-    def calculateAeff(self):
+    def calculateAeff(self, useEres=False, width=0.):
         """Calculates effective area of sim file.
+
+        Parameters
+        ----------
+        useEres : Boolean
+           Switch to either use the energy resolution in the
+           calculation or not.  The energy resolution needs to be
+           applied (using the applyEres function) before you can use
+           this.  If you don't use this it assumes all of the events
+           are good.
+
+        width: Float
+           The energy width that is used to reject events in the selection.
+
+        Returns
+        ----------
+        Aeff : Float
+           The effective area.
+
         """
         
         from math import pi
 
         r_sphere = float(self.geoDict['SurroundingSphere'][0][0])
-        triggers = int(self.srcDict['FFPS.NTriggers'][0])
         generated_particles = int(self.simDict['TS'][0])
+
+        if useEres:
+            triggers = np.where((self.ED_res >= self.energy - width)
+                                & (self.ED_res <= self.energy + width))
+            triggers = len(triggers[0])
+        else:
+            triggers = int(self.srcDict['FFPS.NTriggers'][0])
 
         return r_sphere**2*pi*triggers/generated_particles
 
