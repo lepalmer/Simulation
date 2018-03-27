@@ -183,7 +183,7 @@ def plotAeff(simFiles, useEres=False, plotGBM=False):
     plt.show()
 
     
-def plotAeffComparison(sims, names, compareTo='GBM', theta=0):
+def plotAeffComparison(sims, names, compareTo='GBM', axis='ze'):
 
     """Makes Aeff comparison plots of two or more simulations.
 
@@ -200,9 +200,9 @@ def plotAeffComparison(sims, names, compareTo='GBM', theta=0):
        The curve to make the comparison to in the percent difference.
        Default is GBM.  You can pick any of the other curves in the
        `names` list.
-
-    theta : float
-       The theta angle to plot.
+    
+    axis : string
+       Either `ze` or `az` for the angle axis to plot against.
 
     Returns
     ----------
@@ -219,9 +219,9 @@ def plotAeffComparison(sims, names, compareTo='GBM', theta=0):
         i = names.index(compareTo)
         comp_aeff = sims[i].calculateAeff()
 
-    for angle in set(comp_aeff['theta']):
+    for angle in set(comp_aeff[axis]):
         
-        mask = comp_aeff['theta'] == angle
+        mask = comp_aeff[axis] == angle
 
         if compareTo == 'GBM':
             gbminterp = np.interp(comp_aeff['keV'][mask],
@@ -236,8 +236,8 @@ def plotAeffComparison(sims, names, compareTo='GBM', theta=0):
         ax1 = plt.subplot(gs[0])
         ax2 = plt.subplot(gs[1])
 
-        ax1.set_title(r'Effective Area vs. Energy ($\theta$ = {:,.0f}$^\circ$)'
-                      .format(theta))
+        ax1.set_title(r'Effective Area vs. Energy ($angle$ = {:,.0f}$^\circ$)'
+                      .format(angle))
         ax1.set_xscale('log')
         ax1.set_xlabel('Energy (keV)', fontsize=16)
         ax1.set_yscale('log')
