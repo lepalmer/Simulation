@@ -54,15 +54,23 @@ class simFiles:
 
         return sfs
 
-    def calculateEres(self):
+    def applyEres(self):
         """Applies the energy resolution to the deposited energy and stores it
-        in ED_res."""
+        in ED_res.  Also returns a flattened array for plotting.
+
+        Returns
+        ----------
+            : numpy array
+            numpy array that contains all of the events with eres applied.
+        """
 
         e = self.conf.config['detector']['resolution']['energy']
         w = self.conf.config['detector']['resolution']['width']
 
         for sf in self.sims:
             sf.ED_res = sf.calculateEres(e, w)
+
+        return np.array([sf.ED_res for sf in self.sims]).flatten()
     
     def calculateAeff(self):
 
@@ -328,7 +336,7 @@ class simFile:
         print('Energy: ' + str(self.energy))
         
     def calculateAeff(self):
-        """Calculates effective area of sim file. 
+        """Calculates effective area of sim file.
         """
         
         from math import pi
@@ -339,7 +347,7 @@ class simFile:
 
         return r_sphere**2*pi*triggers/generated_particles
 
-    def calculateEres(self, energies, widths):
+    def applyEres(self, energies, widths):
         
         """Takes the energy deposited in the detector (ED) and adds a noise
         factor on an event by event basis based on the energy resolution of
