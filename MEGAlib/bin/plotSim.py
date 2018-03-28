@@ -183,7 +183,8 @@ def plotAeff(simFiles, useEres=False, plotGBM=False):
     plt.show()
 
     
-def plotAeffComparison(sims, names, useEres=False, compareTo='GBM', axis='ze'):
+def plotAeffComparison(sims, names, useEres=False, compareTo='GBM',
+                       axis='ze', elim=(1, 1e5)):
 
     """Makes Aeff comparison plots of two or more simulations.
 
@@ -250,6 +251,7 @@ def plotAeffComparison(sims, names, useEres=False, compareTo='GBM', axis='ze'):
 
         ax1.plot(gbmdata['energy'], gbmdata['aeff'], color='green', alpha=0.75,
                  linestyle='-', lw=2, label='GBM NaI')
+        ax1.set_xlim(elim)
     
         for sim, name, color in zip(sims, names, colors):
             aeffs = sim.calculateAeff(useEres=useEres)
