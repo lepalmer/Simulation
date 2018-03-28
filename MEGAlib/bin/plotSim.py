@@ -276,7 +276,7 @@ def plotAeffComparison(sims, names, useEres=False, compareTo='GBM',
         plt.show()
 
         
-def plotThetaComparison(sims, names, compareTo='', energy=100):
+def plotThetaComparison(sims, names, axis='ze', compareTo='', energy=100):
 
     """Makes Theta comparison plots of two or more simulations.
 
@@ -331,11 +331,11 @@ def plotThetaComparison(sims, names, compareTo='', energy=100):
 
         ax2.set_xlabel('Incident Angle (deg)', fontsize=16)
         ax2.set_ylabel('% Diff', fontsize=16)
-       
+
         for sim, name, color in zip(sims, names, colors):
             aeffs = sim.calculateAeff()
             aeff = aeffs['aeff'][mask]
-            theta = aeffs['theta'][mask]
+            theta = aeffs['ze'][mask]
        
             ax1.scatter(theta, aeff, color=color)
             ax1.plot(theta, aeff, color=color, alpha=0.5, linestyle='--',
