@@ -310,7 +310,7 @@ def plotThetaComparison(sims, names, axis='ze', compareTo='',
         i = 0
     else:
         i = names.index(compareTo)
-    comp_aeff = sims[i].calculateAeff(useEres)
+    comp_aeff = sims[i].calculateAeff(useEres=useEres)
 
     for energy in set(comp_aeff['keV']):
         mask = comp_aeff['keV'] == energy
@@ -334,7 +334,7 @@ def plotThetaComparison(sims, names, axis='ze', compareTo='',
         ax2.set_ylabel('% Diff', fontsize=16)
 
         for sim, name, color in zip(sims, names, colors):
-            aeffs = sim.calculateAeff()
+            aeffs = sim.calculateAeff(useEres=useEres)
             aeff = aeffs['aeff'][mask]
             theta = aeffs['ze'][mask]
        
