@@ -15,12 +15,23 @@ DCalCSI.TriggerThreshold   10
 
 //Note the noise and trigger thresholds were 30/100 respectively
 
-//Might need to add some to these at lower energies
-DCalCSI.EnergyResolution Gauss   40    40   5
-DCalCSI.EnergyResolution Gauss  100   100   7.5
-DCalCSI.EnergyResolution Gauss  662   662   20
-DCalCSI.EnergyResolution Gauss  2000  2000  33
-DCalCSI.EnergyResolution Gauss  5000  5000  50
+DCalCSI.EnergyResolution Gauss   16.6230740899    16.6230740899   1.68302801251
+DCalCSI.EnergyResolution Gauss   22.0915682323    22.0915682323   1.09159973397
+DCalCSI.EnergyResolution Gauss   30.3619642937    30.3619642937   1.31661161074
+DCalCSI.EnergyResolution Gauss   32.1557136747    32.1557136747   1.38194288996
+DCalCSI.EnergyResolution Gauss   59.1487365383    59.1487365383   1.75672732561
+DCalCSI.EnergyResolution Gauss   88.3582208292    88.3582208292   2.19164693114
+DCalCSI.EnergyResolution Gauss   121.527706289    121.527706289   3.21200882695
+DCalCSI.EnergyResolution Gauss   319.362442283    319.362442283   8.99991996774
+DCalCSI.EnergyResolution Gauss   508.071477134    508.071477134   12.9120068089
+DCalCSI.EnergyResolution Gauss   575.769329729    575.769329729   13.8003062119
+DCalCSI.EnergyResolution Gauss   662.811604618    662.811604618   15.1191908709
+DCalCSI.EnergyResolution Gauss   838.055102692    838.055102692   17.3919260243
+DCalCSI.EnergyResolution Gauss   1065.1420028    1065.1420028   19.9297191038
+DCalCSI.EnergyResolution Gauss   1176.45337163    1176.45337163   23.1351524484
+DCalCSI.EnergyResolution Gauss   1271.63272117    1271.63272117   21.8417731525
+DCalCSI.EnergyResolution Gauss   1332.81519359    1332.81519359   22.8937077357
+DCalCSI.EnergyResolution Gauss   1756.87213192    1756.87213192   26.6023298759
 
 //Scintillator   DCalNaI
 //DCalNaI.SensitiveVolume NaICylinder
@@ -34,13 +45,19 @@ DCalCSI.EnergyResolution Gauss  5000  5000  50
 
 //Note the noise and trigger thresholds were 30/100 respectively
 
-//Might need to add some to these at lower energies
-//DCalNaI.EnergyResolution Gauss   40    40   5
-//DCalNaI.EnergyResolution Gauss  100   100   7.5
-//DCalNaI.EnergyResolution Gauss  662   662   20
-//DCalNaI.EnergyResolution Gauss  2000  2000  33
-//DCalNaI.EnergyResolution Gauss  5000  5000  50
-
+//DCalNaI.EnergyResolution Gauss   16.6098890455    16.6098890455   1.38707473353
+//DCalNaI.EnergyResolution Gauss   30.9688275506    30.9688275506   2.48377951216
+//DCalNaI.EnergyResolution Gauss   32.1906399417    32.1906399417   2.59889934637
+//DCalNaI.EnergyResolution Gauss   59.5561580027    59.5561580027   1.59481138833
+//DCalNaI.EnergyResolution Gauss   80.8509193484    80.8509193484   1.79701295249
+//DCalNaI.EnergyResolution Gauss   122.31981698    122.31981698   3.093743698
+//DCalNaI.EnergyResolution Gauss   279.975831161    279.975831161   8.35504417251
+//DCalNaI.EnergyResolution Gauss   513.992327548    513.992327548   15.1786100057
+//DCalNaI.EnergyResolution Gauss   660.979727931    660.979727931   17.3727451832
+//DCalNaI.EnergyResolution Gauss   836.946514459    836.946514459   20.3077035203
+//DCalNaI.EnergyResolution Gauss   1167.39918806    1167.39918806   22.2930420839
+//DCalNaI.EnergyResolution Gauss   1271.1302373    1271.1302373   26.1127670537
+//DCalNaI.EnergyResolution Gauss   1326.40265075    1326.40265075   23.3080085916
 
 //Scintillator   DCalBGO
 //DCalBGO.SensitiveVolume BGOCylinder
@@ -54,12 +71,25 @@ DCalCSI.EnergyResolution Gauss  5000  5000  50
 
 //Note the noise and trigger thresholds were 30/100 respectively
 
-//Might need to add some to these at lower energies
-//DCalBGO.EnergyResolution Gauss   40    40   5
-//DCalBGO.EnergyResolution Gauss  100   100   7.5
-//DCalBGO.EnergyResolution Gauss  662   662   20
-//DCalBGO.EnergyResolution Gauss  2000  2000  33
-//DCalBGO.EnergyResolution Gauss  5000  5000  50
+//DCalBGO.EnergyResolution Gauss   14.1124674961    14.1124674961   5.10339428629
+//DCalBGO.EnergyResolution Gauss   16.31788064    16.31788064   5.28904486304
+//DCalBGO.EnergyResolution Gauss   21.5294847547    21.5294847547   5.74904235085
+//DCalBGO.EnergyResolution Gauss   30.3400617547    30.3400617547   6.6171024488
+//DCalBGO.EnergyResolution Gauss   31.5644906478    31.5644906478   6.76867878484
+//DCalBGO.EnergyResolution Gauss   59.0760905901    59.0760905901   8.52398197236
+//DCalBGO.EnergyResolution Gauss   80.5455029655    80.5455029655   9.89930850624
+//DCalBGO.EnergyResolution Gauss   87.1861603265    87.1861603265   10.0178130359
+//DCalBGO.EnergyResolution Gauss   122.029859912    122.029859912   12.4525224994
+//DCalBGO.EnergyResolution Gauss   274.687559045    274.687559045   17.7728953902
+//DCalBGO.EnergyResolution Gauss   317.652144862    317.652144862   17.6663274636
+//DCalBGO.EnergyResolution Gauss   350.635270999    350.635270999   19.4924499391
+//DCalBGO.EnergyResolution Gauss   408.168097548    408.168097548   19.3408929864
+//DCalBGO.EnergyResolution Gauss   507.280580527    507.280580527   23.6161359522
+//DCalBGO.EnergyResolution Gauss   567.446024614    567.446024614   25.3218233956
+//DCalBGO.EnergyResolution Gauss   656.107427579    656.107427579   26.4630020558
+//DCalBGO.EnergyResolution Gauss   826.375529583    826.375529583   30.8805764217
+//DCalBGO.EnergyResolution Gauss   1054.73183405    1054.73183405   35.3121107078
+//DCalBGO.EnergyResolution Gauss   1260.17631996    1260.17631996   40.0925709323
 
 
 //Scintillator   DCalPbWO4

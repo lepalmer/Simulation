@@ -29,4 +29,18 @@ run:
   zemax : 60
   zenumbins : 3
 
+detector:
+  resolution :
+    energy :
+      - 40.
+      - 100.
+      - 662.
+      - 2000.
+      - 5000.
+    width :
+      - 5.
+      - 7.5
+      - 20.
+      - 33.
+      - 50.
 

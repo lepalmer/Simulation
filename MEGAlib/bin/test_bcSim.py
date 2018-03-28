@@ -76,6 +76,14 @@ def test_calculateAeff(create_simfile):
 
     assert (np.abs(aeff - 69.5) < 3.0)
 
+    
+def test_calculateAeff_Eres(create_simfile):
+
+    sf = create_simfile
+    aeff = sf.calculateAeff(True, 2*7.5)
+
+    assert (np.abs(aeff - 64.0) < 3.0)
+    
 
 def test_passEres(create_simfile):
 

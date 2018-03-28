@@ -54,7 +54,20 @@ class simFiles:
 
         return sfs
 
-    def calculateAeff(self):
+    def applyEres(self):
+        """Applies the energy resolution to the deposited energy in each sim
+        file and returns a flattened array for plotting.
+
+        Returns
+        ----------
+            null : numpy array
+            numpy array that contains all of the events with eres applied.
+
+        """
+
+        return np.array([sf.ED_res for sf in self.sims]).flatten()
+    
+    def calculateAeff(self, useEres=False, sigma=2.0):
 
         """Calculates effective area from the information contained within the
         .sim files.
@@ -62,6 +75,14 @@ class simFiles:
         Parameters
         ----------
         self : null
+
+        useEres : boolean 
+          Switch to use the energy resolution in the
+          calculation.
+
+        sigma : float
+          Width of energy cut in sigma.  Default is 2.0.
+
 
         Returns
         ----------
@@ -76,9 +97,17 @@ class simFiles:
                                 'formats': ['float32', 'float32', 'float32',
                                             'float32', 'float32', 'float32']})
 
+        if useEres:
+            e = self.conf.config['detector']['resolution']['energy']
+            w = self.conf.config['detector']['resolution']['width']
+            e_interp = np.array([sf.energy for sf in self.sims])
+            res_interp = np.interp(e_interp, e, w)
+        else:
+            res_interp = np.zeros(len(self.sims))
+        
         for i, sf in enumerate(self.sims):
             frac, mod_frac = sf.passEres()
-            aeff = sf.calculateAeff()
+            aeff = sf.calculateAeff(useEres, res_interp[i]*sigma)
             aeffs[i] = (sf.azimuth,
                         sf.zenith,
                         sf.energy,
@@ -171,6 +200,8 @@ class simFile:
         self.srcDict = self.fileToDict(sourceFile, '#', None)
         self.geoDict = self.fileToDict(self.srcDict['Geometry'][0],
                                        '//', None)
+        self.eres = self.getEresFromFile(self.geoDict['Include'][1])
+        
         if logFile:
             self.logDict = self.logToDict(self.logFile)
         else:
@@ -188,6 +219,17 @@ class simFile:
     def azimuth(self):
         return float(self.srcDict['One.Beam'][0][2])
 
+    @property
+    def ED_res(self):
+        try:
+            self._ED_res
+        except AttributeError:
+            print('Applying Eres on {}'.format(self.simFile))
+            self._ED_res = self._applyEres(self.eres['energy'],
+                                           self.eres['sigma'])
+
+        return(self._ED_res)
+    
     def fileToDict(self, filename, commentString='#', termString=None):
 
         from os import path
@@ -219,6 +261,28 @@ class simFile:
                         if termString in line:
                             return megaDict
         return megaDict
+
+    def getEresFromFile(self, filename, commentString='//'):
+
+        from os import path
+        
+        eres_lines = []
+        filename = path.expandvars(filename)
+        with open(filename) as f:
+            for line in f:
+                if commentString not in line:
+                    if 'EnergyResolution' in line:
+                        eres_lines.append(line)
+
+        eres = np.zeros(len(eres_lines),
+                        dtype={'names': ['energy', 'sigma'],
+                               'formats': ['float32', 'float32']})
+                        
+        for i, res in enumerate(eres_lines):
+            res_split = res.split()
+            eres[i] = (res_split[-2], res_split[-1])
+
+        return eres
 
     def logToDict(self, filename):
 
@@ -317,17 +381,77 @@ class simFile:
         print('Zenith: ' + str(self.zenith))
         print('Energy: ' + str(self.energy))
         
-    def calculateAeff(self):
-        """Calculates effective area of sim file. 
+    def calculateAeff(self, useEres=False, width=0.):
+        """Calculates effective area of sim file.
+
+        Parameters
+        ----------
+        useEres : Boolean
+           Switch to either use the energy resolution in the
+           calculation or not.  If you don't use this it assumes all
+           of the events are good.
+
+        width: Float
+           The energy width that is used to reject events in the selection.
+
+        Returns
+        ----------
+        Aeff : Float
+           The effective area.
+
         """
         
         from math import pi
 
         r_sphere = float(self.geoDict['SurroundingSphere'][0][0])
-        triggers = int(self.srcDict['FFPS.NTriggers'][0])
         generated_particles = int(self.simDict['TS'][0])
 
+        if useEres:
+            triggers = np.where((self.ED_res >= self.energy - width)
+                                & (self.ED_res <= self.energy + width))
+            triggers = len(triggers[0])
+        else:
+            triggers = int(self.srcDict['FFPS.NTriggers'][0])
+
         return r_sphere**2*pi*triggers/generated_particles
+
+    def _applyEres(self, energies, widths):
+        
+        """Takes the energy deposited in the detector (ED) and adds a noise
+        factor on an event by event basis based on the energy resolution of
+        the detector.  Does a linear interpolation between the varous energy
+        measurements.  Assumes gaussian noise.
+
+        To-do:
+          * Need to make the interpolation non-linear
+            (functional)
+          * Need to make sure it goes above and below the
+            lowest (highest) value measurements.
+
+
+        Parameters
+        ----------
+        energies : list
+           List of energies in keV at which the energy resolution
+           (width) is calculated.
+
+        widths: list
+           List of energy widths (resolution) in keV.
+
+        Returns
+        ----------
+        ED + noise : numpy array
+          An array of energy values that have been corrected for the
+          energy resolution.
+
+        """
+
+        ED = np.array([float(ed) for ed in self.simDict['ED']])
+        e_interp = list(set(ED))
+        res_interp = np.interp(e_interp, energies, widths)
+        indexes = [e_interp.index(ed) for ed in ED]
+        noise = [np.random.normal(0, res_interp[i], 1)[0] for i in indexes]
+        return ED + noise
 
     def passEres(self, alpha=2.57, escape=30.0):
 
