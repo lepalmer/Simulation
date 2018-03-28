@@ -276,7 +276,8 @@ def plotAeffComparison(sims, names, useEres=False, compareTo='GBM',
         plt.show()
 
         
-    def plotThetaComparison(sims, names, axis='ze', compareTo='', useEres=False,energy=100):
+def plotThetaComparison(sims, names, axis='ze', compareTo='',
+                        useEres=False, energy=100):
 
     """Makes Theta comparison plots of two or more simulations.
 
