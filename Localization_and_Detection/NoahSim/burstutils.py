@@ -52,7 +52,141 @@ def findAngles(v1s, v2s):
     return np.arccos(dot[0,:]/(np.sqrt(dot[1,:])*np.sqrt(dot[2,:])))
 
 
-def chiresponse(A):
+def look_up_A(detnorm,source):
+    """The look up table for detector A. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector A. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+    """
+    
+    ang = angle(detnorm,source)
+    if ang> np.pi/2:
+        x = 0 
+    else:
+        #Or an elseif for other nuances, but simplest case this is it. 
+        x = .76
+    return x
+
+
+def look_up_B(detnorm,source):
+    """The look up table for detector B. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector B. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+    """
+    
+    ang = angle(detnorm,source)
+    if ang> np.pi/2:
+        x = 0 
+    else:
+        #Or an elseif for other nuances, but simplest case this is it. 
+        x = .76
+    return x
+
+
+def look_up_C(detnorm,source):
+    """The look up table for detector C. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector C. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+    """
+    
+    ang = angle(detnorm,source)
+    if ang> np.pi/2:
+        x = 0 
+    else:
+        #Or an elseif for other nuances, but simplest case this is it. 
+        x = .76
+    return x
+
+
+def look_up_D(detnorm,source):
+    """The look up table for detector D. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector D. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+    """
+    
+    ang = angle(detnorm,source)
+    if ang> np.pi/2:
+        x = 0 
+    else:
+        #Or an elseif for other nuances, but simplest case this is it. 
+        x = .76
+    return x
+
+
+def response(A,x):
+    """
+    Meant to imitate the actual response of a scintillator.
+    Inputs 2 vectors, and responds with a cos^x dependence.
+    
+    Parameters
+    -----------
+    A : float
+        The angular separation in radians between the normal vector of the detector, and the position in the sky of the simulated GRB. 
+    x : float 
+        The dependence 
+    Returns
+    -------
+    R : float
+        The response function of how the scintillator will respond to a source at angle A. 
+
+    """
+    #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
+ #   print(length(A),length(B))
+#if cosine is negative, 
+    R = pow(abs(np.cos(A)),x)
+    
+    
+    return R         
+
+
+def chiresponse(A,x):
     """
     The response function used in the chi squared fitting portion of the simulation. 
     Meant to imitate the actual response of a scintillator.
@@ -82,30 +216,6 @@ def chiresponse(A):
     
     return A
 
-def response(A):
-    """
-    Meant to imitate the actual response of a scintillator.
-    Inputs 2 vectors, and responds with a cos^x dependence.
-    
-    Parameters
-    -----------
-    A : float
-        The angular separation in radians between the normal vector of the detector, and the position in the sky of the simulated GRB. 
-
-    Returns
-    -------
-    R : float
-        The response function of how the scintillator will respond to a source at angle A. 
-
-    """
-    #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
- #   print(length(A),length(B))
-#if cosine is negative, 
-
-    R = pow(abs(np.cos(A)),0.76)
-    
-    
-    return R         
 
 
 def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,background):

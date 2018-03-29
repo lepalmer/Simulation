@@ -144,7 +144,7 @@ class FastCube():
                    # print("dtheory test: " + str(dtheory))
                     # this check passes too. 
                     
-                countsA = dtheoryA + self.bg #another artifact, incl this background effect somewhere
+                countsA = dtheoryA + self.bg
                 unccountsA = sqrt(countsA)
                 detactualA = gauss(countsA,unccountsA)  #there is a lot of noise, present, updating it now. 
                 if detactualA-self.bg < 0:
@@ -157,14 +157,15 @@ class FastCube():
                    #this check passes.  
                
                 if sepB < pi/2: # meaning if >90, would not be facing detector.
-                    dtheoryB=GRB.Ao*bf.response(bf.angle(sourcexyz,self.normB))  #still need to define strength, brb and gonna do that 
+                    dtheoryB=GRB.Ao*bf.response(bf.angle(sourcexyz,self.normB))  
+                    #still need to define strength, brb and gonna do that 
                 else: #like I was saying, has to face it!
                     dtheoryB = 0 
                      
                    # print("dtheory test: " + str(dtheory))
                     # this check passes too. 
                     
-                countsB = dtheoryB + self.bg #another artifact, incl this background effect somewhere
+                countsB = dtheoryB + self.bg 
                 unccountsB = sqrt(countsB)
                 detactualB = gauss(countsB,unccountsB)  #there is a lot of noise, present, updating it now. 
                 if detactualB-self.bg < 0:
