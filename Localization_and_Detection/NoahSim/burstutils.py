@@ -48,8 +48,13 @@ def angle(v1, v2):
     return ang
 
 def findAngles(v1s, v2s):
-    dot = np.einsum('ijk,ijk->ij',[v1s,v1s,v2s],[v2s,v1s,v2s])
-    return np.arccos(dot[0,:]/(np.sqrt(dot[1,:])*np.sqrt(dot[2,:])))
+    if np.shape(v1s)[0] >3:
+        dot = np.einsum('ijk,ijk->ij',[v1s,v1s,v2s],[v2s,v1s,v2s])
+        angle = np.arccos(dot[0,:]/(np.sqrt(dot[1,:])*np.sqrt(dot[2,:])))
+    else:
+        angle = np.arccos(np.dot(v1s, v2s) / (length(v1s) * length(v2s)))
+
+    return angle
 
 
 def look_up_A(detnorm,source):
@@ -70,12 +75,21 @@ def look_up_A(detnorm,source):
         The exponent of dependence for the detector's response.
     """
     
-    ang = angle(detnorm,source)
-    if ang> np.pi/2:
-        x = 0 
-    else:
+    ang = findAngles(detnorm,source)
+    if type(ang) != np.float64:
+        mask = ang > np.pi/2.
+
+        ang[mask] = 0
+        ang[~mask] = 0.76
+    
+        x = ang #rename bc it sounds better
+        
+    else: 
+        if ang> np.pi/2:
+            x = 0 
+        else:
         #Or an elseif for other nuances, but simplest case this is it. 
-        x = .76
+            x = .76
     return x
 
 
@@ -97,14 +111,22 @@ def look_up_B(detnorm,source):
         The exponent of dependence for the detector's response.
     """
     
-    ang = angle(detnorm,source)
-    if ang> np.pi/2:
-        x = 0 
-    else:
-        #Or an elseif for other nuances, but simplest case this is it. 
-        x = .76
-    return x
+    ang = findAngles(detnorm,source)
+    if type(ang) != np.float64:
 
+        mask = ang > np.pi/2.
+
+        ang[mask] = 0
+        ang[~mask] = 0.76
+    
+        x = ang #rename bc it sounds better
+    else: 
+        if ang> np.pi/2:
+            x = 0 
+        else:
+        #Or an elseif for other nuances, but simplest case this is it. 
+            x = .76
+    return x
 
 def look_up_C(detnorm,source):
     """The look up table for detector C. 
@@ -124,12 +146,22 @@ def look_up_C(detnorm,source):
         The exponent of dependence for the detector's response.
     """
     
-    ang = angle(detnorm,source)
-    if ang> np.pi/2:
-        x = 0 
-    else:
+    ang = findAngles(detnorm,source)
+    if type(ang) != np.float64:
+
+    #for this one calling it just mask1 since I'm sure more features will be added. 
+        mask1 = ang > np.pi/3.
+
+        ang[mask1] = 0
+        ang[~mask1] = 0.5
+    
+        x = ang #rename bc it sounds better
+    else: 
+        if ang> np.pi/3:
+            x = 0 
+        else:
         #Or an elseif for other nuances, but simplest case this is it. 
-        x = .76
+            x = .5
     return x
 
 
@@ -151,12 +183,22 @@ def look_up_D(detnorm,source):
         The exponent of dependence for the detector's response.
     """
     
-    ang = angle(detnorm,source)
-    if ang> np.pi/2:
-        x = 0 
-    else:
+    ang = findAngles(detnorm,source)
+    if type(ang) != np.float64:
+
+        mask = ang > np.pi/2.
+
+        ang[mask] = 0
+        ang[~mask] = 0.76
+    
+        x = ang #rename bc it sounds better
+    else: 
+        if ang> np.pi/2:
+            x = 0 
+        else:
         #Or an elseif for other nuances, but simplest case this is it. 
-        x = .76
+            x = .76
+
     return x
 
 
@@ -218,7 +260,7 @@ def chiresponse(A,x):
 
 
 
-def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,background):
+def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,background,A=False,B=False,C=False,D=False):
     """Generates an array of all possible chi terms for a given detector and the number of counts induced in it by some source. Named quad since BurstCube is composed of 4 detectors, and this generates 1/4 of the terms. 
     
     Parameters
@@ -285,7 +327,19 @@ def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,
     #bad = chiseps > np.pi/2
     
     #probs that, don't want to include bg 
-    chiResponse = np.multiply(Aofit,chiresponse(chiseps)) + bg
+    if A:
+        xfit = look_up_A(normarrs,allvecs)
+    elif B:
+        xfit = look_up_B(normarrs,allvecs)
+    elif C:
+        xfit = look_up_C(normarrs,allvecs)
+    elif D:
+        xfit = look_up_D(normarrs,allvecs)
+
+
+
+
+    chiResponse = np.multiply(Aofit,chiresponse(chiseps,xfit)) + bg
     #chiResponse = [1e5 if i <= background else i for i in chiResponse]
     if detval > background: 
         chiterm = np.divide(np.power(np.subtract(chiResponse,detval),2),detval)
