@@ -222,6 +222,7 @@ def response(A,x):
     #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
  #   print(length(A),length(B))
 #if cosine is negative, 
+    #Maybe include the pi/2 thing here. 
     R = pow(abs(np.cos(A)),x)
     
     
