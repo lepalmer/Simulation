@@ -1,0 +1,144 @@
+
+def look_up_A(detnorm,source):
+    """The look up table for detector A. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector A. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+    """
+    
+    ang = findAngles(detnorm,source)
+    if type(ang) != np.float64:
+        mask = ang > np.pi/2.
+
+        ang[mask] = 0
+        ang[~mask] = 0.76
+    
+        x = ang #rename bc it sounds better
+        
+    else: 
+        if ang> np.pi/2:
+            x = 0 
+        else:
+        #Or an elseif for other nuances, but simplest case this is it. 
+            x = .76
+    return x
+
+
+def look_up_B(detnorm,source):
+    """The look up table for detector B. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector B. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+    """
+    
+    ang = findAngles(detnorm,source)
+    if type(ang) != np.float64:
+
+        mask = ang > np.pi/2.
+
+        ang[mask] = 0
+        ang[~mask] = 0.76
+    
+        x = ang #rename bc it sounds better
+    else: 
+        if ang> np.pi/2:
+            x = 0 
+        else:
+        #Or an elseif for other nuances, but simplest case this is it. 
+            x = .76
+    return x
+
+def look_up_C(detnorm,source):
+    """The look up table for detector C. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector C. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+    """
+    
+    ang = findAngles(detnorm,source)
+    if type(ang) != np.float64:
+
+    #for this one calling it just mask1 since I'm sure more features will be added. 
+        mask1 = ang > np.pi/3.
+
+        ang[mask1] = 0
+        ang[~mask1] = 0.5
+    
+        x = ang #rename bc it sounds better
+    else: 
+        if ang> np.pi/3:
+            x = 0 
+        else:
+        #Or an elseif for other nuances, but simplest case this is it. 
+            x = .5
+    return x
+
+
+def look_up_D(detnorm,source):
+    """The look up table for detector D. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector D. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+    """
+    
+    ang = findAngles(detnorm,source)
+    if type(ang) != np.float64:
+
+        mask = ang > np.pi/2.
+
+        ang[mask] = 0
+        ang[~mask] = 0.76
+    
+        x = ang #rename bc it sounds better
+    else: 
+        if ang> np.pi/2:
+            x = 0 
+        else:
+        #Or an elseif for other nuances, but simplest case this is it. 
+            x = .76
+
+    return x
