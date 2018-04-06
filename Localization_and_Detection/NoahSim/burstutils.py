@@ -221,7 +221,7 @@ def look_up_C(detnorm,source,array=False):
     X = np.arange(0, 180, 1)  #full sky now. 
     Y = np.arange(0, 360, 1)
     X, Y = np.meshgrid(X, Y)
-    R = 0.62*np.ones(shape=np.shape(X))
+    R = 0.3*np.ones(shape=np.shape(X))
     
     
     if not array:
