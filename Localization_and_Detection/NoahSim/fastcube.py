@@ -1,9 +1,10 @@
 #The following cell contains the "FastCube" class. This is the simulation I hope to use to be able to run quicker simulations. 
-
+#Import dependencies
 from numpy import rad2deg,deg2rad,pi,sqrt,add,array,average
 from healpy import ang2vec, newvisufunc
 import burstutils as bf
 from random import gauss
+import statistics as s
 import matplotlib.pyplot as plt
 
 class FastCube():
@@ -85,7 +86,9 @@ class FastCube():
             For sanity purposes, if the simulation seems to give unrealistic results, switching to test mode allows for much quicker sampling, allowing it easier to spot potential errors. 
         
         
-
+        talk : boolean
+            If desired, prints position by position results. 
+        
         Returns
         ----------
         localizationerrors : array
@@ -133,34 +136,32 @@ class FastCube():
             locunc = []
             while loop<samples:
                 sepA=bf.angle(sourcexyz,self.normA)
+                xA = bf.look_up_A(self.normA,sourcexyz)
                    # print("separation from A is " + str(np.rad2deg(sepA)))
                    #this check passes.  
                
-                if sepA < pi/2: # meaning if >90, would not be facing detector.
-                    dtheoryA=GRB.Ao*bf.response(bf.angle(sourcexyz,self.normA))  #still need to define strength, brb and gonna do that 
-                else: #like I was saying, has to face it!
-                    dtheoryA = 0 
+                dtheoryA=GRB.Ao*bf.response(sepA,xA)  #still need to define strength, brb and gonna do that 
                      
                    # print("dtheory test: " + str(dtheory))
                     # this check passes too. 
                     
                 countsA = dtheoryA + self.bg
                 unccountsA = sqrt(countsA)
-                detactualA = gauss(countsA,unccountsA)  #there is a lot of noise, present, updating it now. 
+                detactualA = gauss(countsA,unccountsA)  #there is a lot of noise present, updating it now. 
                 if detactualA-self.bg < 0:
                     detactualA = self.bg
                     
                 detcountsA = detactualA
                 
                 sepB=bf.angle(sourcexyz,self.normB)
+                xB = bf.look_up_B(self.normB,sourcexyz)
+
                    # print("separation from B is " + str(np.rad2deg(sepB)))
                    #this check passes.  
                
-                if sepB < pi/2: # meaning if >90, would not be facing detector.
-                    dtheoryB=GRB.Ao*bf.response(bf.angle(sourcexyz,self.normB))  
+                dtheoryB=GRB.Ao*bf.response(sepB,xB)  
                     #still need to define strength, brb and gonna do that 
-                else: #like I was saying, has to face it!
-                    dtheoryB = 0 
+
                      
                    # print("dtheory test: " + str(dtheory))
                     # this check passes too. 
@@ -172,15 +173,14 @@ class FastCube():
                     detactualB = self.bg
                     
                 detcountsB = detactualB
+                
+
 
                 sepC=bf.angle(sourcexyz,self.normC)
                    # print("separation from C is " + str(np.rad2deg(sepC)))
                    #this check passes.  
-               
-                if sepC < pi/2: # meaning if >90, would not be facing detector.
-                    dtheoryC=GRB.Ao*bf.response(bf.angle(sourcexyz,self.normC))  #still need to define strength, brb and gonna do that 
-                else: #like I was saying, has to face it!
-                    dtheoryC = 0 
+                xC =  bf.look_up_C(self.normC,sourcexyz)
+                dtheoryC=GRB.Ao*bf.response(sepC,xC)  #still need to define strength, brb and gonna do that 
                      
                    # print("dtheory test: " + str(dtheory))
                     # this check passes too. 
@@ -193,14 +193,14 @@ class FastCube():
                     
                 detcountsC = detactualC
                 
+                
+
+                
                 sepD=bf.angle(sourcexyz,self.normD)
                    # print("separation from D is " + str(np.rad2deg(sepD)))
                    #this check passes.  
-               
-                if sepD < pi/2: # meaning if >90, would not be facing detector.q
-                    dtheoryD=GRB.Ao*bf.response(bf.angle(sourcexyz,self.normD))  #still need to define strength, brb and gonna do that 
-                else: #like I was saying, has to face it!
-                    dtheoryD = 0 
+                xD = bf.look_up_D(self.normD,sourcexyz)
+                dtheoryD=GRB.Ao*bf.response(sepD,xD)  #still need to define strength, brb and gonna do that 
                      
                    # print("dtheory test: " + str(dtheory))
                     # this check passes too. 
@@ -213,11 +213,14 @@ class FastCube():
                     
                 detcountsD = detactualD
                 
+
+                
+                
                 #coarse to fine optimization
-                chiA = bf.quad_solver(detcountsA,self.normA,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg)
-                chiB = bf.quad_solver(detcountsB,self.normB,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg)
-                chiC = bf.quad_solver(detcountsC,self.normC,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg)
-                chiD = bf.quad_solver(detcountsD,self.normD,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg)
+                chiA = bf.quad_solver(detcountsA,self.normA,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg,A=True)
+                chiB = bf.quad_solver(detcountsB,self.normB,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg,B=True)
+                chiC = bf.quad_solver(detcountsC,self.normC,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg,C=True)
+                chiD = bf.quad_solver(detcountsD,self.normD,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg,D=True)
                 
                 chisquared = add(add(chiA,chiB),add(chiC,chiD)) #adds it all up for total chi2
                 
@@ -234,11 +237,26 @@ class FastCube():
             if talk:
                 print("Avg loc offset = " + str(average(locunc)) + " deg.")
 
-            self.localizationerrors.append(mean(locunc))
+            self.localizationerrors.append(s.mean(locunc))
         return self.localizationerrors
 
 
     def plotSkymap(self,skyvals):
+        """ Plots the TSM of the localization uncertainties for this specific version of BurstCube. 
+
+
+        Parameters
+        ----------
+        skyvals : array
+            The localiation uncertainties corresponding to each point. Comes from previous function "response2GRB".
+
+
+        Returns 
+        -------
+
+        The healpy generated skymap. 
+
+        """
         im = array(skyvals)
         newvisufunc.mollview(im,min=0, max=15,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True)
         plt.title('All Sky Localization Uncertainty for BurstCube set as ' + str(rad2deg(self.tilt)) + ' deg')  #should add something about design too! 

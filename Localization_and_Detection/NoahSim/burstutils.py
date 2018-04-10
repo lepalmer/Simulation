@@ -1,4 +1,3 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 import math as mth
@@ -209,6 +208,16 @@ def look_up_C(detnorm,source,array=False):
     
     x : float
         The exponent of dependence for the detector's response.
+
+
+
+    Example:
+    Let's say for this detector, past 30° and for azimuths of 60 - 180, it's blocked. This is what it would look like: 
+
+     R = 0.76*np.ones(shape=np.shape(X)) 
+
+     R[30:,60:180] = 0
+
     """
     ang = findAngles(detnorm,source)   
 
@@ -221,7 +230,7 @@ def look_up_C(detnorm,source,array=False):
     X = np.arange(0, 180, 1)  #full sky now. 
     Y = np.arange(0, 360, 1)
     X, Y = np.meshgrid(X, Y)
-    R = 0.3*np.ones(shape=np.shape(X))
+    R = 0.76*np.ones(shape=np.shape(X))  #response function
     
     
     if not array:
