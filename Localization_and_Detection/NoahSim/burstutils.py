@@ -350,7 +350,6 @@ def response(A,x):
     R[mask] = 0
     return R         
 
-
 def chiresponse(A,x):
     """
     
@@ -383,7 +382,6 @@ def chiresponse(A,x):
     
     
     return A
-
 
 
 def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,background,A=False,B=False,C=False,D=False):

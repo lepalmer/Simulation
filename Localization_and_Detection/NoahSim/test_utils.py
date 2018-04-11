@@ -28,14 +28,15 @@ def test_findAngles():
 
 	np.testing.assert_allclose(testangs, (np.pi/2, np.pi/2), 1e-3)
 
-
+"""
 def test_chiresponse():
 	testAs = burstutils.chiresponse(np.array([np.pi/4,7*np.pi/4]))
 	
 	np.testing.assert_allclose(testAs,(0.768438,0),1e-3)
+"""
 
 def test_response():
-	testR = burstutils.response(np.pi/4)
+	testR = burstutils.response(np.pi/4,.76)
 
 	assert (np.abs(testR- 0.768438) < 1e-3)
 
@@ -45,7 +46,7 @@ def test_quadsolver():
 	fakenorm = [0,0,1]
 	fakeval = 1600
 
-	fakechi = burstutils.quad_solver(fakeval,fakenorm,0,5,0,360,0,500,1,1,2,1000)
+	fakechi = burstutils.quad_solver(fakeval,fakenorm,0,5,0,360,0,500,1,1,2,1000,A=True)
 
 	np.testing.assert_allclose(fakechi, (225, 6.25), 1e-3)
 
