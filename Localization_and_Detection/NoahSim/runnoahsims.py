@@ -1,4 +1,4 @@
-import fastcube2
+import fastcube
 import GRBgenerator
 
 NSIDE = 16
@@ -41,7 +41,7 @@ TALK : bool
 sim1 = GRBgenerator.Sky(NSIDE,STRENGTH)
 
 #run this file, and you immediately get
-cube1 = fastcube2.FastCube(BACKGROUND,TILT,alternating = ALTERNATING)
+cube1 = fastcube.FastCube(BACKGROUND,TILT,alternating = ALTERNATING)
 
 
 response = cube1.response2GRB(sim1,samples=SAMPLES,test=TEST,talk=TALK)
