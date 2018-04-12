@@ -47,12 +47,8 @@ def angle(v1, v2):
     return ang
 
 def findAngles(v1s, v2s):  #can handle either one angle or array intake of a bunch of them!
-    if np.shape(v1s)[0] >3:
-        dot = np.einsum('ijk,ijk->ij',[v1s,v1s,v2s],[v2s,v1s,v2s])
-        angle = np.arccos(dot[0,:]/(np.sqrt(dot[1,:])*np.sqrt(dot[2,:])))
-    else:
-        angle = np.arccos(np.dot(v1s, v2s) / (length(v1s) * length(v2s)))
-
+    dot = np.einsum('ijk,ijk->ij',[v1s,v1s,v2s],[v2s,v1s,v2s])
+    angle = np.arccos(dot[0,:]/(np.sqrt(dot[1,:])*np.sqrt(dot[2,:])))
     return angle
 
 
@@ -78,8 +74,11 @@ def look_up_A(detnorm,source,array=False):
     x : float
         The exponent of dependence for the detector's response.
     """
-    ang = findAngles(detnorm,source)   
+    if array:
+        ang = findAngles(detnorm,source)   
 
+    if not array:
+        ang = angle(detnorm,source)
 
     sourceang = hp.vec2ang(source)
     sourcetheta = sourceang[0]
@@ -143,9 +142,11 @@ def look_up_B(detnorm,source,array=False):
     x : float
         The exponent of dependence for the detector's response.
     """
-    ang = findAngles(detnorm,source)   
+    if array:
+        ang = findAngles(detnorm,source)   
 
-
+    if not array:
+        ang = angle(detnorm,source)
     sourceang = hp.vec2ang(source)
     sourcetheta = sourceang[0]
     sourcephi = sourceang[1]    #convert to degrees for now, not a big dealio or anything yet. 
@@ -219,8 +220,11 @@ def look_up_C(detnorm,source,array=False):
      R[30:,60:180] = 0
 
     """
-    ang = findAngles(detnorm,source)   
+    if array:
+        ang = findAngles(detnorm,source)   
 
+    if not array:
+        ang = angle(detnorm,source)
     sourceang = hp.vec2ang(source)
     sourcetheta = sourceang[0]
     sourcephi = sourceang[1]
@@ -278,8 +282,12 @@ def look_up_D(detnorm,source,array=False):
     x : float
         The exponent of dependence for the detector's response.
     """
-    ang = findAngles(detnorm,source)   
+    if array:
+        ang = findAngles(detnorm,source)   
 
+    if not array:
+        ang = angle(detnorm,source)
+        
     sourceang = hp.vec2ang(source)
     sourcetheta = sourceang[0]
     sourcephi = sourceang[1]

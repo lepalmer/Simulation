@@ -2,7 +2,12 @@
 #Import dependencies
 from numpy import rad2deg,deg2rad,pi,sqrt,add,array,average
 from healpy import ang2vec, newvisufunc
-import burstutils as bf
+
+try:
+    from NoahSim import burstutils as bf
+except:
+    import burstutils as bf
+
 from random import gauss
 import statistics as s
 import matplotlib.pyplot as plt
