@@ -13,3 +13,9 @@ try:
 except:
     print("Random module is not installed. Please enter 'pip install random' before proceeding.")
     
+try:
+    
+    import burstuitls
+except:
+    print("burstutils module is not importing. Please check your path before proceeding.")
+    

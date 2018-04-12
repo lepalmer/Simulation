@@ -1,4 +1,4 @@
-import burstutils
+from NoahSim import burstutils
 
 import numpy as np
 
@@ -39,6 +39,15 @@ def test_response():
 	testR = burstutils.response(np.pi/4,.76)
 
 	assert (np.abs(testR- 0.768438) < 1e-3)
+
+def test_lookupA():
+	#Testing just one of the lookup tables, they were built in parallel anyways so this should suffice for all. 
+	fakenorm = [0,0,1]
+	fakesource = [0,0,1]
+	testx = burstutils.look_up_A(fakenorm,fakesource,array=False)  #testx because it returns x normally, the exponent cosine is multiplied to that matches the response of the scint. 
+
+	assert (np.abs(testx - .76) < 1e-7)  #currently all set as .76, gonna have to refine all of these later on if MEGAlib says otherwise. 
+
 
 
 def test_quadsolver():

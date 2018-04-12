@@ -1,4 +1,4 @@
-import GRBgenerator 
+from NoahSim import GRBgenerator 
 
 
 
