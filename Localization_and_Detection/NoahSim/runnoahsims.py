@@ -1,5 +1,5 @@
-import fastcube
-import GRBgenerator
+from NoahSim import fastcube
+from NoahSim import GRBgenerator
 
 NSIDE = 16
 STRENGTH = 500
