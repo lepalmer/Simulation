@@ -30,6 +30,8 @@ def runCosima(srcFile):
     out, err = p.communicate()
 
     base = os.path.splitext(os.path.basename(srcFile))
+    print("srf file: " + str(srcFile))
+    print("base: " + str(base))
 
     print("Writing Log for " + srcFile)
     with gzip.open(base[0]+'.stdout.gz', 'wb') as f:
