@@ -1,0 +1,44 @@
+Geometry Files
+---------------
+
+
+Still need to go into obs branch and grab the most up to date geo file, use it for these sims. 
+
+1. BigCube_1Cylinder.geo.setup
+2. BurstCube.geo.setup
+3. BurstCubeCylinder.geo.setup
+4. BurstCube_1Cube.geo.setup
+5. BurstCube_1Cylinder.geo.setup
+6. BurstCube_1of4Cube.geo.setup
+7. BurstCube_1of9Cube.geo.setup
+
+
+Does it work? 
+
+1. No    ***  Error  ***  in setup file /Users/noahkasmanoff/BurstCube/Simulation/MEGAlib/geo/BigCube_1Cylinder.geo.setup at line 36:
+
+2. No 
+   ***  Error  ***  in setup file /Users/noahkasmanoff/BurstCube/Simulation/MEGAlib/geo/CalorimeterCSILayer.geo at line 49:
+"PbWO4Cylinder.Material PbWO4"
+Unknown material found!
+Stopping to scan geometry file!
+
+
+
+3. 
+
+Yes 
+
+4. No 
+"PbWO4Cylinder.Material PbWO4"
+
+
+5. Yes
+
+
+6. No no PbW04
+
+
+7. "DCalCSI.SensitiveVolume CSICylinder"
+A volume of this name does not exist!
+Stopping to scan geometry file!
