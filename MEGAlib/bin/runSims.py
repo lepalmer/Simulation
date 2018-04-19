@@ -16,7 +16,7 @@ def runCosima(srcFile):
     -------
 
     The .sim file for the respective source file. 
-
+    and its gunzipped version!
     """
     import subprocess
     import gzip
@@ -30,8 +30,6 @@ def runCosima(srcFile):
     out, err = p.communicate()
 
     base = os.path.splitext(os.path.basename(srcFile))
-    print("srf file: " + str(srcFile))
-    print("base: " + str(base))
 
     print("Writing Log for " + srcFile)
     with gzip.open(base[0]+'.stdout.gz', 'wb') as f:

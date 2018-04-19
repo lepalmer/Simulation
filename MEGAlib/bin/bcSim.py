@@ -2,12 +2,12 @@
 
 import numpy as np
 from utils import setPath
-from simGenerator import configurator  #requires simGenerator
+from simGenerator import configurator
 
 
 class simFiles:
 
-    def __init__(self, config_file):  #name of the function that python uses to construct 
+    def __init__(self, config_file):
 
         """Object for a multiple simulations over energy and angle."""
 
@@ -27,7 +27,7 @@ class simFiles:
         Returns
         ----------
         sfs : array
-            numpy array containing information about each sim file. 
+            numpy array containing information about each sim file.
 
         """
         from utils import getFilenameFromDetails
@@ -36,12 +36,14 @@ class simFiles:
 
         sfs = []
 
-        for angle, energy in [(angle, energy)
-                              for angle in self.conf.thetabins
-                              for energy in self.conf.ebins]:
+        for ze, az, energy in [(ze, az, energy)
+                               for ze in self.conf.zebins
+                               for az in self.conf.azbins
+                               for energy in self.conf.ebins]:
             fname = getFilenameFromDetails({'base': basename,
                                             'keV': energy,
-                                            'theta': angle})
+                                            'ze': ze,
+                                            'az': az})
             sf = simFile(self.conf.config['run']['simdir']
                          + '/'+fname+'.inc1.id1.sim',
                          self.conf.config['run']['srcdir']
@@ -52,7 +54,20 @@ class simFiles:
 
         return sfs
 
-    def calculateAeff(self):
+    def applyEres(self):
+        """Applies the energy resolution to the deposited energy in each sim
+        file and returns a flattened array for plotting.
+
+        Returns
+        ----------
+            null : numpy array
+            numpy array that contains all of the events with eres applied.
+
+        """
+
+        return np.array([sf.ED_res for sf in self.sims]).flatten()
+    
+    def calculateAeff(self, useEres=False, sigma=2.0):
 
         """Calculates effective area from the information contained within the
         .sim files.
@@ -60,6 +75,14 @@ class simFiles:
         Parameters
         ----------
         self : null
+
+        useEres : boolean 
+          Switch to use the energy resolution in the
+          calculation.
+
+        sigma : float
+          Width of energy cut in sigma.  Default is 2.0.
+
 
         Returns
         ----------
@@ -69,20 +92,76 @@ class simFiles:
         """
 
         aeffs = np.zeros(len(self.sims),
-                         dtype={'names': ['theta', 'keV', 'aeff',
+                         dtype={'names': ['az', 'ze', 'keV', 'aeff',
                                           'aeff_eres', 'aeff_eres_modfrac'],
-                                'formats': ['float32', 'float32',
+                                'formats': ['float32', 'float32', 'float32',
                                             'float32', 'float32', 'float32']})
 
+        if useEres:
+            e = self.conf.config['detector']['resolution']['energy']
+            w = self.conf.config['detector']['resolution']['width']
+            e_interp = np.array([sf.energy for sf in self.sims])
+            res_interp = np.interp(e_interp, e, w)
+        else:
+            res_interp = np.zeros(len(self.sims))
+        
         for i, sf in enumerate(self.sims):
             frac, mod_frac = sf.passEres()
-            aeff = sf.calculateAeff()
-            aeffs[i] = (sf.theta,
+            aeff = sf.calculateAeff(useEres, res_interp[i]*sigma)
+            aeffs[i] = (sf.azimuth,
+                        sf.zenith,
                         sf.energy,
                         aeff, aeff*frac, aeff*mod_frac)
 
         return aeffs
 
+    def getAllTriggerProbability(self, num_detectors=4, test=False):
+
+        """Returns the probabability of hitting each detector in each simulation.
+
+        Parameters
+        ----------
+            num_detectors : int
+                Number of detectors in the simulation
+
+            test : boolean
+                run a quick test over a limited number of files (20)
+    
+        Returns
+        ----------
+            det_prob : numpy array
+                Contains information from all the files about the energy,
+                angles and probability of hitting a given detector
+        """
+
+        names = ['energy', 'az', 'ze', 'stat_err',  'prob_det_vol']
+        formats = ['float32', 'float32', 'float32', 'float32', 'float32']
+
+        for i in range(num_detectors-1):
+            names = np.append(names, 'prob_det_vol%i' % (i+1))
+            formats = np.append(formats, 'float32')
+
+        print(names)
+        print(formats)
+
+        det_prob = np.empty(len(self.sims),
+                            dtype={'names': names,
+                                   'formats': formats})
+
+        if test:
+            dotest = 1
+        else:
+            dotest = len(self.sims)
+
+        print("Analyzing", len(self.sims), "files")
+
+        for j in range(dotest):
+            holder = self.sims[j].getTriggerProbability(num_det=num_detectors,
+                                                        test=test)
+            det_prob[j] = np.array([tuple(holder)], dtype=det_prob.dtype)
+
+        return det_prob
+    
 
 class simFile:
 
@@ -101,7 +180,7 @@ class simFile:
            config file used as input to Cosima
 
         logFile: string
-           stdout from Cosima.  Optional. 
+           stdout from Cosima.  Optional.
 
         Returns
         ----------
@@ -121,6 +200,8 @@ class simFile:
         self.srcDict = self.fileToDict(sourceFile, '#', None)
         self.geoDict = self.fileToDict(self.srcDict['Geometry'][0],
                                        '//', None)
+        self.eres = self.getEresFromFile(self.geoDict['Include'][1])
+        
         if logFile:
             self.logDict = self.logToDict(self.logFile)
         else:
@@ -131,9 +212,24 @@ class simFile:
         return float(self.srcDict['One.Spectrum'][0][1])
 
     @property
-    def theta(self):
+    def zenith(self):
         return float(self.srcDict['One.Beam'][0][1])
 
+    @property
+    def azimuth(self):
+        return float(self.srcDict['One.Beam'][0][2])
+
+    @property
+    def ED_res(self):
+        try:
+            self._ED_res
+        except AttributeError:
+            print('Applying Eres on {}'.format(self.simFile))
+            self._ED_res = self._applyEres(self.eres['energy'],
+                                           self.eres['sigma'])
+
+        return(self._ED_res)
+    
     def fileToDict(self, filename, commentString='#', termString=None):
 
         from os import path
@@ -165,6 +261,28 @@ class simFile:
                         if termString in line:
                             return megaDict
         return megaDict
+
+    def getEresFromFile(self, filename, commentString='//'):
+
+        from os import path
+        
+        eres_lines = []
+        filename = path.expandvars(filename)
+        with open(filename) as f:
+            for line in f:
+                if commentString not in line:
+                    if 'EnergyResolution' in line:
+                        eres_lines.append(line)
+
+        eres = np.zeros(len(eres_lines),
+                        dtype={'names': ['energy', 'sigma'],
+                               'formats': ['float32', 'float32']})
+                        
+        for i, res in enumerate(eres_lines):
+            res_split = res.split()
+            eres[i] = (res_split[-2], res_split[-1])
+
+        return eres
 
     def logToDict(self, filename):
 
@@ -251,7 +369,7 @@ class simFile:
         return hits
 
     def printDetails(self):
-        """Prints the general information about specific sim files. 
+        """Prints the general information about specific sim files.
         """
         print('Sim File: ' + self.simFile)
         print('Source File: ' + self.srcFile)
@@ -259,20 +377,81 @@ class simFile:
         print('Surrounding Sphere: ' + self.geoDict['SurroundingSphere'][0][0])
         print('Triggers: ' + self.srcDict['FFPS.NTriggers'][0])
         print('Generated Particles: ' + self.simDict['TS'][0])
-        print('Theta: ' + str(self.theta))
+        print('Azimuth: ' + str(self.azimuth))
+        print('Zenith: ' + str(self.zenith))
         print('Energy: ' + str(self.energy))
+        
+    def calculateAeff(self, useEres=False, width=0.):
+        """Calculates effective area of sim file.
 
-    def calculateAeff(self):
-        """Calculates effective area of sim file. 
+        Parameters
+        ----------
+        useEres : Boolean
+           Switch to either use the energy resolution in the
+           calculation or not.  If you don't use this it assumes all
+           of the events are good.
+
+        width: Float
+           The energy width that is used to reject events in the selection.
+
+        Returns
+        ----------
+        Aeff : Float
+           The effective area.
+
         """
         
         from math import pi
 
         r_sphere = float(self.geoDict['SurroundingSphere'][0][0])
-        triggers = int(self.srcDict['FFPS.NTriggers'][0])
         generated_particles = int(self.simDict['TS'][0])
 
+        if useEres:
+            triggers = np.where((self.ED_res >= self.energy - width)
+                                & (self.ED_res <= self.energy + width))
+            triggers = len(triggers[0])
+        else:
+            triggers = int(self.srcDict['FFPS.NTriggers'][0])
+
         return r_sphere**2*pi*triggers/generated_particles
+
+    def _applyEres(self, energies, widths):
+        
+        """Takes the energy deposited in the detector (ED) and adds a noise
+        factor on an event by event basis based on the energy resolution of
+        the detector.  Does a linear interpolation between the varous energy
+        measurements.  Assumes gaussian noise.
+
+        To-do:
+          * Need to make the interpolation non-linear
+            (functional)
+          * Need to make sure it goes above and below the
+            lowest (highest) value measurements.
+
+
+        Parameters
+        ----------
+        energies : list
+           List of energies in keV at which the energy resolution
+           (width) is calculated.
+
+        widths: list
+           List of energy widths (resolution) in keV.
+
+        Returns
+        ----------
+        ED + noise : numpy array
+          An array of energy values that have been corrected for the
+          energy resolution.
+
+        """
+
+        ED = np.array([float(ed) for ed in self.simDict['ED']])
+        e_interp = list(set(ED))
+        res_interp = np.interp(e_interp, energies, widths)
+        indexes = [e_interp.index(ed) for ed in ED]
+        noise = [np.random.normal(0, res_interp[i], 1)[0] for i in indexes]
+        return ED + noise
 
     def passEres(self, alpha=2.57, escape=30.0):
 
@@ -305,3 +484,55 @@ class simFile:
         mod_frac = (float(mod)+float(good))/float(len(ed))
 
         return frac, mod_frac
+
+    def getTriggerProbability(self, num_det=4, test=False):
+
+        """Takes a single simFile (from bcSim.simFiles(config.yaml)) and
+        returns the probability of hitting in each detector
+
+        Parameters
+        ----------
+        num_det : integer
+            Number of detectors to get triggers for.
+
+        test : boolean
+            Run a quick test over a limited number of events (20)
+    
+        Returns
+        ----------
+        prob_det_info : numpy array
+            Array is (energy, az, ze, error, prob1, prob2, ...)
+
+        """
+
+        from math import sqrt
+
+        det_vol = np.zeros(num_det)
+
+        hits = self.getHits()
+
+        if test:
+            dotest = 20
+        else:
+            dotest = len(hits)
+
+        print("analyzing", len(hits), "events")
+        # stat_err = len(hits)
+
+        for key, value in self.logDict.items():
+            for i in range(num_det):
+                if str(i) in value[1]:
+                    det_vol[i] += 1
+                elif i == 0:
+                    if '_' not in value[1]:
+                        det_vol[0] += 1
+
+        prob_det_info = [self.energy, self.azimuth, self.zenith]
+        prob_det_info = np.append(prob_det_info,
+                                  sqrt(len(hits))/float(len(hits)))
+
+        for i in range(num_det):
+            prob_det_info = np.append(prob_det_info,
+                                      det_vol[i]/float(len(hits)))
+
+        return prob_det_info

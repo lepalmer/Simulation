@@ -26,9 +26,10 @@ def getFilenameFromDetails(details):
     """Takes a dictionary of details and makes a machine readible filename
     out of it.  Angle comes in radians."""
 
-    filename = "{}_{:.3f}keV_{:.2f}theta".format(details['base'],
-                                                 details['keV'],
-                                                 details['theta'])
+    filename = "{}_{:.3f}keV_{:.2f}ze_{:.2f}az".format(details['base'],
+                                                       details['keV'],
+                                                       details['ze'],
+                                                       details['az'])
 
     return filename
 
@@ -50,7 +51,8 @@ def getDetailsFromFilename(filename):
 
     details['base'] = info[0]
     details['keV'] = re.search('(.*)keV', info[1]).group(1)
-    details['theta'] = re.search('(.*)theta', info[2]).group(1)
+    details['ze'] = re.search('(.*)ze', info[2]).group(1)
+    details['az'] = re.search('(.*)az', info[2]).group(1)
 
     return details
 
@@ -80,7 +82,8 @@ def getTriggerProbability(htsimfile, num_det=4, test=False):
     det_vol = np.zeros(num_det)
 
     energy = htsimfile.energy
-    theta = htsimfile.theta
+    ze = htsimfile.ze
+    az = htsimfile.az
     hits = htsimfile.getHits()
 
     if test:
@@ -99,7 +102,7 @@ def getTriggerProbability(htsimfile, num_det=4, test=False):
                 if '_' not in value[1]:
                     det_vol[0] += 1
 
-    prob_det_info = [energy, theta]
+    prob_det_info = [energy, ze, az]
     prob_det_info = np.append(prob_det_info, sqrt(len(hits))/float(len(hits)))
 
     for i in range(num_det):
@@ -110,17 +113,17 @@ def getTriggerProbability(htsimfile, num_det=4, test=False):
 
 def getAllTriggerProbability(filelist, num_detectors=4, test=False):
 
-    """Takes a bunch of simFiles (from bcSim.simFiles(config.yaml)) and 
+    """Takes a bunch of simFiles (from bcSim.simFiles(config.yaml)) and
     returns the probability of hitting in each detector
 
     Parameters
     ----------
-    self : simFiles 
+    self : simFiles
     test : run a quick test over a limited number of files (20)
     
     Returns
     ----------
-    det_prob : numpy array 
+    det_prob : numpy array
         Contains information from all the files about the energy,
         angles and probability of hitting a given detector
 
@@ -129,8 +132,8 @@ def getAllTriggerProbability(filelist, num_detectors=4, test=False):
     import numpy as np
     htsims = filelist.sims
 
-    names = ['energy', 'theta', 'stat_err',  'prob_det_vol']
-    formats = ['float32', 'float32', 'float32', 'float32']
+    names = ['energy', 'ze', 'az', 'stat_err',  'prob_det_vol']
+    formats = ['float32', 'float32', 'float32', 'float32', 'float32']
 
     for i in range(num_detectors-1):
         names = np.append(names, 'prob_det_vol%i' % (i+1))
