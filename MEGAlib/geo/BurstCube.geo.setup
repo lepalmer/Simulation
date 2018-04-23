@@ -14,6 +14,7 @@
 Name My_BurstCube
 Verision 0.0
 
+
 SurroundingSphere 300.0 0.0 0.0 0.0 300.0
 Include $MEGALIB/resource/examples/geomega/materials/Materials.geo
 
