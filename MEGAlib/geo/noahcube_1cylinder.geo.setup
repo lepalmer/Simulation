@@ -114,6 +114,7 @@ G10Plane.Visibility 1
 G10Plane.Mother ReadOutDetectorVolume
 
 //Here I define the AlPlate that will go behind every detector!
+//Make a new mother volume here, make it the body of Burstcube!
 Volume ALP
 ALP.Material Aluminium
 ALP.Shape BRIK 5.6 5.6 .1
