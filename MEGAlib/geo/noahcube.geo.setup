@@ -1,6 +1,6 @@
 /////////
 // 
-// This is Noah's attempt at making the BurstCube model in full. 
+// This is Noah's attempt at making the BurstCube model, one piece at a time.  
 //
 // This is the setup file which contains the geometry file for the BurstCube CubeSat (website: )
 // All the simulations use the MEGAlib toolkit (http://megalibtoolkit.com) 
@@ -113,6 +113,16 @@ G10Plane.Color 7
 G10Plane.Visibility 1
 G10Plane.Mother ReadOutDetectorVolume
 
+//Here I define the AlPlate that will go behind every detector!
+Volume ALP
+ALP.Material Aluminium
+ALP.Shape BRIK 5.6 5.6 .1
+ALP.Position 0 0 -.25
+AlP.Color 9
+ALP.Visibility 1
+ALP.Rotation 0 0 45
+ALP.Mother ReadOutDetectorVolume
+
 
 
 DetectorVolume.Copy DetectorVolume_1
@@ -126,6 +136,7 @@ ReadOutDetectorVolume_1 Position 5. 5. -1.4
 //ReadOutDetectorVolume_1.Rotation -25.0 25.0 0.0
 ReadOutDetectorVolume_1.Rotation 45 0 135
 ReadOutDetectorVolume_1.Mother WorldVolume
+
 
 DetectorVolume.Copy DetectorVolume_2
 DetectorVolume_2 Position -5.5 5.5 0.
@@ -158,57 +169,6 @@ ReadOutDetectorVolume_4.Rotation 45 0 315
 ReadOutDetectorVolume_4.Mother WorldVolume
 
 
-//Make Al plates to go underneath 
-
-Volume AlPlate1
-AlPlate1.Material Aluminium
-AlPlate1.Shape BOX 5.5 5.5 .1
-AlPlate1.Position 5.5 5.5 -1.5 //under the detector!
-AlPlate1.Rotation 45 0 135
-AlPlate1.Mother WorldVolume
-AlPlate1.Color 6
-AlPlate1.Visibility 1
-
-//Probably an easier way to copy..
-Volume AlPlate2
-AlPlate2.Material Aluminium
-AlPlate2.Shape BOX 5.5 5.5 .1
-AlPlate2.Position -5.5 5.5 -1.5 //under the detector!
-AlPlate2.Rotation 45 0 225
-AlPlate2.Mother WorldVolume
-AlPlate2.Color 6
-AlPlate2.Visibility 1
-
-Volume AlPlate3
-AlPlate3.Material Aluminium
-AlPlate3.Shape BOX 5.5 5.5 .1
-AlPlate3.Position 5.5 -5.5 -1.5 //under the detector!
-AlPlate3.Rotation 45 0 45
-AlPlate3.Mother WorldVolume
-AlPlate3.Color 6
-AlPlate3.Visibility 1
-
-
-Volume AlPlate4
-AlPlate4.Material Aluminium
-AlPlate4.Shape BOX 5.5 5.5 .1
-AlPlate4.Position -5.5 -5.5 -1.5 //under the detector!
-AlPlate4.Rotation 45 0 315
-AlPlate4.Mother WorldVolume
-AlPlate4.Color 6
-AlPlate4.Visibility 1
-
-
-//This chunk our spacecraft... I'm ignoring it for now.. .confirm this works in geomega!
-//It does!
-//the tech specs say dim are block of aluminium 10x20x10 cm
-//Volume Spacecraft
-//Spacecraft.Material Aluminium
-//Spacecraft.Shape BOX 5. 10. 5.
-//Spacecraft.Position 17. 0. 0.
-//Spacecraft.Color 6
-//Spacecraft.Visibility 1
-//Spacecraft.Mother WorldVolume
 
 
 # Base Trigger
