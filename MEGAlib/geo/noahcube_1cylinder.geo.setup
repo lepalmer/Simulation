@@ -8,7 +8,7 @@
 // Author: Noah Kasmanoff (nkasmanoff@gmail.com)
 // Date: April 23, 2018
 //
-// Usage: geomega -g BurstCubeCylinder.geo.setup
+// Usage: geomega -g noahcube_1cylinder.geo.setup
 //
 /////////
 
@@ -25,6 +25,17 @@ WorldVolume.Visibility 0
 WorldVolume.Color 0
 WorldVolume.Shape BRIK 50. 50. 50.
 WorldVolume.Mother 0
+
+
+// Build the volume to put the detector, readout, and  in dim are R=5.3, h = 8.64 total. just eyeballed itwho knows!
+Volume Frame
+Frame.Material Vacuum 
+Frame.Shape BRIK  8. 8. 4.32 
+Frame.Position 0. 0. 0.
+Frame.Color 1
+FrameVisibility 1
+
+
 
 //This chunk builds the Al Frame
 //this assumes that the outter shell of the frame is 20. cm x 20. cm x 9 cm
@@ -44,6 +55,7 @@ DetectorVolume.Material Vacuum
 DetectorVolume.Shape TUBS  0. 5.3 1.35  0. 360. 
 DetectorVolume.Color 1
 DetectorVolume.Visibility 1
+DetectorVolume.Mother Frame
 
 // Build the housing around the CsI Cylinder dim are R=5.3, h=2.7 cm
 Volume AluminiumFrame
@@ -88,9 +100,10 @@ GlassWindow.Mother DetectorVolume
 Volume ReadOutDetectorVolume
 ReadOutDetectorVolume.Material Vacuum 
 ReadOutDetectorVolume.Shape TUBS  0. 4.5 0.11  0. 360. 
-//ReadOutDetectorVolume.Position 0. 0. -1.5  //This isn't the original but I think I need it? Help?
-ReadOutDetectorVolume.Color 3
+ReadOutDetectorVolume.Position 0. 0. -1.5
+ReadOutDetectorVolume.Color 1
 ReadOutDetectorVolume.Visibility 1
+ReadOutDetectorVolume.Mother Frame
 
 //This chunk is the Si plane below the glass
 //the tech specs say Si in the Al Frame/hole dim are  R=4.5, h=0.020 cm
@@ -116,31 +129,54 @@ G10Plane.Mother ReadOutDetectorVolume
 
 //Here I define the AlPlate that will go behind every detector!
 //Make a new mother volume here, make it the body of Burstcube!
+//Volume ALP
+//ALP.Material Aluminium
+//ALP.Shape BRIK 5.6 5.6 .1
+//ALP.Position 0 0 -.25
+//AlP.Color 9
+//ALP.Visibility 1
+//ALP.Rotation 0 0 45
+//ALP.Mother ReadOutDetectorVolume
+
+//A third segment of burstcube, the body
+//Gonna start with a big box, refine further on. 
+Volume Body
+Body.Material Vacuum 
+Body.Shape BRIK  7.6 7.6 3.0
+Body.Position 0. 0. -1.75
+Body.Color 1
+Body.Visibility 0
+Body.Mother Frame
+
+//Now put an Al Plate in here!
 Volume ALP
 ALP.Material Aluminium
-ALP.Shape BRIK 5.6 5.6 .1
+ALP.Shape BRIK 6.2 6.2 .1
 ALP.Position 0 0 -.25
 AlP.Color 9
 ALP.Visibility 1
 ALP.Rotation 0 0 45
-ALP.Mother ReadOutDetectorVolume
+ALP.Mother Body
 
 
-
-DetectorVolume.Copy DetectorVolume_1
-DetectorVolume_1 Position 5.5 5.5 0.
+//DetectorVolume.Copy DetectorVolume_1
+//DetectorVolume_1 Position 5.5 5.5 0.
 //DetectorVolume_1.Rotation -25.0 25.0 0.0
-DetectorVolume_1.Rotation 45 0 135
-DetectorVolume_1.Mother WorldVolume
+//DetectorVolume_1.Rotation 45 0 135
+//DetectorVolume_1.Mother WorldVolume
 
-ReadOutDetectorVolume.Copy ReadOutDetectorVolume_1
-ReadOutDetectorVolume_1 Position 5. 5. -1.4
+//ReadOutDetectorVolume.Copy ReadOutDetectorVolume_1
+//ReadOutDetectorVolume_1 Position 5.29 5.29 -1.4
 //ReadOutDetectorVolume_1.Rotation -25.0 25.0 0.0
-ReadOutDetectorVolume_1.Rotation 45 0 135
-ReadOutDetectorVolume_1.Mother WorldVolume
+//ReadOutDetectorVolume_1.Rotation 45 0 135
+//ReadOutDetectorVolume_1.Mother WorldVolume
 
 
-
+Frame.Copy Det_1
+Det_1 Position 5.5 5.5 0.
+//Body_1.Rotation -25.0 25.0 0.0
+Det_1.Rotation 45 0 135
+Det_1.Mother WorldVolume
 
 # Base Trigger
 Trigger MainTrigger
