@@ -88,7 +88,8 @@ GlassWindow.Mother DetectorVolume
 Volume ReadOutDetectorVolume
 ReadOutDetectorVolume.Material Vacuum 
 ReadOutDetectorVolume.Shape TUBS  0. 4.5 0.11  0. 360. 
-ReadOutDetectorVolume.Color 1
+//ReadOutDetectorVolume.Position 0. 0. -1.5  //This isn't the original but I think I need it? Help?
+ReadOutDetectorVolume.Color 3
 ReadOutDetectorVolume.Visibility 1
 
 //This chunk is the Si plane below the glass
