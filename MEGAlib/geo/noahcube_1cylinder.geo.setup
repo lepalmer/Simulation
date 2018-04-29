@@ -151,7 +151,8 @@ Body.Mother Frame
 //Now put an Al Plate in here!
 Volume ALP
 ALP.Material Aluminium
-ALP.Shape BRIK 6.2 6.2 .1
+//ALP.Shape BRIK 6.2 6.2 .1
+ALP.Shape  PGON 90.0 360.0 6  2  0 0. 5.5  .1 0. 5.5
 ALP.Position 0 0 -.25
 AlP.Color 9
 ALP.Visibility 1

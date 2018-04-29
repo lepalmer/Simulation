@@ -1,0 +1,21 @@
+//Learning how to make a hexagon which is the framing around the bottom of the detector. 
+
+
+SurroundingSphere 300.0 0.0 0.0 0.0 300.0
+Include $MEGALIB/resource/examples/geomega/materials/Materials.geo
+
+Volume WorldVolume
+WorldVolume.Material Vacuum
+WorldVolume.Visibility 0
+WorldVolume.Color 0
+WorldVolume.Shape BRIK 50. 50. 50.
+WorldVolume.Mother 0
+
+
+//Polygon azimuthal angle  
+Volume Hexagon
+Hexagon.Material Aluminium
+Hexagon.Shape  PGON 90.0 360.0 6  2  0 0. 2.8  .3 0. 2.8 
+// 6 = nside 2=
+Hexagon.Position 0. 0. 0.
+Hexagon.Mother WorldVolume
