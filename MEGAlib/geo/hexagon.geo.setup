@@ -11,11 +11,33 @@ WorldVolume.Color 0
 WorldVolume.Shape BRIK 50. 50. 50.
 WorldVolume.Mother 0
 
+:ROTM R00 1. 0. 0. 0. 1. 0. 0. 0. 1. 
+
+Volume box1
+box1.Material Aluminium
+box1.Shape BRIK 5. 5. 10.
+box1.Visibility 1
+box1.Color 3
+box1.Mother WorldVolume
+
+
+Volume box2
+box2.Material Aluminium
+box2.Shape BRIK 10. 10. 20.
+box2.Visibility 1
+box2.Color 6
+box2.Mother WorldVolume
+
+//Since I didn't define obj.Positon for either, they're just sitting at 0, 0, 0,/
+
+Volume box_union
+box_union.Shape UNION box1 box2 R00 0. 0. 30.
+box_union.Mother WorldVolume
 
 //Polygon azimuthal angle  
-Volume Hexagon
-Hexagon.Material Aluminium
-Hexagon.Shape  PGON 90.0 360.0 6  2  0 0. 2.8  .3 0. 2.8 
+//Volume Hexagon
+//Hexagon.Material Aluminium
+//Hexagon.Shape  PGON 90.0 360.0 6  2  0 0. 2.8  .3 0. 2.8 
 // 6 = nside 2=
-Hexagon.Position 0. 0. 0.
-Hexagon.Mother WorldVolume
+//Hexagon.Position 0. 0. 0.
+//Hexagon.Mother WorldVolume
