@@ -1,7 +1,7 @@
 general:
   CheckForOverlaps: 1000 0.01
   DiscretizeHits: true
-  Geometry : $BURSTCUBE/Simulation/MEGAlib/geo/BurstCube_1Cylinderteflon.geo.setup   
+  Geometry : $BURSTCUBE/Simulation/MEGAlib/geo/BurstCube_1Cylinder.geo.setup   
   PhysicsListEM: Livermore
   StoreCalibrate: true
   StoreOnlyEventsWithEnergyLoss: true
