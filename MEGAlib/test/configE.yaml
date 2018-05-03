@@ -15,8 +15,8 @@ run:
   emax: 15000.0
   emin: 20.0
   enumbins: 30
-  srcdir : $BURSTCUBE/Simulation/MEGAlib/test/teflon
-  simdir : $BURSTCUBE/Simulation/MEGAlib/test/teflon
+  srcdir : $BURSTCUBE/Simulation/MEGAlib/test/control
+  simdir : $BURSTCUBE/Simulation/MEGAlib/test/control
   zemax: 0.0
   zemin: 0.0
   zenumbins: 1

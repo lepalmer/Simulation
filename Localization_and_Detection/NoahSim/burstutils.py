@@ -253,7 +253,11 @@ def look_up_C(detnorm,source,array=False):
         
         
         for i in range(len(source)):
-            
+        """This part takes a long time:
+        What's happening? 
+        look up table in chi squared fit. obtaining response or what it should be for every position in the sky
+        
+        """  
             sourceang = hp.vec2ang(source[i])
             
             mask1 = X == np.around(np.rad2deg(sourceang[0]))  #theta mask

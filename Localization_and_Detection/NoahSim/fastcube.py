@@ -73,8 +73,8 @@ class FastCube():
         return [self.normA,self.normB,self.normC,self.normD] 
     
     def response2oneGRB(self,sourcetheta,sourcephi,sourcestrength):
-        """If you wish, will allow you to examine the localization uncertainty of one sampled GRB of some given strenth at some point in the sky. 
-        For a full/complete simulation just use the function below, "response2GRB".
+        """If you wish, will allow you to examine the localization uncertainty of one sampled GRB of some given strength at some point in the sky. 
+        For a full/complete simulation use the function below, "response2GRB".
 
         Parameters
         ----------
@@ -95,7 +95,7 @@ class FastCube():
 
         """
 
-        #I like to visualize in degrees, but convert to radians right away.
+        #I like to visualize things in degrees, but convert to radians right away.
         sourcetheta = deg2rad(sourcetheta)
         sourcephi = deg2rad(sourcephi)
         sourcexyz = ang2vec(sourcetheta,sourcephi) #cartesian position of the burst
