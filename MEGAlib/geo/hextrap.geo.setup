@@ -1,0 +1,34 @@
+//Making a volume that very nearly imitates the plating behind the detector, two Al things close to each other but not connected. 
+
+SurroundingSphere 300.0 0.0 0.0 0.0 300.0
+Include $MEGALIB/resource/examples/geomega/materials/Materials.geo
+
+Volume WorldVolume
+WorldVolume.Material Vacuum
+WorldVolume.Visibility 0
+WorldVolume.Color 0
+WorldVolume.Shape BRIK 50. 50. 50.
+WorldVolume.Mother 0
+
+
+
+//Polygon azimuthal angle  
+Volume Hexagon
+Hexagon.Material Aluminium
+Hexagon.Shape  PGON 90.0 360.0 6  2  0 0. 2.8  .3 0. 2.8 
+Hexagon.Visibility 1
+Hexagon.Color 3
+// 6 = nside 2=
+Hexagon.Position 0. 0. 0.
+Hexagon.Mother WorldVolume
+
+
+//Trapezoid to go on top!
+Volume Trap
+Trap.Material Aluminium
+Trap.Shape TRD1 1.45 .25 .15 1.
+Trap.Rotation 90 180 90
+Trap.Position 3.90 0. 0. 
+Trap.Visibility 1
+Trap.Color 2
+Trap.Mother WorldVolume
