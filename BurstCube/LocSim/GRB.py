@@ -3,7 +3,7 @@
 import numpy as np
 import ephem as eph
 
-from BurstSim.Utils import deg2HMS,deg2DMS
+from BurstCube.LocSim.Utils import deg2HMS,deg2DMS
 
 class GRB(object):
     

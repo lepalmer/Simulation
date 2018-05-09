@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from BurstSim.Detector import *
+from BurstCube.LocSim.Detector import *
 
 class Spacecraft(object):
 

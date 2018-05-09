@@ -3,7 +3,7 @@
 import numpy as np
 import ephem as eph
 
-from BurstSim.Utils import deg2DMS, deg2HMS
+from BurstCube.LocSim.Utils import deg2DMS, deg2HMS
 
 class Detector(object):
 
