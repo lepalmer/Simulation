@@ -62,7 +62,7 @@ class Detector(object):
     @property
     def triggered_counts(self):
         if(self.trigger_time) > 0:
-            window = self.window/self._grb.binz
+            window = int(self.window/self._grb.binz)
             return np.sum(self.response[self.trigger_time:self.trigger_time+window])
         else:
             return -1
@@ -125,12 +125,14 @@ class Detector(object):
 
         for window in windows:
 
+            window = int(window)
+            
             if window < 1:
                 print("Step must be bigger than 1.")
                 self._sign_times[window] = np.arange(len(self.response))
                 self.significances[window] = np.zeros_like(self.response)
             else:
-                trunc = np.mod(len(self.response),window)
+                trunc = int(np.mod(len(self.response),window))
                 resp_re = self.response[trunc:].reshape(-1,window)
                 self._sign_times[window] = np.arange(len(self.response))[trunc:].reshape(-1,window)[1:,0]
                 #self._sign_time = self._sign_time*self._grb.binz - self._grb.window/2.
@@ -139,14 +141,14 @@ class Detector(object):
 
     def _significance(self):
 
-        window = self.window/self._grb.binz
+        window = int(self.window/self._grb.binz)
 
         if window < 1:
             print("Step must be bigger than 1.")
             self._sign_time = np.arange(len(self.response))
             self.significance = np.zeros_like(self.response)
         else:
-            trunc = np.mod(len(self.response),window)
+            trunc = int(np.mod(len(self.response),window))
             resp_re = self.response[trunc:].reshape(-1,window)
             self._sign_time = np.arange(len(self.response))[trunc:].reshape(-1,window)[1:,0]
             #self._sign_time = self._sign_time*self._grb.binz - self._grb.window/2.

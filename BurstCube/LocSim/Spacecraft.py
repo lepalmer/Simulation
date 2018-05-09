@@ -83,11 +83,4 @@ class Spacecraft(object):
 			grb_rec = 100.*scaled_rec
 			grb_rec_err = 100.*scaled_rec_err
 			
-
-		return np.array(zip(grb_rec,grb_rec_err))
-
-        		
-
-
-
-
+		return np.array(list(zip(grb_rec,grb_rec_err)))
