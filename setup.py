@@ -9,4 +9,6 @@ setup(name='BurstCube',
       author_email='jsperki1@umd.edu',
       url='https://github.com/BurstCube',
       packages=['BurstCube'],
+      scripts=['BurstCube/scripts/runSims']
       )
+
