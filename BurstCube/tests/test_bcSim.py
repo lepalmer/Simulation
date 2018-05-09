@@ -6,12 +6,12 @@ from astropy.tests.helper import pytest
 from os import path
 
 try:
-    from bcSim import simFile
+    from BurstCube.bcSim import simFile
 except ImportError:
     pass
 
 try:
-    from bcSim import simFiles
+    from BurstCube.bcSim import simFiles
 except ImportError:
     pass
 
@@ -41,7 +41,7 @@ def test_bcSim_setup(create_simfile):
 
 
 def test_setPath():
-    from utils import setPath
+    from BurstCube.utils import setPath
     assert(not setPath())
 
     

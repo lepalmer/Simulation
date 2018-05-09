@@ -20,7 +20,7 @@ def createSourceString(config, energy, ze, az):
        A sring which can be used to create a source file for cosima.
     """
 
-    from utils import getFilenameFromDetails
+    from BurstCube.utils import getFilenameFromDetails
 
     fname = getFilenameFromDetails({'base': config['run']['basename'],
                                     'keV': energy,
@@ -156,7 +156,7 @@ class configurator():
 
         """
         
-        from utils import getFilenameFromDetails
+        from BurstCube.utils import getFilenameFromDetails
         
         for ze, az, energy in [(ze, az, energy)
                                for ze in self.zebins

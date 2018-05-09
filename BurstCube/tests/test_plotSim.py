@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_allclose
 
 try:
-    from plotSim import getGBMdata
+    from BurstCube.plotSim import getGBMdata
 except ImportError:
     pass
 

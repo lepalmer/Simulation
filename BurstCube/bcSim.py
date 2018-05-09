@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import numpy as np
-from utils import setPath
-from simGenerator import configurator
+from BurstCube.utils import setPath,getFilenameFromDetails
+from BurstCube.simGenerator import configurator
 
 
 class simFiles:
@@ -30,7 +30,6 @@ class simFiles:
             numpy array containing information about each sim file.
 
         """
-        from utils import getFilenameFromDetails
 
         basename = self.conf.config['run']['basename']
 

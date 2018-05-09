@@ -2,7 +2,7 @@
 
 import os
 
-from utils import setPath
+from BurstCube.utils import setPath
 
 def runCosima(srcFile):
     """Runs MEGAlib's cosima program on desired source files. 

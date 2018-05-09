@@ -3,12 +3,12 @@
 from astropy.tests.helper import pytest
 
 try:
-    from simGenerator import configurator
+    from BurstCube.simGenerator import configurator
 except ImportError:
     pass
 
 try:
-    from simGenerator import createSourceString
+    from BurstCube.simGenerator import createSourceString
 except ImportError:
     pass
 
