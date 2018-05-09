@@ -8,7 +8,7 @@ setup(name='BurstCube',
       author='Jeremy Perkins',
       author_email='jsperki1@umd.edu',
       url='https://github.com/BurstCube',
-      packages=['BurstCube'],
+      packages=['BurstCube','BurstCube.LocSim'],
       scripts=['BurstCube/scripts/runSims']
       )
 
