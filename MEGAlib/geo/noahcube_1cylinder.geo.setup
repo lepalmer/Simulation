@@ -142,9 +142,9 @@ G10Plane.Mother ReadOutDetectorVolume
 //Gonna start with a big box, refine further on. 
 Volume Body
 Body.Material Vacuum 
-Body.Shape BRIK  7.6 7.6 3.0
-Body.Position 0. 0. -1.75
-Body.Color 1
+Body.Shape BRIK  7.4 7.4 .25  //made outside big, deal with soon!
+Body.Position 0. 0. -2.00
+Body.Color 0
 Body.Visibility 0
 Body.Mother Frame
 
@@ -153,7 +153,7 @@ Volume ALP
 ALP.Material Aluminium
 ALP.Shape BRIK 4.9 4.9 0.1
 //ALP.Shape  PGON 90.0 360.0 6  2  0 0. 5.5  .1 0. 5.5 Come back to this awful feature!
-ALP.Position 0 0 -.25
+ALP.Position 0 0 -.1
 AlP.Color 9
 ALP.Visibility 1
 ALP.Rotation 0 0 45

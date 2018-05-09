@@ -30,8 +30,7 @@ CSITrap.Color 2
 #CSITrap.Shape TRAP 4. 0. 0. 8. 4. 4. 0 5. 4. 4. 0.
 
 #This works! Angle in 1 plane... 
-#CSITrap.Shape TRAP 4. 0. 0. 4. 11. 5. 36.8698 4. 11. 5. 36.8698
-
+g
 #Now for two planes --- This closes, but need to check angles. 
 #CSITrap.Shape TRAP 4.016 0. 0. 4.016 2.979 2.218 10.73 4.016 3.740 2.979 10.73
 CSITrap.Shape TRAP 4.016 0. -10.73 4.016 2.979 2.218 0. 4.016 3.740 2.979 0.
