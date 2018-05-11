@@ -1,7 +1,7 @@
-from BurstSim.GRB import *
-from BurstSim.Detector import *
-from BurstSim.Spacecraft import *
-from BurstSim.Stats import calcNorms, addErrors, calcNormsWithError
+from BurstCube.LocSim.GRB import *
+from BurstCube.LocSim.Detector import *
+from BurstCube.LocSim.Spacecraft import *
+from BurstCube.LocSim.Stats import calcNorms, addErrors, calcNormsWithError
 
 save = True
 
@@ -30,7 +30,7 @@ dd = (radec_array[:,1].reshape(res[::-1]))*180./np.pi
 
 training_grbs = [GRB(position[0]*180./np.pi,position[1]*180./np.pi,binz=.001) 
                  for position in radec_array[exposures.sum(axis=0) > 0.]]
-print "Throwing training sample"
+print("Throwing training sample")
 training_counts = spacecraft.throw_grbs(training_grbs,scaled=True)
 
 
@@ -47,13 +47,13 @@ exposures = np.array([[detector.exposure(position[0],position[1]) for position i
 
 real_grbs = [GRB(position[0]*180./np.pi,position[1]*180./np.pi,binz=0.001) 
              for position in real_pos_radec[exposures.sum(axis=0) > 0.]]
-print "Throwing real sample"
+print("Throwing real sample")
 real_counts = spacecraft.throw_grbs(real_grbs, scaled=True)
 
-print "Calculating norms"
+print("Calculating norms")
 norms = calcNorms(real_counts,training_counts)
 
-print "Cleaning up"
+print("Cleaning up")
 real_counts_err = addErrors(real_counts,training_counts)
 
 norms_errp, norms_errm = calcNormsWithError(real_counts,training_counts,real_counts_err)
@@ -74,7 +74,7 @@ errors_errp = [eph.separation(grb.eph,training_grbs[loc_mins_errp[idx]].eph)*180
 #avg_stat = np.average([hist_data_errm[1][np.abs(hist_data_errm[0] - 0.68).argmin()],
 #                       hist_data_errp[1][np.abs(hist_data_errp[0] - 0.68).argmin()]])
 
-print 'Average Error (uncorrected):',np.average(errors)
+print('Average Error (uncorrected):',np.average(errors))
 #print 'Systematic Error: {:,.2f}'.format(hist_data[1][np.abs(hist_data[0] - 0.68).argmin()])
 #print 'Statistical Error: {:,.2f}'.format(avg_stat)
 az = np.linspace(80.,10.,num=1000.)
@@ -83,11 +83,11 @@ for angle in az:
     avg = np.average((np.reshape(errors,real_res[::-1]))[rll<angle])*np.sin((90.-angle)*(np.pi/180.))
     summed += avg
     #print angle,avg
-print 'Average Error (corrected)',summed / np.shape(az)
+print('Average Error (corrected)',summed / np.shape(az))
 
 
 if save:
-    print "Saving data"
+    print("Saving data")
     import pickle
     output = open('data/az_el_raa_hires.p', 'wb')
     pickle.dump(raa, output)
