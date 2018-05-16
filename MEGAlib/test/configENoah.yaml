@@ -1,28 +1,28 @@
 general:
   CheckForOverlaps: 1000 0.01
   DiscretizeHits: true
-  Geometry : $BURSTCUBE/Simulation/MEGAlib/geo/BurstCube_1Cylinder.geo.setup   
+  Geometry : $BURSTCUBE/Simulation/MEGAlib/geo/noahcube_1cylinder.geo.setup   
   PhysicsListEM: Livermore
   StoreCalibrate: true
   StoreOnlyEventsWithEnergyLoss: true
   StoreSimulationInfo: true
   Version: 1
 run:
-  azmax: 300.0
-  azmin: 0.0
-  aznumbins: 5
+  azmax: 0
+  azmin: 0
+  aznumbins: 1
   basename: BurstCube
-  emax: 100.0
-  emin: 100.0
-  enumbins: 1
-  srcdir : /Volumes/Chumba/simspace/control
-  simdir : /Volumes/Chumba/simspace/control
-  zemax: 90.0
+  emax: 15000.0
+  emin: 20.0
+  enumbins: 30
+  srcdir : /Volumes/Chumba/simspace/noahcube
+  simdir : /Volumes/Chumba/simspace/noahcube  
+  zemax: 0.0
   zemin: 0.0
-  zenumbins: 15
+  zenumbins: 1
 source:
   Beam: FarfieldPointSource
   Flux: 1000.0
-  NTriggers: 10000
+  NTriggers: 1000
   ParticleType: 1
   name: FFPS
