@@ -3,6 +3,8 @@
 from numpy import rad2deg,deg2rad,pi,sqrt,add,array,average
 from healpy import ang2vec, newvisufunc
 
+
+#sometimes one way works, sometimes another one does. Here's a workaround. 
 try:
     from NoahSim import burstutils as bf
 except:
@@ -12,6 +14,7 @@ from random import gauss
 import statistics as s
 import matplotlib.pyplot as plt
 
+#making classes of objects, allows for different instances of burstcube, easy to compare. 
 class FastCube():
 
     def __init__(self,background,dettilt,alternating=False):
@@ -71,7 +74,9 @@ class FastCube():
     @property
     def dets(self):
         return [self.normA,self.normB,self.normC,self.normD] 
-    
+
+    #now that the properties of burstucbe have been designed, now its time to test the model's localization capabilities    
+
     def response2oneGRB(self,sourcetheta,sourcephi,sourcestrength):
         """If you wish, will allow you to examine the localization uncertainty of one sampled GRB of some given strenth at some point in the sky. 
         For a full/complete simulation just use the function below, "response2GRB".
@@ -113,6 +118,7 @@ class FastCube():
         nphi = 37
         nA = 100
 
+        #given a sky position, and detector normal we in theory know the separation, and can refer to a lookup table to identify the response should be (This is based on MEGAlib, and now I should explain it.)
         sepA=bf.angle(sourcexyz,self.normA)
         xA = bf.look_up_A(self.normA,sourcexyz)
                    # print("separation from A is " + str(np.rad2deg(sepA)))
@@ -191,9 +197,10 @@ class FastCube():
         detcountsD = detactualD
                 
 
+    #Have now obtained the responses of each detector, now using chi squared routine, find minium fit. 
+    #now point to this 
                 
-                
-                #coarse to fine optimization
+                #coarse to fine optimization, worth including? 
         chiA = bf.quad_solver(detcountsA,self.normA,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg,A=True)
         chiB = bf.quad_solver(detcountsB,self.normB,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg,B=True)
         chiC = bf.quad_solver(detcountsC,self.normC,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,self.bg,C=True)

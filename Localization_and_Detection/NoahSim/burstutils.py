@@ -143,6 +143,7 @@ def look_up_B(detnorm,source,array=False):
         The exponent of dependence for the detector's response.
     """
     if array:
+        #for fitting purposes, creates the entire lookup table all at once. Unfortuntaley I only know how to do this by putting them in a loop as done below, which is time costly. 
         ang = findAngles(detnorm,source)   
 
     if not array:
@@ -155,6 +156,8 @@ def look_up_B(detnorm,source,array=False):
     X = np.arange(0, 180, 1)  #full sky now. 
     Y = np.arange(0, 360, 1)
     X, Y = np.meshgrid(X, Y)
+    #creates meshgrid for theta phi, and masks the source's position to get response exponent. 
+    
     R = 0.76*np.ones(shape=np.shape(X))
     
     
