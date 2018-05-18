@@ -218,7 +218,7 @@ class FastCube():
     #first need to include the GRB.
        
         """
-        Using least squares regression, respond2GRB will determine the sky position of an array of GRB sources assuming some inherent background noise within 
+        Using x, respond2GRB will determine the sky position of an array of GRB sources assuming some inherent background noise within 
         detectors, along with fluctuations of either Gaussian or Poissonian nature. 
 
         Parameters
@@ -245,28 +245,30 @@ class FastCube():
         if test:
             sample = 1
             bottheta = 0
-            toptheta = 90
+            toptheta = 180
             botphi = 0 
             topphi = 360
-            botA = 0
+            botA = 10
             topA = 1000
-            ntheta = 10   #over sky chi points
+            ntheta = 20   #over sky chi points
             nphi = 37
             nA = 100
 
         else:
-            sample = len(GRB.sourceangs) 
-            bottheta = 0
-            toptheta = 90
-            botphi = 0 
+            sample = len(GRB.sourceangs)   #number of GRBs you're testing
+            bottheta = 0   #zenith
+            toptheta = 120  #(elevation) range of theta values   horizon
+            ntheta = 31   #over sky chi points  #binning
+
+            botphi = 0 #azimuthal angles
             topphi = 360
-            botA = 400
-            topA = 1000
-            ntheta = 31   #over sky chi points
+            botA = 200  #range of amplitudes/strength of source it tries to match
+            topA = 1000   #counts above background 
             nphi = 120
-            nA = 12
+            nA = 12 
         self.localizationerrors = []    
         for i in range(sample):
+            
             sourceAng = GRB.sourceangs[i]
             if talk:
                 print("Testing " + str(rad2deg(sourceAng)))
@@ -279,6 +281,7 @@ class FastCube():
                     #here's where I define how many times that is
             locunc = []
             while loop<samples:
+                
                 sepA=bf.angle(sourcexyz,self.normA)
                 xA = bf.look_up_A(self.normA,sourcexyz)
                    # print("separation from A is " + str(np.rad2deg(sepA)))
@@ -294,7 +297,7 @@ class FastCube():
                 detactualA = gauss(countsA,unccountsA)  #there is a lot of noise present, updating it now. 
                 if detactualA-self.bg < 0:
                     detactualA = self.bg
-                    
+                #if its below the background may be wort investigating a specific level below that threshold. 
                 detcountsA = detactualA
                 
                 sepB=bf.angle(sourcexyz,self.normB)
@@ -402,7 +405,7 @@ class FastCube():
 
         """
         im = array(skyvals)
-        newvisufunc.mollview(im,min=0, max=15,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True)
-        plt.title('All Sky Localization Uncertainty for BurstCube set as ' + str(rad2deg(self.tilt)) + ' deg')  #should add something about design too! 
+        newvisufunc.mollview(im,min=0, max=30,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True)
+        plt.title('All Sky Localization Accuracy for BurstCube set as ' + str(rad2deg(self.tilt)) + ' deg')  #should add something about design too! 
 
         plt.show()
