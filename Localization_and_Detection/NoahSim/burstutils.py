@@ -334,20 +334,23 @@ def look_up_D(detnorm,source,array=False):
 
 
 def response(A,x):
-    """
-    Meant to imitate the actual response of a scintillator.
+    """Meant to imitate the actual response of a scintillator.
     Inputs 2 vectors, and responds with a cos^x dependence.
     
     Parameters
     -----------
     A : float
-        The angular separation in radians between the normal vector of the detector, and the position in the sky of the simulated GRB. 
-    x : float 
-        The dependence 
+        The angular separation in radians between the normal vector of the
+        detector, and the position in the sky of the simulated GRB.
+    
+    x : float
+        The dependence
+
     Returns
     -------
     R : float
-        The response function of how the scintillator will respond to a source at angle A. 
+        The response function of how the scintillator will respond to a source
+        at angle A.
 
     """
     #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
@@ -358,9 +361,12 @@ def response(A,x):
     R = pow(abs(np.cos(A)),x)
     #How I fix the angle stuff now. 
     mask = A > np.pi/2
-    R[mask] = 0
-    return R         
-
+    if np.shape(R) == ():
+        return R
+    else:
+        R[mask] = 0
+        return R
+    
 def chiresponse(A,x):
     """
     

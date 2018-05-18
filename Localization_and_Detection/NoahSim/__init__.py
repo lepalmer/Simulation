@@ -15,7 +15,7 @@ except:
     
 try:
     
-    import burstuitls
+    import burstutils
 except:
     print("burstutils module is not importing. Please check your path before proceeding.")
     

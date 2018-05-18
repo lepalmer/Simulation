@@ -1,11 +1,11 @@
 from NoahSim import fastcube
 from NoahSim import GRBgenerator
 
-NSIDE = 16
+NSIDE = 1
 STRENGTH = 500
 BACKGROUND = 1000
 TILT = 45
-SAMPLES = 5
+SAMPLES = 2
 ALTERNATING = False
 TEST = False
 TALK = True
