@@ -28,6 +28,8 @@ for mod_name in MOCK_MODULES:
 sys.path.insert(0, os.path.abspath('../BurstCube'))
 sys.path.insert(0, os.path.abspath('../BurstCube/LocSim'))
 sys.path.insert(0, os.path.abspath('../BurstCube/NoahSim'))
+sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
