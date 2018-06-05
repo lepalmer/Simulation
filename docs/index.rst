@@ -10,19 +10,23 @@ Welcome to BurstCube's documentation!
 Introduction
 ##################################
 
-This is the BurstCube's documentation page. For more information about the misson, please refer to the 
-`BurstCube Website
+This is the BurstCube's documentation page. For more information about
+the misson, please refer to the `BurstCube Website
 <https://asd.gsfc.nasa.gov/burstcube/>`_.
 
-BurstCube's documentation is built with a series of different functions and modules that allow the following:
+BurstCube's documentation is built with a series of different
+functions and modules that allow the following:
 
-* Creating different geometry files to allow for new arrangements of BurstCube to be subject to testing. 
+* Creating different geometry files to allow for new arrangements of
+  BurstCube to be subject to testing.
 
-* Creating source files of ranging sky locations and energies. 
+* Creating source files of ranging sky locations and energies.
 
-* Quick manipulation of the MEGAlib Cosima function to permit quick simulations. 
+* Quick manipulation of the MEGAlib Cosima function to permit quick
+  simulations.
 
-* Packages such as bcSim and plotSim that grant fast and effective data processing. 
+* Packages such as bcSim and plotSim that grant fast and effective
+  data processing.
 
 
 BurstCube uses a configuration-file driven workflow in which the
@@ -35,7 +39,9 @@ Getting Help
 ------------
 
 If you have questions about using this please open a `GitHub Issue
-<https://github.com/BurstCube/Simulation/issues>`_ or email `me <mailto:nkasmanoff@gmail.com>`_ or my `boss <mailto:jeremy.s.perkins@nasa.gov>`_.
+<https://github.com/BurstCube/Simulation/issues>`_ or email `me
+<mailto:nkasmanoff@gmail.com>`_ or my `boss
+<mailto:jeremy.s.perkins@nasa.gov>`_.
 
 
 
