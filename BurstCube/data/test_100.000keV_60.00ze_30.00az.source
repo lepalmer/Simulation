@@ -1,5 +1,5 @@
 Version 1
-Geometry $BURSTCUBE/Simulation/MEGAlib/test/BurstCube_1Cylinder.geo.setup
+Geometry $BCTEST/BurstCube_1Cylinder.geo.setup
 CheckForOverlaps 1000 0.01
 PhysicsListEM Livermore
 StoreCalibrate True
@@ -8,7 +8,7 @@ StoreOnlyEventsWithEnergyLoss True
 DiscretizeHits True
 
 Run FFPS
-FFPS.Filename $BURSTCUBE/Simulation/MEGAlib/test/test_100.000keV_60.00ze_30.00az
+FFPS.Filename $BCTEST/test_100.000keV_60.00ze_30.00az
 FFPS.NTriggers 1000
 FFPS.Source One
 One.ParticleType 1
