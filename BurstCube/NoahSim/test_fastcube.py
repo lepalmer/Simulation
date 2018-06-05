@@ -1,5 +1,5 @@
-from NoahSim import fastcube
-from NoahSim import GRBgenerator
+from BurstCube.NoahSim import fastcube
+from BurstCube.NoahSim import GRBgenerator
 import numpy as np
 
 

@@ -2,7 +2,7 @@
 
 from numpy import rad2deg, deg2rad, pi, sqrt, add, array, average, mean
 from healpy import ang2vec, newvisufunc
-from NoahSim import burstutils as bf
+from BurstCube.NoahSim import burstutils as bf
 from random import gauss
 import matplotlib.pyplot as plt
 
