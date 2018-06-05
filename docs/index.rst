@@ -52,6 +52,7 @@ Documentation Contents
    :includehidden:
    :maxdepth: 2
 
+   install
    tutorial
    BurstCube
    LocSim
