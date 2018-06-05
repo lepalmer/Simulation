@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 from astropy.tests.helper import pytest
+from pkg_resources import resource_filename
+
 
 try:
     from BurstCube.simGenerator import configurator
@@ -16,11 +18,8 @@ except ImportError:
 @pytest.fixture(scope='module')
 def create_configurator(request):
 
-    from os import path
-
-    testdir = path.expandvars('$BURSTCUBE/Simulation/MEGAlib/test/')
-    conf = configurator(testdir+'config.yaml')
-
+    conf = configurator(resource_filename('BurstCube', 'data/config.yaml'))
+    
     return conf
 
 

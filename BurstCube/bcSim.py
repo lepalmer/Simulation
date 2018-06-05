@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-from BurstCube.utils import setPath,getFilenameFromDetails
+from BurstCube.utils import getFilenameFromDetails
 from BurstCube.simGenerator import configurator
 
 
@@ -10,9 +10,6 @@ class simFiles:
     def __init__(self, config_file):
 
         """Object for a multiple simulations over energy and angle."""
-
-        if setPath():
-            exit()
 
         self.conf = configurator(config_file)
         self.sims = self.loadFiles()
@@ -191,8 +188,6 @@ class simFile:
         self.srcFile = sourceFile
         self.logFile = logFile
         
-        if setPath():
-            exit()
 
         print("Loading " + self.simFile)
         self.simDict = self.fileToDict(simFile, '#', None)

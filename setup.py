@@ -8,7 +8,15 @@ setup(name='BurstCube',
       author='Jeremy Perkins',
       author_email='jsperki1@umd.edu',
       url='https://github.com/BurstCube',
+      include_package_data=True,
       packages=['BurstCube', 'BurstCube.LocSim', 'BurstCube.NoahSim'],
-      scripts=['BurstCube/scripts/runSims']
+      scripts=['BurstCube/scripts/runSims'],
+      package_data={
+          'BurstCube': ['data/*.sim',
+                        'data/*.source',
+                        'data/BurstCube_1Cylinder.geo.setup',
+                        'data/config.yaml',
+                        'data/*.gz']
+          }
       )
 

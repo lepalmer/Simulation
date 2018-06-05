@@ -3,7 +3,7 @@
 import numpy as np
 from numpy.testing import assert_allclose
 from astropy.tests.helper import pytest
-from os import path
+from pkg_resources import resource_filename
 
 try:
     from BurstCube.bcSim import simFile
@@ -19,18 +19,19 @@ except ImportError:
 @pytest.fixture(scope='module')
 def create_simfile(request):
 
-    testdir = path.expandvars('$BURSTCUBE/Simulation/MEGAlib/test/')
-    sf = simFile(testdir+'test.inc1.id1.sim',
-                 testdir+'FarFieldPointSource_test.source',
-                 testdir+'FarFieldPointSource_test.stdout.gz',)
+    sf = simFile(resource_filename('BurstCube',
+                                   'data/test.inc1.id1.sim'),
+                 resource_filename('BurstCube',
+                                   'data/FarFieldPointSource_test.source'),
+                 resource_filename('BurstCube',
+                                   'data/FarFieldPointSource_test.stdout.gz'))
     return sf
 
 
 @pytest.fixture(scope='module')
 def create_simfiles(request):
 
-    testdir = path.expandvars('$BURSTCUBE/Simulation/MEGAlib/test/')
-    sfs = simFiles(testdir+'config.yaml')
+    sfs = simFiles(resource_filename('BurstCube', 'data/config.yaml'))
 
     return sfs
 
