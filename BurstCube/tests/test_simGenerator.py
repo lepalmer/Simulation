@@ -32,12 +32,12 @@ def test_configurator_setup(create_configurator):
 def test_createSourceString(create_configurator):
 
     refstr = 'Version 1\nGeometry '
-    refstr += '$BURSTCUBE/Simulation/MEGAlib/test/'
+    refstr += '$BCTEST/'
     refstr += 'BurstCube_1Cylinder.geo.setup\n'
     refstr += 'CheckForOverlaps 1000 0.01\nPhysicsListEM Livermore\n'
     refstr += 'StoreCalibrate True\nStoreSimulationInfo True\n'
     refstr += 'StoreOnlyEventsWithEnergyLoss True\nDiscretizeHits True\n\n'
-    refstr += 'Run FFPS\nFFPS.Filename $BURSTCUBE/Simulation/MEGAlib/test/'
+    refstr += 'Run FFPS\nFFPS.Filename $BCTEST/'
     refstr += 'test_100.000keV_0.00ze_10.00az\n'
     refstr += 'FFPS.NTriggers 1000\nFFPS.Source One\nOne.ParticleType 1\n'
     refstr += 'One.Beam FarfieldPointSource 0.0 10.0\n'
