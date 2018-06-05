@@ -1,0 +1,116 @@
+Name My_BurstCube
+Verision 0.0
+
+SurroundingSphere 50.0 0.0 0.0 0.0 50.0
+Include $MEGALIB/resource/examples/geomega/materials/Materials.geo
+
+// The Mother Volume of the Detector Configuration:
+Volume WorldVolume
+WorldVolume.Material Vacuum
+WorldVolume.Visibility 0
+WorldVolume.Color 0
+WorldVolume.Shape BRIK 50. 50. 50.
+WorldVolume.Mother 0
+
+//This chunk builds the Al Frame
+//this assumes that the outter shell of the frame is 20. cm x 20. cm x 9 cm
+//Volume AluminiumFrame_Volume
+//AluminiumFrame_Volume.Material Vacuum
+//AluminiumFrame_Volume.Visibility 1
+//AluminiumFrame_Volume.Shape BRIK 10. 10. 4.5
+//AluminiumFrame_Volume.Mother WorldVolume
+
+
+//This is the CsI Detector
+Include $BCTEST/CalorimeterCSIProperties.det
+
+// Build the volume to put everything in dim are R=5.3, h=2.7 cm
+#Volume DetectorVolume
+#DetectorVolume.Material Vacuum 
+#DetectorVolume.Shape TUBS  0. 5.3 1.35  0. 360. 
+#//DetectorVolume.Rotation 0.0 0.0 0.0
+#DetectorVolume.Position 0. 0.0 0
+#DetectorVolume.Color 1
+#DetectorVolume.Visibility 1
+#DetectorVolume.Mother WorldVolume
+
+
+// Build the housing around the CsI Cylinder dim are R=5.3, h=2.7 cm
+Volume AluminiumFrame
+AluminiumFrame.Material Aluminium
+AluminiumFrame.Shape TUBS  5.1 5.3 1.35  0. 360. 
+AluminiumFrame.Position 0 0 0
+AluminiumFrame.Color 1
+AluminiumFrame.Visibility 1
+AluminiumFrame.Mother WorldVolume
+
+//This is the Al window on top
+//the tech specs say Al top in the hole dim are R=5.1, h=0.2 cm
+Volume AlWindow
+AlWindow.Material Aluminium 
+AlWindow.Shape TUBS  0. 5.1 0.1  0. 360. 
+AlWindow.Position 0 0 1.25
+AlWindow.Color 4
+AlWindow.Visibility 1
+AlWindow.Mother WorldVolume
+
+
+// Single cylinder of Scintillator CsI 
+//tech specs say it R=5.1, h=2.2 cm
+Volume CSICylinder
+CSICylinder.Material CsI
+CSICylinder.Visibility 1
+CSICylinder.Color 2
+CSICylinder.Shape TUBS 0. 5. 1.1  0. 360. 
+CSICylinder.Position 0. 0. 0.05
+CSICylinder.Mother WorldVolume
+
+//This chunk is the window on bottom
+//the tech specs say quartz the window is modified to fit in the hole dim are R=5.1, h=0.3 cm
+Volume GlassWindow
+GlassWindow.Material Glass
+GlassWindow.Shape TUBS  0. 5.1 0.15 0. 360.
+GlassWindow.Position 0 0 -1.2
+GlassWindow.Color 6
+GlassWindow.Visibility 1
+GlassWindow.Mother WorldVolume
+
+// Build the volume to put the readouts in dim are R=4.5, h=0.22 cm
+Volume ReadOutDetectorVolume
+ReadOutDetectorVolume.Material Vacuum 
+ReadOutDetectorVolume.Shape TUBS  0. 4.5 0.11  0. 360. 
+//ReadOutDetectorVolume.Rotation 25.0 -25.0 0.0
+ReadOutDetectorVolume.Position 0. 0. -1.5
+ReadOutDetectorVolume.Color 1
+ReadOutDetectorVolume.Visibility 1
+ReadOutDetectorVolume.Mother WorldVolume
+
+
+//This chunk is the Si plane below the glass
+//the tech specs say Si in the Al Frame/hole dim are  R=4.5, h=0.020 cm
+//Slightly smaller than the circumfrence to avoid overlap
+Volume SiPlane
+SiPlane.Material Silicon
+SiPlane.Shape TUBS 0. 4.5 0.01 0. 360. 
+//For the nominal thickness
+SiPlane.Position 0. 0. 0.1
+SiPlane.Color 5
+SiPlane.Visibility 1
+SiPlane.Mother ReadOutDetectorVolume
+
+//This chunk is the G10 below the Si
+//the tech specs say dim are R=4.5, h=0.20 cm
+Volume G10Plane
+G10Plane.Material CircuitBoard
+G10Plane.Shape TUBS 0. 4.5 0.1 0. 360.
+G10Plane.Position 0. 0. -0.01
+G10Plane.Color 7
+G10Plane.Visibility 1
+G10Plane.Mother ReadOutDetectorVolume
+
+
+# Base Trigger
+Trigger MainTrigger
+MainTrigger.Veto false
+MainTrigger.TriggerByDetector true
+MainTrigger.Detector DCalCSI 1
