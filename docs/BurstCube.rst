@@ -3,28 +3,28 @@ BurstCube
 
 simGenerator module
 -------------------
-.. automodule:: BurstCube.simGenerator
+.. automodule:: simGenerator
    :members:
    :undoc-members:
 
 
 runSim module
 -------------
-.. automodule:: BurstCube.runSims
+.. automodule:: runSims
    :members:
    :undoc-members:
 
 
 bcSim module
 ------------
-.. automodule:: BurstCube.bcSim
+.. automodule:: bcSim
    :members:
    :undoc-members:
 
 
 plotSim module
 --------------
-.. automodule:: BurstCube.plotSim
+.. automodule:: plotSim
    :members:
    :undoc-members:
 
@@ -33,6 +33,6 @@ plotSim module
 utils module
 ------------
 
-.. automodule:: BurstCube.utils
+.. automodule:: utils
    :members:
    :undoc-members:
