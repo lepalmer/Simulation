@@ -20,8 +20,7 @@ MOCK_MODULES = ['numpy', 'statistics', 'matplotlib', 'matplotlib.pyplot', 'healp
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
-sys.path.insert(0, os.path.abspath('../MEGAlib/bin'))
-sys.path.insert(0, os.path.abspath('../Localization_and_Detection/NoahSim'))
+sys.path.insert(0, os.path.abspath('../BurstCube'))
 
 #sys.path.append(os.path.abspath('.'))
 
