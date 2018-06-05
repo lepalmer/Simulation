@@ -215,8 +215,8 @@ def look_up_C(detnorm,source,array=False):
 
     Example:
 
-    Let's say for this detector, past 30° and for azimuths of 60 -
-    180, it's blocked. This is what it would look like:
+    Let's say for this detector, past 30 degrees and for azimuths of
+    60 - 180, it's blocked. This is what it would look like:
 
     R = 0.76*np.ones(shape=np.shape(X))
 
