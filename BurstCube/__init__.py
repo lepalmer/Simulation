@@ -1,4 +1,5 @@
 import os
+from pkg_resources import resource_filename
 
 __version__ = "unknown"
 
@@ -10,9 +11,13 @@ except Exception as message:
 
 __author__ = "Jeremy Perkins"
 
+os.environ['BCTEST'] = resource_filename('BurstCube', '/data')
+print(os.environ['BCTEST'])
 
 try:
     os.environ['BURSTCUBE']
 except KeyError:
     print("Warning: BURSTCUBE variable not set.")
+
+
 
