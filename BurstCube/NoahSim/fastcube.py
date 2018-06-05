@@ -14,7 +14,7 @@ from healpy import ang2vec, newvisufunc
 
 #sometimes one import method works, sometimes another one does. Here's a quick fix.  
 try:
-    from NoahSim import burstutils as bf
+    from BurstCube.NoahSim import burstutils as bf
 except:
     import burstutils as bf
 

@@ -1,6 +1,6 @@
-from NoahSim import fastcube
-from NoahSim import GRBgenerator
-from NoahSim import numpy as np
+from BurstCube.NoahSim import fastcube
+from BurstCube.NoahSim import GRBgenerator
+from BurstCube.NoahSim import numpy as np
 
 
 def test_fastcube():

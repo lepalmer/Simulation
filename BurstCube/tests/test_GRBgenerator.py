@@ -1,4 +1,4 @@
-from NoahSim import GRBgenerator 
+from BurstCube.NoahSim import GRBgenerator 
 
 
 

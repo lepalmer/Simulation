@@ -1,4 +1,4 @@
-from NoahSim import burstutils
+from BurstCube.NoahSim import burstutils
 
 import numpy as np
 
