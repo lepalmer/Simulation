@@ -213,12 +213,12 @@ def look_up_C(detnorm,source,array=False):
     x : float
         The exponent of dependence for the detector's response.
 
-
-
     Example:
-    Let's say for this detector, past 30° and for azimuths of 60 - 180, it's blocked. This is what it would look like: 
 
-     R = 0.76*np.ones(shape=np.shape(X)) 
+    Let's say for this detector, past 30° and for azimuths of 60 -
+    180, it's blocked. This is what it would look like:
+
+    R = 0.76*np.ones(shape=np.shape(X))
 
      R[30:,60:180] = 0
 

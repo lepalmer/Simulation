@@ -8,7 +8,7 @@ GRBgenerator module
    :undoc-members:
 
 
-burstSim module
+fastcube module
 -------------------
 .. automodule:: fastcube
    :members:
