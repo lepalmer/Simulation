@@ -1,4 +1,4 @@
-BurstSim
+NoahSim
 ========
 
 GRBgenerator module

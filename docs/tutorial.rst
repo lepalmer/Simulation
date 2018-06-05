@@ -4,7 +4,7 @@ Tutorial
 The steps to quickly and efficiently generate source files that are used to simulate a GRB on a given BurstCube arrangement with a given strength and sky position are split into the following steps:
 
 1.	Creating source files
--------------------------
+-----------------------------
 
 config.yaml allows you to select the desired geometry, desired energy range, and desired source position respectively. 
 
@@ -19,7 +19,7 @@ conf = configurator(‘~/config.yaml’)
 and now with this object, run the function conf.createSourceFiles(), which outputs all of the source files into the desired directory. 
 
 2.	Running simulations 
------------------------
+----------------------------
 
 runSims.py is a function which runs the source files and outputs the .sim files to be further analyzed. 
 
@@ -32,7 +32,7 @@ where x is the desired amount of source files to run in parallel.
 After runSims has completed its operation, the sim files will be outputted in the designated directory for further analysis. 
 
 3.	Analyzing results
----------------------
+-------------------------
 
 With the sim files generated, these can be plotted using python. 
 

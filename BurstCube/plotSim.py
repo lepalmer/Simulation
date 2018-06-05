@@ -5,7 +5,7 @@ try:
 
     # Set the default title font dict
     titleFormat = {'fontsize': 12,
-                   'fontweight': plt.rcParams['axes.titleweight'],
+                   'fontweight': 14,
                    'verticalalignment': 'baseline',
                    'horizontalalignment': 'center'}
 

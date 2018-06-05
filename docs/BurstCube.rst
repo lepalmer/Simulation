@@ -1,30 +1,30 @@
-MEGAlib
-=======
+BurstCube
+=========
 
 simGenerator module
 -------------------
-.. automodule:: simGenerator
+.. automodule:: BurstCube.simGenerator
    :members:
    :undoc-members:
 
 
 runSim module
 -------------
-.. automodule:: runSims
+.. automodule:: BurstCube.runSims
    :members:
    :undoc-members:
 
 
 bcSim module
 ------------
-.. automodule:: bcSim
+.. automodule:: BurstCube.bcSim
    :members:
    :undoc-members:
 
 
 plotSim module
 --------------
-.. automodule:: plotSim
+.. automodule:: BurstCube.plotSim
    :members:
    :undoc-members:
 
@@ -33,6 +33,6 @@ plotSim module
 utils module
 ------------
 
-.. automodule:: utils
+.. automodule:: BurstCube.utils
    :members:
    :undoc-members:

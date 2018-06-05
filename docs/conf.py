@@ -15,23 +15,38 @@
 import os
 import sys
 import mock
-#fake modules so readthedocs doesn't realize ;)
-MOCK_MODULES = ['numpy', 'statistics', 'matplotlib', 'matplotlib.pyplot', 'healpy','createSourcestring']
+# fake modules so readthedocs doesn't realize ;)
+MOCK_MODULES = ['numpy',
+                'statistics',
+                'matplotlib',
+                'matplotlib.pyplot',
+                'healpy',
+                'createSourcestring']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
 sys.path.insert(0, os.path.abspath('../BurstCube'))
-
-#sys.path.append(os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../BurstCube/LocSim'))
+sys.path.insert(0, os.path.abspath('../BurstCube/NoahSim'))
 
 # -- Project information -----------------------------------------------------
+
+import BurstCube
 
 project = 'BurstCube Documentation'
 copyright = '2018, Noah Kasmanoff'
 author = 'Noah Kasmanoff'
 
+__version__ = "unknown"
+
+try:
+    from .version import get_git_version
+    __version__ = get_git_version()
+except Exception as message:
+    print(message)
+
 # The short X.Y version
-version = ''
+version = __version__
 # The full version, including alpha/beta/rc tags
 release = '1.0.0'
 
@@ -45,14 +60,18 @@ release = '1.0.0'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-#extensions = []
+# extensions = []
 
-#extensions = ['sphinx.ext.autodoc']
-extensions = ['sphinx.ext.mathjax', 'sphinx.ext.autodoc', 'sphinx.ext.viewcode','sphinx.ext.napoleon', 'sphinx.ext.intersphinx']
+# extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.mathjax',
+              'sphinx.ext.autodoc',
+              'sphinx.ext.viewcode',
+              'sphinx.ext.napoleon',
+              'sphinx.ext.intersphinx']
 #    'numpydoc'
 # Document Python Code
-#autoapi_type = 'python'
-#autoapi_dir = '../MEGAlib/bin/'
+# autoapi_type = 'python'
+# autoapi_dir = '../MEGAlib/bin/'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -98,7 +117,7 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -141,8 +160,11 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'BurstCubeDocumentation.tex', 'BurstCube Documentation Documentation',
-     'Noah Kasmanoff', 'manual'),
+    (master_doc,
+     'BurstCubeDocumentation.tex',
+     'BurstCube Documentation Documentation',
+     'Noah Kasmanoff',
+     'manual'),
 ]
 
 
@@ -151,7 +173,9 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'burstcubedocumentation', 'BurstCube Documentation Documentation',
+    (master_doc,
+     'burstcubedocumentation',
+     'BurstCube Documentation Documentation',
      [author], 1)
 ]
 
@@ -162,7 +186,11 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'BurstCubeDocumentation', 'BurstCube Documentation Documentation',
-     author, 'BurstCubeDocumentation', 'One line description of project.',
+    (master_doc,
+     'BurstCubeDocumentation',
+     'BurstCube Documentation Documentation',
+     author,
+     'BurstCubeDocumentation',
+     'One line description of project.',
      'Miscellaneous'),
 ]

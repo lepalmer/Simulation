@@ -46,6 +46,7 @@ Documentation Contents
    :includehidden:
    :maxdepth: 2
 
-   tutorial 
-   megalibstuff
-   noahsims
+   tutorial
+   BurstCube
+   LocSim
+   NoahSim
