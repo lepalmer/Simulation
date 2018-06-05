@@ -1,4 +1,3 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 import math as mth
@@ -47,13 +46,332 @@ def angle(v1, v2):
     ang = np.arccos(np.dot(v1, v2) / (length(v1) * length(v2)))
     return ang
 
-def findAngles(v1s, v2s):
+def findAngles(v1s, v2s):  #can handle either one angle or array intake of a bunch of them!
     dot = np.einsum('ijk,ijk->ij',[v1s,v1s,v2s],[v2s,v1s,v2s])
-    return np.arccos(dot[0,:]/(np.sqrt(dot[1,:])*np.sqrt(dot[2,:])))
+    angle = np.arccos(dot[0,:]/(np.sqrt(dot[1,:])*np.sqrt(dot[2,:])))
+    return angle
 
 
-def chiresponse(A):
+
+#Fuck around w this one. 
+
+def look_up_A(detnorm,source,array=False):
+    """The look up table for detector A. 
+    Currently for all these functions the coordinates are relative to the top of the spacecraft,
+    not indivudial detectors. To tranform just rotate by this specific detnorm. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector A. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
     """
+    if array:
+        ang = findAngles(detnorm,source)   
+
+    if not array:
+        ang = angle(detnorm,source)
+
+    sourceang = hp.vec2ang(source)
+    sourcetheta = sourceang[0]
+    sourcephi = sourceang[1]    #convert to degrees for now, not a big dealio or anything yet. 
+    sourcetheta = np.around(np.rad2deg(sourcetheta))   #This needs to be able to take in an array and produce corresponding R's. 
+    sourcephi = np.around(np.rad2deg(sourcephi))
+    X = np.arange(0, 180, 1)  #full sky now. 
+    Y = np.arange(0, 360, 1)
+    X, Y = np.meshgrid(X, Y)
+    R = 0.76*np.ones(shape=np.shape(X))
+
+    
+    
+    if not array:
+        if ang> np.pi/2:
+            x = 0 
+        else:
+            mask1 = X == sourcetheta
+            mask2 = Y == sourcephi
+    
+            x = R[mask1 & mask2]
+            
+
+    else:
+
+        
+        x = []
+        
+        for i in range(len(source)):
+            
+            sourceang = hp.vec2ang(source[i])
+            
+            mask1 = X == np.around(np.rad2deg(sourceang[0]))  #theta mask
+            mask2 = Y == np.around(np.rad2deg(sourceang[1])) #phi mask
+        
+            x.append(R[mask1 & mask2])
+            
+    return x
+
+
+
+
+
+
+def look_up_B(detnorm,source,array=False):
+    """The look up table for detector B. 
+    Currently for all these functions the coordinates are relative to the top of the spacecraft,
+    not indivudial detectors. To tranform just rotate by this specific detnorm. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector B. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+    """
+    if array:
+        #for fitting purposes, creates the entire lookup table all at once. Unfortuntaley I only know how to do this by putting them in a loop as done below, which is time costly. 
+        ang = findAngles(detnorm,source)   
+
+    if not array:
+        ang = angle(detnorm,source)
+    sourceang = hp.vec2ang(source)
+    sourcetheta = sourceang[0]
+    sourcephi = sourceang[1]    #convert to degrees for now, not a big dealio or anything yet. 
+    sourcetheta = np.around(np.rad2deg(sourcetheta))   #This needs to be able to take in an array and produce corresponding R's. 
+    sourcephi = np.round(np.rad2deg(sourcephi))
+    X = np.arange(0, 180, 1)  #full sky now. 
+    Y = np.arange(0, 360, 1)
+    X, Y = np.meshgrid(X, Y)
+    #creates meshgrid for theta phi, and masks the source's position to get response exponent. 
+    
+    R = 0.76*np.ones(shape=np.shape(X))
+    
+    
+    if not array:
+        if ang> np.pi/2:
+            x = 0 
+        else:
+            mask1 = X == sourcetheta
+            mask2 = Y == sourcephi
+    
+            x = R[mask1 & mask2]
+            
+
+    else:
+        x = []
+        
+        for i in range(len(source)):
+            
+            sourceang = hp.vec2ang(source[i])
+            
+            mask1 = X == np.around(np.rad2deg(sourceang[0]))  #theta mask
+            mask2 = Y == np.around(np.rad2deg(sourceang[1])) #phi mask
+        
+            x.append(R[mask1 & mask2])
+            
+    return x
+
+
+
+
+
+
+
+
+
+
+
+
+def look_up_C(detnorm,source,array=False):
+    """The look up table for detector C. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector C. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+
+
+
+    Example:
+    Let's say for this detector, past 30° and for azimuths of 60 - 180, it's blocked. This is what it would look like: 
+
+     R = 0.76*np.ones(shape=np.shape(X)) 
+
+     R[30:,60:180] = 0
+
+    """
+    if array:
+        ang = findAngles(detnorm,source)   
+
+    if not array:
+        ang = angle(detnorm,source)
+    sourceang = hp.vec2ang(source)
+    sourcetheta = sourceang[0]
+    sourcephi = sourceang[1]
+    #convert to degrees for now, not a big dealio or anything yet. 
+    sourcetheta = np.around(np.rad2deg(sourcetheta))   #This needs to be able to take in an array and produce corresponding R's. 
+    sourcephi = np.around(np.rad2deg(sourcephi))
+    X = np.arange(0, 180, 1)  #full sky now. 
+    Y = np.arange(0, 360, 1)
+    X, Y = np.meshgrid(X, Y)
+    R = 0.76*np.ones(shape=np.shape(X))  #response function
+    
+    
+    if not array:
+        if ang> np.pi/2:
+            x = 0 
+        else:
+            mask1 = X == sourcetheta
+            mask2 = Y == sourcephi
+    
+            x = R[mask1 & mask2]
+            
+
+    else:
+        
+        x = []
+        
+        
+        for i in range(len(source)):
+            
+            sourceang = hp.vec2ang(source[i])
+            
+            mask1 = X == np.around(np.rad2deg(sourceang[0]))  #theta mask
+            mask2 = Y == np.around(np.rad2deg(sourceang[1])) #phi mask
+        
+            x.append(R[mask1 & mask2])
+            
+    return x
+
+
+
+def look_up_D(detnorm,source,array=False):
+    """The look up table for detector D. 
+    
+    Parameters
+    ----------   
+    detnorm : array
+        The vector normal to detector D. 
+    source : array
+        The vector pointing to where in the sky the GRB came from. 
+    
+    
+    Returns
+    -------
+    
+    x : float
+        The exponent of dependence for the detector's response.
+    """
+    if array:
+        ang = findAngles(detnorm,source)   
+
+    if not array:
+        ang = angle(detnorm,source)
+        
+    sourceang = hp.vec2ang(source)
+    sourcetheta = sourceang[0]
+    sourcephi = sourceang[1]
+    #convert to degrees for now, not a big dealio or anything yet. 
+    sourcetheta = np.around(np.rad2deg(sourcetheta))   #This needs to be able to take in an array and produce corresponding R's. 
+    sourcephi = np.around(np.rad2deg(sourcephi))
+    X = np.arange(0, 180, 1)  #full sky now. 
+    Y = np.arange(0, 360, 1)
+    X, Y = np.meshgrid(X, Y)
+    R = 0.76*np.ones(shape=np.shape(X))
+    
+    
+    if not array:
+        if ang> np.pi/2:
+            x = 0 
+        else:
+            mask1 = X == sourcetheta
+            mask2 = Y == sourcephi
+    
+            x = R[mask1 & mask2]
+            
+
+    else:
+        x = []
+        
+        for i in range(len(source)):
+            
+            sourceang = hp.vec2ang(source[i])
+            
+            mask1 = X == np.around(np.rad2deg(sourceang[0]))  #theta mask
+            mask2 = Y == np.around(np.rad2deg(sourceang[1])) #phi mask
+        
+            x.append(R[mask1 & mask2])
+            
+    return x
+
+
+
+
+
+
+
+def response(A,x):
+    """Meant to imitate the actual response of a scintillator.
+    Inputs 2 vectors, and responds with a cos^x dependence.
+    
+    Parameters
+    -----------
+    A : float
+        The angular separation in radians between the normal vector of the
+        detector, and the position in the sky of the simulated GRB.
+    
+    x : float
+        The dependence
+
+    Returns
+    -------
+    R : float
+        The response function of how the scintillator will respond to a source
+        at angle A.
+
+    """
+    #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
+ #   print(length(A),length(B))
+#if cosine is negative, 
+    #Maybe include the pi/2 thing here. 
+    
+    R = pow(abs(np.cos(A)),x)
+    #How I fix the angle stuff now. 
+    mask = A > np.pi/2
+    if np.shape(R) == ():
+        return R
+    else:
+        R[mask] = 0
+        return R
+    
+def chiresponse(A,x):
+    """
+    
+    Deprecated, just use normal "response" function above!
+    
     The response function used in the chi squared fitting portion of the simulation. 
     Meant to imitate the actual response of a scintillator.
     Inputs 2 vectors, and responds with a cos^x dependence.
@@ -77,38 +395,13 @@ def chiresponse(A):
     mask = A > np.pi/2.
 
     A[mask] = 0
-    A[~mask] = pow(abs(np.cos(A[~mask])),0.76)
+    A[~mask] = pow(abs(np.cos(A[~mask])),x)
     
     
     return A
 
-def response(A):
-    """
-    Meant to imitate the actual response of a scintillator.
-    Inputs 2 vectors, and responds with a cos^x dependence.
-    
-    Parameters
-    -----------
-    A : float
-        The angular separation in radians between the normal vector of the detector, and the position in the sky of the simulated GRB. 
 
-    Returns
-    -------
-    R : float
-        The response function of how the scintillator will respond to a source at angle A. 
-
-    """
-    #meant to imitate the response of the detectors for effective area vs. angle, found to be around .77
- #   print(length(A),length(B))
-#if cosine is negative, 
-
-    R = pow(abs(np.cos(A)),0.76)
-    
-    
-    return R         
-
-
-def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,background):
+def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,nphi,nA,background,A=False,B=False,C=False,D=False):
     """Generates an array of all possible chi terms for a given detector and the number of counts induced in it by some source. Named quad since BurstCube is composed of 4 detectors, and this generates 1/4 of the terms. 
     
     Parameters
@@ -168,14 +461,27 @@ def quad_solver(detval,detnorm,bottheta,toptheta,botphi,topphi,botA,topA,ntheta,
     AA,SS = np.meshgrid(As,seps)
     Aofit = np.concatenate(AA)
     chiseps = np.concatenate(SS)
-    
     #this is close, but needs to be a way to go one step further and do this in the next chiR
     bg = background * np.ones(len(chiseps))
     #good = chiseps < np.pi/2
     #bad = chiseps > np.pi/2
     
     #probs that, don't want to include bg 
-    chiResponse = np.multiply(Aofit,chiresponse(chiseps)) + bg
+    if A:
+        xfit = look_up_A(normarrs,allvecs,array=True)
+    elif B:
+        xfit = look_up_B(normarrs,allvecs,array=True)
+    elif C:
+        xfit = look_up_C(normarrs,allvecs,array=True)
+    elif D:
+        xfit = look_up_D(normarrs,allvecs,array=True)
+
+
+    xfits, As = np.meshgrid(xfit,As)
+    
+    xfit = np.concatenate(xfits)
+    #print(len(xfit))
+    chiResponse = np.multiply(Aofit,response(chiseps,xfit)) + bg
     #chiResponse = [1e5 if i <= background else i for i in chiResponse]
     if detval > background: 
         chiterm = np.divide(np.power(np.subtract(chiResponse,detval),2),detval)
