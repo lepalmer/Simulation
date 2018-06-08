@@ -28,6 +28,22 @@ def calcNorms(real_counts, training_counts):
  
 def addErrors(real_counts, training_counts):
 
+    """Adds all of the errors together in quadrature
+
+    Parameters
+    ----------
+    real_counts : the array of real grb counts in each detector
+
+    training_counts : the arrary of traning counts in each detector
+
+    Returns
+    -------
+
+    null : array
+         numpy array of the errors
+
+    """
+    
     errors = np.sqrt([[test + rec
                        for rec in training_counts[:, 1]**2]
                       for test in real_counts[:, 1]**2])
