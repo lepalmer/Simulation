@@ -71,7 +71,7 @@ def plotAeffvsEnergy(energy, aeff, aeff_eres, aeff_eres_modfrac,
 
     Returns
     ----------
-    a plot! 
+    a plot of the effective area vs. energy. 
     """
     
     plt.figure(figsize=(8, 6))
