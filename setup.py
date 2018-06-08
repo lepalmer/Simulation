@@ -16,6 +16,7 @@ setup(name='BurstCube',
                         'data/*.source',
                         'data/BurstCube_1Cylinder.geo.setup',
                         'data/config.yaml',
+                        'data/gbm_effective_area.dat',
                         'data/*.gz']
           }
       )
