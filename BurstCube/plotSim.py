@@ -18,23 +18,29 @@ from matplotlib import gridspec
 import numpy as np
 
 
-def getGBMdata(gbmfile='$BURSTCUBE/Simulation/GEANT3/gbm_effective_area.dat'):
+def getGBMdata(gbmfile=''):
+    
     """Reads the GBM NaI effective area file and returns a numpy array
     with two columns ``energy`` and ``aeff``.
 
     Parameters
     ----------
     gbmfile : string
-       Name of file that contains the GBM data.
+       Name of file that contains the GBM data.  If not given, will
+       look in the installed location.
 
     Returns
     ----------
     gbmdata : array 
     numpy array with two columns ``energy`` and ``aeff``
     """
-
+    
+    from pkg_resources import resource_filename
     from numpy import genfromtxt
     from os import path
+
+    if gbmfile is '':
+        gbmfile = resource_filename('BurstCube', 'data/gbm_effective_area.dat')
 
     gbmfile = path.expandvars(gbmfile)
     

@@ -41,9 +41,10 @@ def test_bcSim_setup(create_simfile):
     sf.printDetails()
 
 
-def test_setPath():
-    from BurstCube.utils import setPath
-    assert(not setPath())
+# Don't need since files are installed in package
+# def test_setPath():
+#    from BurstCube.utils import setPath
+#    assert(not setPath())
 
     
 def test_energy(create_simfile):
