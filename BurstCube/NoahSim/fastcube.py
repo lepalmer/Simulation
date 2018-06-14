@@ -10,7 +10,7 @@ or https://github.com/nkasmanoff
 #Import dependencies, as listed below.
 from numpy import rad2deg,deg2rad,pi,sqrt,add,array,average
 from healpy import ang2vec, newvisufunc
-
+import numpy as np
 
 #sometimes one import method works, sometimes another one does. Here's a quick fix.  
 try:
@@ -19,7 +19,7 @@ except:
     import burstutils as bf
 
 from random import gauss
-import statistics as s
+#import statistics as s
 import matplotlib.pyplot as plt
 
 #making classes of objects, allows for different instances of burstcube, easy to compare. 
@@ -393,7 +393,7 @@ class FastCube():
             if talk:
                 print("Avg loc offset = " + str(average(locunc)) + " deg.")
 
-            self.localizationerrors.append(s.mean(locunc))
+            self.localizationerrors.append(np.mean(locunc))
         return self.localizationerrors
 
 
