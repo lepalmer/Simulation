@@ -2,8 +2,6 @@
 
 import numpy as np
 from numpy.testing import assert_allclose
-# from astropy.tests.helper import pytest
-# from pkg_resources import resource_filename
 
 try:
     from BurstCube.LocSim import Stats
