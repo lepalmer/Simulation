@@ -166,18 +166,12 @@ def cli():
     parser.add_argument("jobs", type=int, help="The number of jobs you wish to spawn (usually the number of cores on your machine).")
     parser.add_argument("--runCosima", type=bool, default=False, help="Run cosima (default is false)")
     parser.add_argument("--runRevan", type=bool, default=False, help="Run revan (default is false)")
-    parser.add_argument("--BURSTCUBE",help="Path to compair files.  You can set this via an environment variable")
-    parser.add_argument("--sourcePath",help="Where the source files live.  If not given, will get from BURSTCUBE.")
+    parser.add_argument("--sourcePath",help="Where the source files live.")
     parser.add_argument("--simPath", help="Where the sim files live (from cosima).")
     parser.add_argument("--revanCfg", help="Revan config file (need full path).")
     parser.add_argument("--reRun", type=bool, default=False, help="Re run/re write")
     
     args = parser.parse_args()
-
-    if setPath(args.BURSTCUBE):
-        exit()
-    else:
-        print("BURSTCUBE set to " + os.environ['BURSTCUBE'])
 
     if args.runCosima:
         srcFiles = getFiles(args.sourcePath,'source')
