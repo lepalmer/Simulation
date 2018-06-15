@@ -27,7 +27,7 @@ def test_GRBgeneratorSourceAngs():
                   (2.3005239830218631, 3.926990816987241),
                   (2.3005239830218631, 5.497787143782138)]
 
-        np.testing.assert_allclose(testsim.sourceangs, result, 1e-16)
+        np.testing.assert_allclose(testsim.sourceangs, result, 1e-15)
 
         
 def test_fastcube():
