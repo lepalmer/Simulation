@@ -76,12 +76,12 @@ def calcNormsWithError(real_counts, training_counts, real_counts_with_error):
 #            for idx, grb in enumerate(real_grbs)]
 
 
-def halfway(grbs):
-    
-    return [(np.average([grb[idx].eph._ra
-                         for idx in np.arange(len(grb))]),
-             np.average([grb[idx].eph._dec
-                         for idx in np.arange(len(grb))])) for grb in grbs]
+# def halfway(grbs):
+#    
+#    return [(np.average([grb[idx].eph._ra
+#                         for idx in np.arange(len(grb))]),
+#             np.average([grb[idx].eph._dec
+#                         for idx in np.arange(len(grb))])) for grb in grbs]
 
 
 # def distance2(positions, real_grbs):
