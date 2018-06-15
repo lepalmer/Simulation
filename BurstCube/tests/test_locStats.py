@@ -20,6 +20,11 @@ b = np.array([[[60, 59, 32, 0, 0, 0, 0, 0, 0, 19, 64, 100],
               [[80, 72, 34, 0, 0, 0, 0, 0, 0, 20, 69, 100],
                [0.59, 0.54, 0.33, 0, 0, 0, 0, 0, 0, 0.24, 0.53, 0.69]]])
 
+c = np.array([[[0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+               [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1]],
+              [[1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+               [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1]]])
+
 
 def test_calcNorms():
 
@@ -33,11 +38,18 @@ def test_calcNorms():
     
 def test_addErrors():
     
-    result = np.array([[[0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1],
-                        [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1]],
-                       [[1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-                        [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1]]])
-    
     errors = Stats.addErrors(a, b)
 
-    assert_allclose(errors, result, 1e-6)
+    assert_allclose(errors, c, 1e-6)
+
+    
+def test_calcNormsWithError():
+    
+    result = np.array([[[199.7, 207.1],
+                        [52.3, 48.4]],
+                       [[198.3, 207.3],
+                        [50.4, 48.1]]])
+
+    norms_err = Stats.calcNormsWithError(a, b, c)
+
+    assert_allclose(norms_err, result, 1e-3)
