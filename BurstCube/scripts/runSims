@@ -90,21 +90,27 @@ def runRevan_star(files):
     return runRevan(*files)
 
             
-def getFiles(searchDir = '', extension = 'source'):
+def getFiles(searchDir = './', extension = 'source'):
     """Identifies the source files to simulate with cosima. 
 
+    Parameters
+    ----------
+    searchDir : string
+      Directory to look for source files.  Default is current directory.
+
+    extension : string
+      File extension for source files.  Default is 'source'.
+
+    Returns
+    -------
+    list
+      List of filenames with full path.
 
     """
     from glob import glob    
 
-    if not ('BURSTCUBE' in os.environ):
-        print('Set or provide BURSTCUBE')
-        return ""
-
-    if searchDir:
-        return glob(searchDir+'/*.'+extension)
-    else:
-        return glob(os.environ['BURSTCUBE']+'/Simulations/PerformancePlotSourceFiles/*.'+extension)
+    return glob(searchDir+'/*.'+extension)
+    
 
 def makeLinks(files, folderName='SimFiles'):
     """Function to make links in directories. 
