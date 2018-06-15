@@ -3,7 +3,7 @@ python:
  - "3.6"
 
 install:
- - pip install astropy numpy matplotlib PyYAML healpy
+ - pip install astropy numpy matplotlib PyYAML scipy healpy
 
 script:
  - pytest

@@ -12,12 +12,3 @@ except Exception as message:
 __author__ = "Jeremy Perkins"
 
 os.environ['BCTEST'] = resource_filename('BurstCube', '/data')
-print(os.environ['BCTEST'])
-
-try:
-    os.environ['BURSTCUBE']
-except KeyError:
-    print("Warning: BURSTCUBE variable not set.")
-
-
-
