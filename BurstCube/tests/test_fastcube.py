@@ -2,11 +2,13 @@ from BurstCube.NoahSim import fastcube
 from BurstCube.NoahSim import GRBgenerator
 import numpy as np
 
+
 def test_GRBgenerator():
 
         testsim = GRBgenerator.Sky(1, 500)
         
         assert ((testsim.Ao == 500) & (testsim.pixels == 12))
+
         
 def test_GRBgeneratorSourceAngs():
 
@@ -25,9 +27,9 @@ def test_GRBgeneratorSourceAngs():
                   (2.3005239830218631, 3.926990816987241),
                   (2.3005239830218631, 5.497787143782138)]
 
-        assert (testsim.sourceangs == result)
-        
+        np.testing.assert_allclose(testsim.sourceangs, result, 1e-16)
 
+        
 def test_fastcube():
         testsim = GRBgenerator.Sky(1, 500)
         testcube = fastcube.FastCube(1000, 45)
