@@ -68,12 +68,12 @@ def calcNormsWithError(real_counts, training_counts, real_counts_with_error):
     return norms_errp, norms_errm
 
 
-def distance(training_grbs, real_grbs, mins):
-
-    import ephem as eph
-
-    return [eph.separation(grb.eph, training_grbs[mins[idx]].eph)*180./np.pi
-            for idx, grb in enumerate(real_grbs)]
+# def distance(training_grbs, real_grbs, mins):
+#
+#    import ephem as eph
+#
+#    return [eph.separation(grb.eph, training_grbs[mins[idx]].eph)*180./np.pi
+#            for idx, grb in enumerate(real_grbs)]
 
 
 def halfway(grbs):
@@ -84,11 +84,11 @@ def halfway(grbs):
                          for idx in np.arange(len(grb))])) for grb in grbs]
 
 
-def distance2(positions, real_grbs):
-
-    import ephem as eph
-
-    return [eph.separation((position[0], position[1]),
-                           (real_grbs[idx].eph._ra,
-                            real_grbs[idx].eph._dec))*180/np.pi
-            for idx, position in enumerate(positions)]
+# def distance2(positions, real_grbs):
+#
+#    import ephem as eph
+#
+#    return [eph.separation((position[0], position[1]),
+#                           (real_grbs[idx].eph._ra,
+#                            real_grbs[idx].eph._dec))*180/np.pi
+#            for idx, position in enumerate(positions)]
