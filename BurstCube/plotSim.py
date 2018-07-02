@@ -100,6 +100,44 @@ def plotAeffvsEnergy(energy, aeff, aeff_eres, aeff_eres_modfrac,
     plt.legend(loc='lower center', prop={'size': 16}, numpoints=1,
                frameon=False)
 
+def plotAeffvsPhi(azimuth, aeff, aeff_eres, aeff_eres_modfrac):
+
+    """Plots the GBM NaI effective area against the polar angle phi used
+    to generate that source.
+    
+    Parameters
+    ----------
+    azimuth : array
+       numpy array of the angle in deg of the source. 
+    aeff : array
+        numpy array with GBM NaI effective area. 
+    aeff_eres : array
+        I'll look up energy resulution later
+    aeff_eres_modfrac : array
+        plus escape? 
+    Returns
+    ----------
+    a plot!
+    """
+    plt.figure(figsize=(8, 6))
+    plt.title('Effective Area vs. Angle')
+    plt.scatter(azimuth, aeff, color='black')
+    plt.plot(azimuth, aeff, color='black', alpha=0.5, linestyle='--',
+             lw=2, label='BurstCube')
+    plt.scatter(azimuth, aeff_eres, color='blue')
+    plt.plot(azimuth, aeff_eres, color='blue', alpha=0.5, linestyle='--',
+             lw=2, label='BurstCube with E$_{\mathrm{res}}$')
+    plt.scatter(azimuth, aeff_eres_modfrac, color='red')
+    plt.plot(azimuth, aeff_eres_modfrac, color='red', alpha=0.5, linestyle='--',
+             lw=2, label='BurstCube with E$_{\mathrm{res}}$ + escape')
+
+    plt.xlabel('Azimuth Angle (deg)', fontsize=16)
+    plt.ylabel('Effective Area (cm$^2$)', fontsize=16)
+    plt.legend(loc='lower center', scatterpoints=1, prop={'size': 16},
+               frameon=False)
+    plt.axis('tight')
+plt.grid(True)
+
     
 def plotAeffvsTheta(theta, aeff, aeff_eres, aeff_eres_modfrac,
                     energy=100., paren=''):
