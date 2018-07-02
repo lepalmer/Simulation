@@ -22,7 +22,7 @@ WorldVolume.Mother 0
 
 
 //This is the CsI Detector
-Include $BCTEST/CalorimeterCSIProperties.det
+Include /home/laura/Simulation/BurstCube/data/CalorimeterCSIProperties.det
 
 // Build the volume to put everything in dim are R=5.3, h=2.7 cm
 #Volume DetectorVolume

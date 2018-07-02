@@ -136,7 +136,7 @@ def plotAeffvsPhi(azimuth, aeff, aeff_eres, aeff_eres_modfrac):
     plt.legend(loc='lower center', scatterpoints=1, prop={'size': 16},
                frameon=False)
     plt.axis('tight')
-plt.grid(True)
+    plt.grid(True)
 
     
 def plotAeffvsTheta(theta, aeff, aeff_eres, aeff_eres_modfrac,
