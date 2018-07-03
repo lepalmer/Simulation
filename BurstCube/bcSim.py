@@ -358,7 +358,7 @@ class simFile:
         hits = np.zeros((len(events),), dtype=dt)
 
         for i, evt in enumerate(events):
-            hits[i] = evt
+            hits[i] = tuple(e for e in evt[:5])
 
         return hits
 
