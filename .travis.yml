@@ -11,3 +11,4 @@ script:
 env:
     global:
       - BURSTCUBE=$HOME/build/BurstCube
+

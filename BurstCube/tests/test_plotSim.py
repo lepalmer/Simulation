@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 import numpy as np
-import matplotlib
+from numpy.testing import assert_allclose
+import matplotlib as mpl
+mpl.use('agg')
 from matplotlib.testing.decorators import image_comparison
 import matplotlib.pyplot as plt
-from numpy.testing import assert_allclose
+
 
 try:
     from BurstCube.plotSim import getGBMdata
