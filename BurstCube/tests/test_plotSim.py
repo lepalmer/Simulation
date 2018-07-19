@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 import numpy as np
-import matplotlib
+from numpy.testing import assert_allclose
+import unittest
+import os
 from matplotlib.testing.decorators import image_comparison
 import matplotlib.pyplot as plt
-from numpy.testing import assert_allclose
+
 
 try:
     from BurstCube.plotSim import getGBMdata
@@ -25,12 +27,29 @@ def test_getGBMdata():
 
     assert_allclose(aeff, gbmdata['aeff'], 1e-3)
 
-try:
-    from BurstCube.plotSim import plotAeffvsEnergy
-except ImportError:
-    pass
+    
+@unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                 "Skipping this test on Travis CI.")
+@image_comparison(baseline_images=['spines_axes_positions'],
+                  extensions=['png'])
+def test_spines_axes_positions():
+    # SF bug 2852168
+    fig = plt.figure()
+    x = np.linspace(0,2*np.pi,100)
+    y = 2*np.sin(x)
+    ax = fig.add_subplot(1,1,1)
+    ax.set_title('centered spines')
+    ax.plot(x,y)
+    ax.spines['right'].set_position(('axes',0.1))
+    ax.yaxis.set_ticks_position('right')
+    ax.spines['top'].set_position(('axes',0.25))
+    ax.xaxis.set_ticks_position('top')
+    ax.spines['left'].set_color('none')
+    ax.spines['bottom'].set_color('none')
 
-
+    
+@unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                 "Skipping this test on Travis CI.")
 @image_comparison(baseline_images=['plotAeffvsEnergy'],
                   extensions=['png'])
 def test_plotAeffvsEnergy():
@@ -39,9 +58,12 @@ def test_plotAeffvsEnergy():
     (6 bins)'''
                   
     energy = np.array([25, 52.28198, 109.336205, 228.65253, 478.17624, 1000])
-    aeff = np.array([29.357716, 72.52194, 75.67477, 70.827415, 49.87035, 35.3552])
-    aeff_eres = np.array([29.240286, 60.483303, 70.75591, 62.753094, 30.02195, 12.551097])
-    aeff_eres_modfrac = ([29.240286, 71.0715, 73.858574, 64.665436, 30.670265, 25.102194])
+    aeff = np.array([29.357716, 72.52194, 75.67477,
+                     70.827415, 49.87035, 35.3552])
+    aeff_eres = np.array([29.240286, 60.483303,
+                          70.75591, 62.753094, 30.02195, 12.551097])
+    aeff_eres_modfrac = ([29.240286, 71.0715, 73.858574,
+                          64.665436, 30.670265, 25.102194])
     az = 0
     ze = 0
     plotGBM = True
@@ -71,11 +93,10 @@ def test_plotAeffvsEnergy():
     plt.ylabel('Effective Area (cm$^2$)', fontsize=16)
     plt.legend(loc='lower center', prop={'size': 16}, numpoints=1,
                frameon=False)
-try:
-    from BurstCube.plotSim import plotAeffvsTheta
-except ImportError:
-    pass
 
+    
+@unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                 "Skipping this test on Travis CI.")
 @image_comparison(baseline_images=['plotAeffvsTheta'],
                   extensions=['png'])
 def test_plotAeffvsTheta():
@@ -109,11 +130,8 @@ def test_plotAeffvsTheta():
                frameon=False)
     plt.grid(True)
 
-try:
-    from BurstCube.plotSim import plotAeffvsPhi
-except ImportError:
-    pass
-
+@unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                 "Skipping this test on Travis CI.")
 @image_comparison(baseline_images=['plotAeffvsPhi'],
                   extensions=['png'])
 def test_plotAeffvsPhi():
@@ -135,7 +153,8 @@ def test_plotAeffvsPhi():
     plt.plot(azimuth, aeff_eres, color='blue', alpha=0.5, linestyle='--',
              lw=2, label='BurstCube with E$_{\mathrm{res}}$')
     plt.scatter(azimuth, aeff_eres_modfrac, color='red')
-    plt.plot(azimuth, aeff_eres_modfrac, color='red', alpha=0.5, linestyle='--',
+    plt.plot(azimuth, aeff_eres_modfrac, color='red',
+             alpha=0.5, linestyle='--',
              lw=2, label='BurstCube with E$_{\mathrm{res}}$ + escape')
 
     plt.xlabel('Azimuth Angle (deg)', fontsize=16)
