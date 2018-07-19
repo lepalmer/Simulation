@@ -130,7 +130,8 @@ def test_plotAeffvsTheta():
                frameon=False)
     plt.grid(True)
 
-
+@unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                 "Skipping this test on Travis CI.")
 @image_comparison(baseline_images=['plotAeffvsPhi'],
                   extensions=['png'])
 def test_plotAeffvsPhi():
