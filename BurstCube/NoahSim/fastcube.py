@@ -1,31 +1,36 @@
-"""The following cell contains the "FastCube" class. 
-This is the simulation I hope to use emulate the results of state of the art simulations on GRB localization,
-and use these results to characterize the burstcube spacecraft. 
+"""The following cell contains the "FastCube" class.  This is the
+simulation I hope to use emulate the results of state of the art
+simulations on GRB localization, and use these results to characterize
+the burstcube spacecraft.
 
-For questions/comments please contact me, Noah Kasmanoff, at nkasmanoff@gmail.com 
-or https://github.com/nkasmanoff
+For questions/comments please contact me, Noah Kasmanoff, at
+nkasmanoff@gmail.com or https://github.com/nkasmanoff
 
 """
 
-#Import dependencies, as listed below.
-from numpy import rad2deg,deg2rad,pi,sqrt,add,array,average
+from numpy import rad2deg, deg2rad, pi, sqrt, add, array, average
 from healpy import ang2vec, newvisufunc
 import numpy as np
 
-#sometimes one import method works, sometimes another one does. Here's a quick fix.  
+# sometimes one import method works, sometimes another one
+# does. Here's a quick fix.
 try:
     from BurstCube.NoahSim import burstutils as bf
-except:
+except ImportError:
     import burstutils as bf
 
 from random import gauss
 #import statistics as s
 
-#making classes of objects, allows for different instances of burstcube, easy to compare. 
+
+# making classes of objects, allows for different instances of
+# burstcube, easy to compare.
+
+
 class FastCube():
 
-    def __init__(self,background,dettilt,alternating=False):
-        if alternating == False:
+    def __init__(self, background, dettilt, alternating=False):
+        if alternating is False:
             self.tilt = deg2rad(dettilt)
             self.tiltA = self.tiltB = self.tiltC = self.tiltD = self.tilt
         
@@ -35,17 +40,18 @@ class FastCube():
             self.tiltC = self.tiltA = deg2rad(dettilt)
             self.tiltD = self.tiltB
         
-        self.zenith = [0 , 0]
+        self.zenith = [0, 0]
         self.bg = background
-
-
         
     @property
     def detA(self):
-        """BurstCube is composed of 4 separate scintillators to detect and localize events. 
-        In this software package, they are labelled A through D. 
+        """BurstCube is composed of 4 separate scintillators to detect and
+        localize events.  In this software package, they are labelled
+        A through D.
+
         """
-        return [ self.zenith[0] + self.tiltA , self.zenith[1] ]
+        return [self.zenith[0] + self.tiltA, self.zenith[1]]
+    
     @property 
     def detB(self):
         """BurstCube is composed of 4 separate scintillators to detect and localize events. 
