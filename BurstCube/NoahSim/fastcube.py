@@ -20,7 +20,6 @@ except:
 
 from random import gauss
 #import statistics as s
-import matplotlib.pyplot as plt
 
 #making classes of objects, allows for different instances of burstcube, easy to compare. 
 class FastCube():
@@ -397,24 +396,25 @@ class FastCube():
         return self.localizationerrors
 
 
-    def plotSkymap(self,skyvals):
-        """ Plots the TSM of the localization uncertainties for this specific version of BurstCube. 
-
-
-        Parameters
-        ----------
-        skyvals : array
-            The localiation uncertainties corresponding to each point. Comes from previous function "response2GRB".
-
-
-        Returns 
-        -------
-
-        The healpy generated skymap. 
-
-        """
-        im = array(skyvals)
-        newvisufunc.mollview(im,min=0, max=30,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True)
-        plt.title('All Sky Localization Accuracy for BurstCube set as ' + str(rad2deg(self.tilt)) + ' deg')  #should add something about design too! 
-
-        plt.show()
+# Removing this for now.  Should be in a different location (plotting).    
+#    def plotSkymap(self,skyvals):
+#        """ Plots the TSM of the localization uncertainties for this specific version of BurstCube. 
+#
+#
+#        Parameters
+#        ----------
+#        skyvals : array
+#            The localiation uncertainties corresponding to each point. Comes from previous function "response2GRB".
+#
+#
+#        Returns 
+#        -------
+#
+#        The healpy generated skymap. 
+#
+#        """
+#        im = array(skyvals)
+#        newvisufunc.mollview(im,min=0, max=30,unit='Localization Accurary (degrees)',graticule=True,graticule_labels=True)
+#        plt.title('All Sky Localization Accuracy for BurstCube set as ' + str(rad2deg(self.tilt)) + ' deg')  #should add something about design too! 
+#
+#       plt.show()
