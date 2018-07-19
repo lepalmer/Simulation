@@ -1,8 +1,10 @@
 from BurstCube.NoahSim import fastcube
 from BurstCube.NoahSim import GRBgenerator
 import numpy as np
+import unittest
 
 
+@unittest.skip("Skipping this test until the code is optimized.")
 def test_fastcube():
         testsim = GRBgenerator.Sky(1, 500)
         testcube = fastcube.FastCube(1000, 45)

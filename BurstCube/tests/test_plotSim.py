@@ -2,6 +2,8 @@
 
 import numpy as np
 from numpy.testing import assert_allclose
+import unittest
+import os
 from matplotlib.testing.decorators import image_comparison
 import matplotlib.pyplot as plt
 
@@ -25,6 +27,9 @@ def test_getGBMdata():
 
     assert_allclose(aeff, gbmdata['aeff'], 1e-3)
 
+    
+@unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                 "Skipping this test on Travis CI.")
 @image_comparison(baseline_images=['spines_axes_positions'],
                   extensions=['png'])
 def test_spines_axes_positions():
@@ -43,6 +48,8 @@ def test_spines_axes_positions():
     ax.spines['bottom'].set_color('none')
 
     
+@unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                 "Skipping this test on Travis CI.")
 @image_comparison(baseline_images=['plotAeffvsEnergy'],
                   extensions=['png'])
 def test_plotAeffvsEnergy():
@@ -87,7 +94,9 @@ def test_plotAeffvsEnergy():
     plt.legend(loc='lower center', prop={'size': 16}, numpoints=1,
                frameon=False)
 
-
+    
+@unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true",
+                 "Skipping this test on Travis CI.")
 @image_comparison(baseline_images=['plotAeffvsTheta'],
                   extensions=['png'])
 def test_plotAeffvsTheta():
